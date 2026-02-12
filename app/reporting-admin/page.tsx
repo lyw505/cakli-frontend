@@ -13,6 +13,7 @@ import {
     ResponsiveContainer,
     LineChart,
     Line,
+    Cell,
 } from "recharts"
 import {
     CalendarIcon,
@@ -21,8 +22,11 @@ import {
     Users,
     ShoppingCart,
     Wallet,
+    Info,
+    Ban,
+    CheckCircle2,
 } from "lucide-react"
-import { addDays, format } from "date-fns"
+import { addDays, format, startOfWeek, endOfWeek, isSameDay } from "date-fns"
 import { DateRange } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
@@ -42,30 +46,45 @@ import {
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
 
-const data = [
+const hourlyData = [
     { name: "06:00", orders: 12, revenue: 150000 },
     { name: "08:00", orders: 45, revenue: 560000 },
     { name: "10:00", orders: 30, revenue: 380000 },
     { name: "12:00", orders: 55, revenue: 720000 },
     { name: "14:00", orders: 40, revenue: 510000 },
     { name: "16:00", orders: 65, revenue: 950000 },
-    { name: "18:00", orders: 80, revenue: 1200000 },
+    { name: "18:00", orders: 85, revenue: 1200000 },
     { name: "20:00", orders: 42, revenue: 620000 },
     { name: "22:00", orders: 15, revenue: 210000 },
 ]
 
+const statusData = [
+    { name: "Completed", value: 2350, color: "#10b981" },
+    { name: "Cancelled", value: 142, color: "#ef4444" },
+]
+
+const dailyTrendData = [
+    { date: "Feb 01", orders: 120 },
+    { date: "Feb 02", orders: 132 },
+    { date: "Feb 03", orders: 101 },
+    { date: "Feb 04", orders: 134 },
+    { date: "Feb 05", orders: 90 },
+    { date: "Feb 06", orders: 230 },
+    { date: "Feb 07", orders: 210 },
+]
+
 export default function ReportingDashboard() {
     const [date, setDate] = React.useState<DateRange | undefined>({
-        from: new Date(2024, 0, 20),
-        to: addDays(new Date(2024, 0, 20), 20),
+        from: new Date(),
+        to: addDays(new Date(), 7),
     })
 
     return (
-        <div className="flex flex-col gap-6 p-6">
+        <div className="flex flex-col gap-6 p-6 pb-12">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Financial & Data Overview</h1>
-                    <p className="text-muted-foreground">Monitor performance metrics and revenue trends.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Reporting Admin Dashboard</h1>
+                    <p className="text-muted-foreground">Admin Portal: RISMA • Focusing on data-driven insights.</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className={cn("grid gap-2")}>
@@ -76,7 +95,7 @@ export default function ReportingDashboard() {
                                     variant={"outline"}
                                     className={cn(
                                         "w-[300px] justify-start text-left font-normal",
-                                        !date && "text-muted-foreground"
+                                        !date && "text-muted-foreground border-orange-200"
                                     )}
                                 >
                                     <CalendarIcon className="mr-2 h-4 w-4" />
@@ -90,7 +109,7 @@ export default function ReportingDashboard() {
                                             format(date.from, "LLL dd, y")
                                         )
                                     ) : (
-                                        <span>Pick a date</span>
+                                        <span>Pick a date range</span>
                                     )}
                                 </Button>
                             </PopoverTrigger>
@@ -106,7 +125,7 @@ export default function ReportingDashboard() {
                             </PopoverContent>
                         </Popover>
                     </div>
-                    <Button variant="outline" size="icon">
+                    <Button variant="outline" size="icon" title="Export CSV/PDF">
                         <Download className="h-4 w-4" />
                     </Button>
                 </div>
@@ -114,191 +133,196 @@ export default function ReportingDashboard() {
 
             {/* KPI Cards */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
+                <Card className="border-l-4 border-l-orange-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                        <Wallet className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Total Orders</CardTitle>
+                        <ShoppingCart className="h-4 w-4 text-orange-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">Rp 45.231.890</div>
-                        <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+                        <div className="text-3xl font-bold">2,492</div>
+                        <p className="text-xs text-muted-foreground mt-1">In selected period</p>
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="border-l-4 border-l-orange-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Completed Orders</CardTitle>
-                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Total Revenue</CardTitle>
+                        <Wallet className="h-4 w-4 text-orange-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">+2350</div>
-                        <p className="text-xs text-muted-foreground">+180.1% from last month</p>
+                        <div className="text-3xl font-bold">Rp 45.2M</div>
+                        <p className="text-xs text-muted-foreground mt-1">Gross earnings</p>
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="border-l-4 border-l-orange-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Active Drivers</CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Active Drivers</CardTitle>
+                        <Users className="h-4 w-4 text-orange-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">+12,234</div>
-                        <p className="text-xs text-muted-foreground">+19% from last month</p>
+                        <div className="text-3xl font-bold">142</div>
+                        <p className="text-xs text-green-600 font-medium mt-1">Currently Online</p>
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="border-l-4 border-l-orange-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Canceled Rate</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Completion Rate</CardTitle>
+                        <CheckCircle2 className="h-4 w-4 text-orange-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">+573</div>
-                        <p className="text-xs text-muted-foreground">+201 since last hour</p>
+                        <div className="text-3xl font-bold">94.3%</div>
+                        <p className="text-xs text-muted-foreground mt-1">Avg. fulfillment success</p>
                     </CardContent>
                 </Card>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-                {/* Busy Hours Chart */}
-                <Card className="col-span-4">
+            <div className="grid gap-6 lg:grid-cols-7">
+                {/* Busy Hours Chart (Bar Chart as requested) */}
+                <Card className="lg:col-span-4">
                     <CardHeader>
-                        <CardTitle>Hourly Order Volume</CardTitle>
-                        <CardDescription>Visualizing peak times throughout the day.</CardDescription>
+                        <CardTitle>Peak Busy Hours</CardTitle>
+                        <CardDescription>Bar chart showing hours with highest order volume.</CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
                         <div className="h-[300px]">
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={data}>
-                                    <defs>
-                                        <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#E04D04" stopOpacity={0.3} />
-                                            <stop offset="95%" stopColor="#E04D04" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                <BarChart data={hourlyData}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
                                     <XAxis
                                         dataKey="name"
-                                        stroke="#888888"
+                                        stroke="#6B7280"
                                         fontSize={12}
                                         tickLine={false}
                                         axisLine={false}
                                     />
                                     <YAxis
-                                        stroke="#888888"
+                                        stroke="#6B7280"
                                         fontSize={12}
                                         tickLine={false}
                                         axisLine={false}
-                                        tickFormatter={(value) => `${value}`}
                                     />
                                     <Tooltip
+                                        cursor={{ fill: 'rgba(224, 77, 4, 0.05)' }}
                                         contentStyle={{
-                                            backgroundColor: "hsl(var(--background))",
-                                            borderColor: "hsl(var(--border))",
+                                            backgroundColor: "white",
+                                            borderColor: "#E04D04",
                                             borderRadius: "8px",
+                                            boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)"
                                         }}
                                     />
-                                    <Area
-                                        type="monotone"
+                                    <Bar
                                         dataKey="orders"
-                                        stroke="#E04D04"
-                                        fillOpacity={1}
-                                        fill="url(#colorOrders)"
+                                        fill="#E04D04"
+                                        radius={[4, 4, 0, 0]}
+                                        barSize={40}
                                     />
-                                </AreaChart>
+                                </BarChart>
                             </ResponsiveContainer>
                         </div>
                     </CardContent>
                 </Card>
 
-                {/* Status Breakdown */}
-                <Card className="col-span-3">
+                {/* Status Comparison (Bar Chart as requested) */}
+                <Card className="lg:col-span-3">
                     <CardHeader>
-                        <CardTitle>Order Fulfillment</CardTitle>
-                        <CardDescription>Success vs. cancellation metrics.</CardDescription>
+                        <CardTitle>Order Status Comparison</CardTitle>
+                        <CardDescription>Completed vs. Cancelled orders.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <Badge className="bg-green-500">Completed</Badge>
-                                    <span className="text-sm font-medium">Success Rate</span>
+                        <div className="h-[250px] mb-6">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={statusData} layout="vertical">
+                                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E5E7EB" />
+                                    <XAxis type="number" hide />
+                                    <YAxis
+                                        dataKey="name"
+                                        type="category"
+                                        stroke="#6B7280"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        width={80}
+                                    />
+                                    <Tooltip cursor={{ fill: 'transparent' }} />
+                                    <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={40}>
+                                        {statusData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between text-sm border-t pt-3">
+                                <div className="flex items-center gap-2 font-medium">
+                                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                    <span>2,350 Completed</span>
                                 </div>
-                                <span className="text-sm font-bold">94.2%</span>
+                                <span className="text-muted-foreground">94.3%</span>
                             </div>
-                            <div className="h-2 w-full rounded-full bg-secondary">
-                                <div className="h-2 rounded-full bg-green-500" style={{ width: "94.2%" }} />
-                            </div>
-
-                            <div className="flex items-center justify-between mt-6">
-                                <div className="flex items-center gap-2">
-                                    <Badge variant="destructive">Canceled</Badge>
-                                    <span className="text-sm font-medium">Drop-off Rate</span>
+                            <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center gap-2 font-medium">
+                                    <Ban className="h-4 w-4 text-red-500" />
+                                    <span>142 Cancelled</span>
                                 </div>
-                                <span className="text-sm font-bold">5.8%</span>
-                            </div>
-                            <div className="h-2 w-full rounded-full bg-secondary">
-                                <div className="h-2 rounded-full bg-destructive" style={{ width: "5.8%" }} />
-                            </div>
-
-                            <div className="pt-6 space-y-2 border-t mt-6">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Peak Hour Revenue</span>
-                                    <span className="font-semibold">Rp 1.250.000</span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Avg. Order Value</span>
-                                    <span className="font-semibold">Rp 24.500</span>
-                                </div>
+                                <span className="text-muted-foreground">5.7%</span>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* Revenue Trend */}
+            {/* Order Trend Line Chart */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Revenue Trend Line</CardTitle>
-                    <CardDescription>Tracking financial growth over the selected period.</CardDescription>
+                    <CardTitle>Order Trend (Selected Period)</CardTitle>
+                    <CardDescription>Line chart visualizing order volume fluctuations over days.</CardDescription>
                 </CardHeader>
                 <CardContent className="pl-2">
-                    <div className="h-[200px]">
+                    <div className="h-[250px]">
                         <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={data}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <LineChart data={dailyTrendData}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
                                 <XAxis
-                                    dataKey="name"
-                                    stroke="#888888"
+                                    dataKey="date"
+                                    stroke="#6B7280"
                                     fontSize={12}
                                     tickLine={false}
                                     axisLine={false}
                                 />
                                 <YAxis
-                                    stroke="#888888"
+                                    stroke="#6B7280"
                                     fontSize={12}
                                     tickLine={false}
                                     axisLine={false}
-                                    tickFormatter={(value) => `Rp ${value / 1000}k`}
                                 />
                                 <Tooltip
                                     contentStyle={{
-                                        backgroundColor: "hsl(var(--background))",
-                                        borderColor: "hsl(var(--border))",
+                                        backgroundColor: "white",
+                                        borderColor: "#E04D04",
                                         borderRadius: "8px",
                                     }}
-                                    formatter={(value: any) => [`Rp ${value.toLocaleString()}`, "Revenue"]}
                                 />
                                 <Line
                                     type="monotone"
-                                    dataKey="revenue"
+                                    dataKey="orders"
                                     stroke="#E04D04"
-                                    strokeWidth={2}
-                                    dot={{ r: 4, fill: "#E04D04" }}
-                                    activeDot={{ r: 6 }}
+                                    strokeWidth={3}
+                                    dot={{ r: 4, fill: "#E04D04", strokeWidth: 2, stroke: "white" }}
+                                    activeDot={{ r: 6, strokeWidth: 0 }}
                                 />
                             </LineChart>
                         </ResponsiveContainer>
                     </div>
                 </CardContent>
             </Card>
+
+            <div className="p-4 bg-orange-50/50 border border-orange-100 rounded-lg flex gap-3">
+                <Info className="h-5 w-5 text-orange-600 shrink-0" />
+                <p className="text-sm text-orange-900 leading-relaxed">
+                    <strong>Read-Only Mode:</strong> This dashboard is optimized for data analysis and reporting. No data can be modified from this view. For operational controls, please switch to the Operation Admin portal.
+                </p>
+            </div>
         </div>
     )
 }
+
