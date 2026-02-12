@@ -4,23 +4,27 @@ import * as React from "react"
 import {
     Area,
     AreaChart,
-    BarChart,
     Bar,
+    BarChart,
+    CartesianGrid,
+    Line,
+    LineChart,
+    ResponsiveContainer,
+    Tooltip,
     XAxis,
     YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    LineChart,
-    Line,
 } from "recharts"
 import {
-    CalendarIcon,
+    Calendar as CalendarIcon,
     Download,
     TrendingUp,
     Users,
     ShoppingCart,
     Wallet,
+    ArrowUpRight,
+    Search,
+    MapPin,
+    Clock,
 } from "lucide-react"
 import { addDays, format } from "date-fns"
 import { DateRange } from "react-day-picker"
@@ -41,8 +45,16 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 
-const data = [
+const hourlyData = [
     { name: "06:00", orders: 12, revenue: 150000 },
     { name: "08:00", orders: 45, revenue: 560000 },
     { name: "10:00", orders: 30, revenue: 380000 },
@@ -52,6 +64,14 @@ const data = [
     { name: "18:00", orders: 80, revenue: 1200000 },
     { name: "20:00", orders: 42, revenue: 620000 },
     { name: "22:00", orders: 15, revenue: 210000 },
+]
+
+const recentOrders = [
+    { id: "ORD-9001", time: "10:23", area: "Malang Kota", status: "Completed", amount: "Rp 24.000" },
+    { id: "ORD-9002", time: "10:21", area: "Lowokwaru", status: "Completed", amount: "Rp 18.500" },
+    { id: "ORD-9003", time: "10:15", area: "Sukun", status: "Cancelled", amount: "Rp 32.000" },
+    { id: "ORD-9004", time: "10:10", area: "Malang Kota", status: "Completed", amount: "Rp 15.000" },
+    { id: "ORD-9005", time: "09:58", area: "Batu", status: "Completed", amount: "Rp 45.000" },
 ]
 
 export default function ReportingDashboard() {
@@ -64,8 +84,8 @@ export default function ReportingDashboard() {
         <div className="flex flex-col gap-6 p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Financial & Data Overview</h1>
-                    <p className="text-muted-foreground">Monitor performance metrics and revenue trends.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Business Overview</h1>
+                    <p className="text-muted-foreground">Real-time performance metrics and business health check.</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className={cn("grid gap-2")}>
@@ -75,7 +95,7 @@ export default function ReportingDashboard() {
                                     id="date"
                                     variant={"outline"}
                                     className={cn(
-                                        "w-[300px] justify-start text-left font-normal",
+                                        "w-[240px] justify-start text-left font-normal",
                                         !date && "text-muted-foreground"
                                     )}
                                 >
@@ -90,7 +110,7 @@ export default function ReportingDashboard() {
                                             format(date.from, "LLL dd, y")
                                         )
                                     ) : (
-                                        <span>Pick a date</span>
+                                        <span>Pick a date range</span>
                                     )}
                                 </Button>
                             </PopoverTrigger>
@@ -116,22 +136,22 @@ export default function ReportingDashboard() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                        <Wallet className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">Rp 45.231.890</div>
-                        <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+                        <div className="text-2xl font-bold">2,350</div>
+                        <p className="text-xs text-muted-foreground">+12% from last week</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Completed Orders</CardTitle>
-                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                        <Wallet className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">+2350</div>
-                        <p className="text-xs text-muted-foreground">+180.1% from last month</p>
+                        <div className="text-2xl font-bold">Rp 45.2M</div>
+                        <p className="text-xs text-muted-foreground">+8% from last week</p>
                     </CardContent>
                 </Card>
                 <Card>
@@ -140,37 +160,37 @@ export default function ReportingDashboard() {
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">+12,234</div>
-                        <p className="text-xs text-muted-foreground">+19% from last month</p>
+                        <div className="text-2xl font-bold">145</div>
+                        <p className="text-xs text-muted-foreground">Currently online</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Canceled Rate</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
+                        <TrendingUp className="h-4 w-4 text-green-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">+573</div>
-                        <p className="text-xs text-muted-foreground">+201 since last hour</p>
+                        <div className="text-2xl font-bold">94.2%</div>
+                        <p className="text-xs text-muted-foreground">5.8% Cancelled</p>
                     </CardContent>
                 </Card>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-                {/* Busy Hours Chart */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                {/* Visualizations */}
                 <Card className="col-span-4">
                     <CardHeader>
-                        <CardTitle>Hourly Order Volume</CardTitle>
-                        <CardDescription>Visualizing peak times throughout the day.</CardDescription>
+                        <CardTitle>Order Trend</CardTitle>
+                        <CardDescription>Daily order volume over the selected period.</CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
                         <div className="h-[300px]">
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={data}>
+                                <AreaChart data={hourlyData}>
                                     <defs>
                                         <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#E04D04" stopOpacity={0.3} />
-                                            <stop offset="95%" stopColor="#E04D04" stopOpacity={0} />
+                                            <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -186,19 +206,12 @@ export default function ReportingDashboard() {
                                         fontSize={12}
                                         tickLine={false}
                                         axisLine={false}
-                                        tickFormatter={(value) => `${value}`}
                                     />
-                                    <Tooltip
-                                        contentStyle={{
-                                            backgroundColor: "hsl(var(--background))",
-                                            borderColor: "hsl(var(--border))",
-                                            borderRadius: "8px",
-                                        }}
-                                    />
+                                    <Tooltip />
                                     <Area
                                         type="monotone"
                                         dataKey="orders"
-                                        stroke="#E04D04"
+                                        stroke="#2563eb"
                                         fillOpacity={1}
                                         fill="url(#colorOrders)"
                                     />
@@ -208,95 +221,110 @@ export default function ReportingDashboard() {
                     </CardContent>
                 </Card>
 
-                {/* Status Breakdown */}
-                <Card className="col-span-3">
-                    <CardHeader>
-                        <CardTitle>Order Fulfillment</CardTitle>
-                        <CardDescription>Success vs. cancellation metrics.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <Badge className="bg-green-500">Completed</Badge>
-                                    <span className="text-sm font-medium">Success Rate</span>
+                <div className="col-span-3 space-y-4">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Peak Hours</CardTitle>
+                            <CardDescription>Busiest times of the day.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Clock className="h-4 w-4 text-orange-500" />
+                                        <span className="text-sm font-medium">17:00 - 19:00</span>
+                                    </div>
+                                    <Badge variant="secondary">Highest</Badge>
                                 </div>
-                                <span className="text-sm font-bold">94.2%</span>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Clock className="h-4 w-4 text-orange-500" />
+                                        <span className="text-sm font-medium">11:00 - 13:00</span>
+                                    </div>
+                                    <Badge variant="outline">High</Badge>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Clock className="h-4 w-4 text-blue-500" />
+                                        <span className="text-sm font-medium">07:00 - 09:00</span>
+                                    </div>
+                                    <Badge variant="outline">Moderate</Badge>
+                                </div>
                             </div>
-                            <div className="h-2 w-full rounded-full bg-secondary">
-                                <div className="h-2 rounded-full bg-green-500" style={{ width: "94.2%" }} />
-                            </div>
+                        </CardContent>
+                    </Card>
 
-                            <div className="flex items-center justify-between mt-6">
-                                <div className="flex items-center gap-2">
-                                    <Badge variant="destructive">Canceled</Badge>
-                                    <span className="text-sm font-medium">Drop-off Rate</span>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Top Areas</CardTitle>
+                            <CardDescription>Regions with highest demand.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                                        <span className="text-sm font-medium">Malang Kota</span>
+                                    </div>
+                                    <span className="font-bold">45%</span>
                                 </div>
-                                <span className="text-sm font-bold">5.8%</span>
-                            </div>
-                            <div className="h-2 w-full rounded-full bg-secondary">
-                                <div className="h-2 rounded-full bg-destructive" style={{ width: "5.8%" }} />
-                            </div>
-
-                            <div className="pt-6 space-y-2 border-t mt-6">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Peak Hour Revenue</span>
-                                    <span className="font-semibold">Rp 1.250.000</span>
+                                <div className="h-2 w-full rounded-full bg-secondary">
+                                    <div className="h-2 rounded-full bg-primary" style={{ width: "45%" }} />
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">Avg. Order Value</span>
-                                    <span className="font-semibold">Rp 24.500</span>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                                        <span className="text-sm font-medium">Lowokwaru</span>
+                                    </div>
+                                    <span className="font-bold">30%</span>
+                                </div>
+                                <div className="h-2 w-full rounded-full bg-secondary">
+                                    <div className="h-2 rounded-full bg-primary" style={{ width: "30%" }} />
                                 </div>
                             </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
-
-            {/* Revenue Trend */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Revenue Trend Line</CardTitle>
-                    <CardDescription>Tracking financial growth over the selected period.</CardDescription>
-                </CardHeader>
-                <CardContent className="pl-2">
-                    <div className="h-[200px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={data}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                <XAxis
-                                    dataKey="name"
-                                    stroke="#888888"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                />
-                                <YAxis
-                                    stroke="#888888"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    tickFormatter={(value) => `Rp ${value / 1000}k`}
-                                />
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: "hsl(var(--background))",
-                                        borderColor: "hsl(var(--border))",
-                                        borderRadius: "8px",
-                                    }}
-                                    formatter={(value: any) => [`Rp ${value.toLocaleString()}`, "Revenue"]}
-                                />
-                                <Line
-                                    type="monotone"
-                                    dataKey="revenue"
-                                    stroke="#E04D04"
-                                    strokeWidth={2}
-                                    dot={{ r: 4, fill: "#E04D04" }}
-                                    activeDot={{ r: 6 }}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle>Recent Activity</CardTitle>
+                            <CardDescription>Latest transactions and order updates.</CardDescription>
+                        </div>
+                        <Button variant="outline" size="sm" asChild>
+                            <a href="/reporting-admin/history">View All History <ArrowUpRight className="ml-2 h-4 w-4" /></a>
+                        </Button>
                     </div>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Order ID</TableHead>
+                                <TableHead>Time</TableHead>
+                                <TableHead>Area</TableHead>
+                                <TableHead>Amount</TableHead>
+                                <TableHead>Status</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {recentOrders.map((order) => (
+                                <TableRow key={order.id}>
+                                    <TableCell className="font-mono text-xs">{order.id}</TableCell>
+                                    <TableCell>{order.time}</TableCell>
+                                    <TableCell>{order.area}</TableCell>
+                                    <TableCell>{order.amount}</TableCell>
+                                    <TableCell>
+                                        <Badge variant={order.status === "Completed" ? "default" : "destructive"}>
+                                            {order.status}
+                                        </Badge>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                 </CardContent>
             </Card>
         </div>

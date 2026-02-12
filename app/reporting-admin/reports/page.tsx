@@ -8,6 +8,7 @@ import {
     FileSpreadsheet,
     FileJson,
 } from "lucide-react"
+import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -50,121 +51,73 @@ const reportData = [
     { id: "REP-004", type: "Cancellation Analysis", period: "Jan 2024", status: "Ready", size: "540 KB", date: "2024-02-02" },
 ]
 
+
+
 export default function ReportsPage() {
     return (
         <div className="flex flex-col gap-6 p-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">System Reports</h1>
-                    <p className="text-muted-foreground">Download and analyze system-wide data reports.</p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button>
-                                <Download className="mr-2 h-4 w-4" />
-                                Export Selected
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Format</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                                <FileSpreadsheet className="mr-2 h-4 w-4" />
-                                Excel (.xlsx)
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <FileJson className="mr-2 h-4 w-4" />
-                                JSON (.json)
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
+            <div>
+                <h1 className="text-3xl font-bold tracking-tight">Reports Dashboard</h1>
+                <p className="text-muted-foreground">Select a specific report category to view detailed analytics.</p>
             </div>
 
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="flex flex-1 items-center gap-2 max-w-sm">
-                    <div className="relative w-full">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="search"
-                            placeholder="Search reports..."
-                            className="pl-8"
-                        />
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Select defaultValue="all">
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Report Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All Categories</SelectItem>
-                            <SelectItem value="financial">Financial</SelectItem>
-                            <SelectItem value="operational">Operational</SelectItem>
-                            <SelectItem value="drivers">Drivers</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <Button variant="outline" size="icon">
-                        <Filter className="h-4 w-4" />
-                    </Button>
-                </div>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <Link href="/reporting-admin/history" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-primary" />
+                                Order History
+                            </CardTitle>
+                            <CardDescription>
+                                Complete audit log of all orders with status and details.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+
+                <Link href="/reporting-admin/reports/revenue" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-green-600" />
+                                Revenue Report
+                            </CardTitle>
+                            <CardDescription>
+                                Financial breakdown, income sources, and transaction logs.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+
+                <Link href="/reporting-admin/reports/driver-performance" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-blue-600" />
+                                Driver Performance
+                            </CardTitle>
+                            <CardDescription>
+                                Driver metrics, ratings, completion rates, and earnings.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+
+                <Link href="/reporting-admin/reports/cancellation" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-red-600" />
+                                Cancellation Analysis
+                            </CardTitle>
+                            <CardDescription>
+                                Analysis of cancelled orders, reasons, and penalties.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
             </div>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Generated Reports Library</CardTitle>
-                    <CardDescription>Archive of automated and manual reports.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Report Name</TableHead>
-                                <TableHead>Period</TableHead>
-                                <TableHead>Created Date</TableHead>
-                                <TableHead>File Size</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="text-right">Action</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {reportData.map((report) => (
-                                <TableRow key={report.id}>
-                                    <TableCell className="font-medium">{report.type}</TableCell>
-                                    <TableCell>{report.period}</TableCell>
-                                    <TableCell>{report.date}</TableCell>
-                                    <TableCell>{report.size}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={report.status === "Ready" ? "default" : "secondary"}>
-                                            {report.status}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="sm" disabled={report.status === "Processing"}>
-                                            Download
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
-
-            {/* Report Generator UI Preview */}
-            <Card className="bg-slate-50 dark:bg-slate-900 border-dashed">
-                <CardContent className="flex flex-col items-center justify-center p-12 text-center">
-                    <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 text-primary">
-                        <FileText className="size-6" />
-                    </div>
-                    <h3 className="text-lg font-semibold">Generate Custom Report</h3>
-                    <p className="text-sm text-muted-foreground mb-6 max-w-sm">
-                        Need specific data? Create a custom report by selecting your metrics and time frame.
-                    </p>
-                    <Button variant="outline">Create Custom Request</Button>
-                </CardContent>
-            </Card>
         </div>
     )
 }

@@ -35,14 +35,24 @@ const data = {
             icon: <BarChart3 className="size-4" />,
         },
         {
-            title: "Reports",
-            url: "/reporting-admin/reports",
-            icon: <FileText className="size-4" />,
-        },
-        {
             title: "Order History",
             url: "/reporting-admin/history",
             icon: <History className="size-4" />,
+        },
+        {
+            title: "Revenue Report",
+            url: "/reporting-admin/reports/revenue",
+            icon: <BarChart3 className="size-4" />,
+        },
+        {
+            title: "Driver Performance",
+            url: "/reporting-admin/reports/driver-performance",
+            icon: <FileText className="size-4" />,
+        },
+        {
+            title: "Cancellation Report",
+            url: "/reporting-admin/reports/cancellation",
+            icon: <FileText className="size-4" />,
         },
     ],
 }
