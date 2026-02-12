@@ -6,6 +6,7 @@ import {
     FileText,
     History,
     Command,
+    Users,
 } from "lucide-react"
 
 import {
@@ -43,6 +44,11 @@ const data = {
             title: "Order History",
             url: "/reporting-admin/history",
             icon: <History className="size-4" />,
+        },
+        {
+            title: "Driver Performance",
+            url: "/reporting-admin/drivers",
+            icon: <Users className="size-4" />,
         },
     ],
 }

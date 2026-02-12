@@ -26,7 +26,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Search, MoreHorizontal, UserCheck, UserX, FileText, Bike } from "lucide-react"
+import { Search, MoreHorizontal, UserCheck, UserX, FileText, Bike, ShieldCheck } from "lucide-react"
 
 const drivers = [
     { id: "DRV-001", name: "Budi Santoso", status: "Online", vehicle: "Becak Listrik A-01", phone: "081234567890", rating: 4.8 },
@@ -121,14 +121,14 @@ export default function DriversPage() {
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                            <DropdownMenuLabel>Fleet Operations</DropdownMenuLabel>
                                             <DropdownMenuItem>
                                                 <FileText className="mr-2 h-4 w-4" />
                                                 Vehicle Details
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem>
-                                                <FileText className="mr-2 h-4 w-4" />
-                                                Trip History
+                                            <DropdownMenuItem className="text-green-600">
+                                                <ShieldCheck className="mr-2 h-4 w-4" />
+                                                Verify Driver
                                             </DropdownMenuItem>
                                             <DropdownMenuSeparator />
                                             {driver.status === "Suspended" ? (

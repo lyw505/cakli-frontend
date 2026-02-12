@@ -38,6 +38,22 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 
 const zones = [
@@ -56,9 +72,51 @@ export default function AreaManagement() {
                     <h1 className="text-3xl font-bold tracking-tight">Regional Controls</h1>
                     <p className="text-muted-foreground">Manage service availability across different cities and zones.</p>
                 </div>
-                <Button className="bg-primary hover:bg-primary/90">
-                    <Plus className="mr-2 h-4 w-4" /> Expand to New Zone
-                </Button>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button className="bg-primary hover:bg-primary/90">
+                            <Plus className="mr-2 h-4 w-4" /> Expand to New Zone
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-md">
+                        <DialogHeader>
+                            <DialogTitle>Expand Regional Service</DialogTitle>
+                            <DialogDescription>Initialize a new operational zone for Cakli service.</DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="zone-name">Zone/City Name</Label>
+                                <Input id="zone-name" placeholder="e.g. Jakarta Selatan" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="base-tariff">Initial Base Tariff</Label>
+                                    <Input id="base-tariff" defaultValue="2500" type="number" />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="cluster">Cluster Node</Label>
+                                    <Select defaultValue="sea-1">
+                                        <SelectTrigger id="cluster">
+                                            <SelectValue placeholder="Select cluster" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="sea-1">SEA-CENTRAL-1</SelectItem>
+                                            <SelectItem value="sea-2">SEA-WEST-2</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="hours">Operational Hours</Label>
+                                <Input id="hours" defaultValue="00:00 - 23:59" />
+                            </div>
+                        </div>
+                        <div className="flex justify-end gap-2">
+                            <Button variant="outline">Cancel</Button>
+                            <Button className="bg-primary">Register Zone</Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

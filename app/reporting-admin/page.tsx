@@ -45,6 +45,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
+import { KpiCard } from "@/components/kpi-card"
 
 const hourlyData = [
     { name: "06:00", orders: 12, revenue: 150000 },
@@ -73,6 +74,14 @@ const dailyTrendData = [
     { date: "Feb 07", orders: 210 },
 ]
 
+const areaData = [
+    { name: "Malang Kota", orders: 850 },
+    { name: "Surabaya Pusat", orders: 720 },
+    { name: "Batu City", orders: 480 },
+    { name: "Sidoarjo", orders: 390 },
+    { name: "Gresik", orders: 150 },
+]
+
 export default function ReportingDashboard() {
     const [date, setDate] = React.useState<DateRange | undefined>({
         from: new Date(),
@@ -80,11 +89,10 @@ export default function ReportingDashboard() {
     })
 
     return (
-        <div className="flex flex-col gap-6 p-6 pb-12">
+        <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Reporting Admin Dashboard</h1>
-                    <p className="text-muted-foreground">Admin Portal: RISMA • Focusing on data-driven insights.</p>
+                    <h1 className="text-4xl font-black tracking-tight text-slate-900 leading-tight">Selamat datang, Risma!</h1>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className={cn("grid gap-2")}>
@@ -221,6 +229,37 @@ export default function ReportingDashboard() {
                     </CardContent>
                 </Card>
 
+                {/* Top Areas */}
+                <Card className="lg:col-span-3">
+                    <CardHeader>
+                        <CardTitle>Top Areas by Volume</CardTitle>
+                        <CardDescription>Areas with the highest concentration of orders.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="pl-2">
+                        <div className="h-[300px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={areaData} layout="vertical">
+                                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E5E7EB" />
+                                    <XAxis type="number" hide />
+                                    <YAxis
+                                        dataKey="name"
+                                        type="category"
+                                        stroke="#6B7280"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        width={100}
+                                    />
+                                    <Tooltip cursor={{ fill: 'transparent' }} />
+                                    <Bar dataKey="orders" fill="#E04D04" radius={[0, 4, 4, 0]} barSize={30} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-7">
                 {/* Status Comparison (Bar Chart as requested) */}
                 <Card className="lg:col-span-3">
                     <CardHeader>
@@ -269,52 +308,52 @@ export default function ReportingDashboard() {
                         </div>
                     </CardContent>
                 </Card>
-            </div>
 
-            {/* Order Trend Line Chart */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Order Trend (Selected Period)</CardTitle>
-                    <CardDescription>Line chart visualizing order volume fluctuations over days.</CardDescription>
-                </CardHeader>
-                <CardContent className="pl-2">
-                    <div className="h-[250px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={dailyTrendData}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                                <XAxis
-                                    dataKey="date"
-                                    stroke="#6B7280"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                />
-                                <YAxis
-                                    stroke="#6B7280"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                />
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: "white",
-                                        borderColor: "#E04D04",
-                                        borderRadius: "8px",
-                                    }}
-                                />
-                                <Line
-                                    type="monotone"
-                                    dataKey="orders"
-                                    stroke="#E04D04"
-                                    strokeWidth={3}
-                                    dot={{ r: 4, fill: "#E04D04", strokeWidth: 2, stroke: "white" }}
-                                    activeDot={{ r: 6, strokeWidth: 0 }}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                </CardContent>
-            </Card>
+                {/* Order Trend Line Chart */}
+                <Card className="lg:col-span-4">
+                    <CardHeader>
+                        <CardTitle>Order Trend (Selected Period)</CardTitle>
+                        <CardDescription>Line chart visualizing order volume fluctuations over days.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="pl-2">
+                        <div className="h-[250px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={dailyTrendData}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                                    <XAxis
+                                        dataKey="date"
+                                        stroke="#6B7280"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                    />
+                                    <YAxis
+                                        stroke="#6B7280"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                    />
+                                    <Tooltip
+                                        contentStyle={{
+                                            backgroundColor: "white",
+                                            borderColor: "#E04D04",
+                                            borderRadius: "8px",
+                                        }}
+                                    />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="orders"
+                                        stroke="#E04D04"
+                                        strokeWidth={3}
+                                        dot={{ r: 4, fill: "#E04D04", strokeWidth: 2, stroke: "white" }}
+                                        activeDot={{ r: 6, strokeWidth: 0 }}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
 
             <div className="p-4 bg-orange-50/50 border border-orange-100 rounded-lg flex gap-3">
                 <Info className="h-5 w-5 text-orange-600 shrink-0" />

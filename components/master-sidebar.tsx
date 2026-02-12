@@ -10,6 +10,7 @@ import {
     Command,
     TrendingDown,
     TrendingUp,
+    BarChart3,
 } from "lucide-react"
 
 import {
@@ -56,6 +57,11 @@ const data = {
             title: "Audit Log",
             url: "/master-admin/audit",
             icon: <ClipboardList className="size-4" />,
+        },
+        {
+            title: "Cross-Area Analytics",
+            url: "/master-admin/analytics",
+            icon: <BarChart3 className="size-4" />,
         },
     ],
 }

@@ -26,7 +26,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Search, MoreHorizontal, UserCheck, UserX, FileText } from "lucide-react"
+import { Search, MoreHorizontal, UserCheck, UserX, FileText, MessageSquareWarning } from "lucide-react"
 
 const users = [
     { id: "USR-001", name: "Rina Sullistia", email: "rina@example.com", status: "Active", joined: "2023-01-15", orders: 24 },
@@ -103,10 +103,14 @@ export default function UsersPage() {
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                            <DropdownMenuLabel>Account Management</DropdownMenuLabel>
                                             <DropdownMenuItem>
                                                 <FileText className="mr-2 h-4 w-4" />
-                                                View History
+                                                Order History
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem className="text-orange-600">
+                                                <MessageSquareWarning className="mr-2 h-4 w-4" />
+                                                Check Reports
                                             </DropdownMenuItem>
                                             <DropdownMenuSeparator />
                                             {user.status === "Active" ? (

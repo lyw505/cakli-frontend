@@ -8,6 +8,7 @@ import {
     MoreVertical,
     ShieldAlert,
     Search,
+    ClipboardList,
 } from "lucide-react"
 
 import {
@@ -29,6 +30,22 @@ import {
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Separator } from "@/components/ui/separator"
 
 const team = [
@@ -99,9 +116,67 @@ export default function RoleManagement() {
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <Button variant="ghost" size="icon">
-                                                <MoreVertical className="h-4 w-4" />
-                                            </Button>
+                                            <div className="flex items-center justify-end gap-2">
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Button variant="outline" size="sm" className="h-8">
+                                                            View
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                        <DialogHeader>
+                                                            <DialogTitle>Admin Profile: {staff.name}</DialogTitle>
+                                                            <DialogDescription>Detailed access log and configuration.</DialogDescription>
+                                                        </DialogHeader>
+                                                        <div className="space-y-4 py-4">
+                                                            <div className="flex items-center gap-4">
+                                                                <Avatar className="size-12">
+                                                                    <AvatarFallback>{staff.name[0]}</AvatarFallback>
+                                                                </Avatar>
+                                                                <div>
+                                                                    <p className="font-bold">{staff.name}</p>
+                                                                    <p className="text-sm text-muted-foreground">{staff.email}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div className="grid grid-cols-2 gap-4 border-t pt-4">
+                                                                <div>
+                                                                    <p className="text-[10px] uppercase font-bold text-muted-foreground italic">Current Role</p>
+                                                                    <p className="text-sm font-semibold">{staff.role}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-[10px] uppercase font-bold text-muted-foreground italic">Access Level</p>
+                                                                    <p className="text-sm font-semibold">{staff.access}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div className="space-y-2 border-t pt-4">
+                                                                <p className="text-[10px] uppercase font-bold text-muted-foreground italic">Recent Action</p>
+                                                                <p className="text-xs">Changed global tariff v2.4.1 (2 hours ago)</p>
+                                                            </div>
+                                                        </div>
+                                                    </DialogContent>
+                                                </Dialog>
+
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon">
+                                                            <MoreVertical className="h-4 w-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuLabel>Control Actions</DropdownMenuLabel>
+                                                        <DropdownMenuItem>
+                                                            <ShieldCheck className="mr-2 h-4 w-4" /> Change Role
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem>
+                                                            <ClipboardList className="mr-2 h-4 w-4" /> View Audit Logs
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem className="text-red-600">
+                                                            <ShieldAlert className="mr-2 h-4 w-4" /> Revoke Access
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))}

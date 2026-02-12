@@ -28,13 +28,22 @@ import {
 } from "@/components/ui/select"
 import { MoreHorizontal, Filter, Download } from "lucide-react"
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { AlertTriangle, UserPlus, XCircle, Info, MapPin, User, Truck, Clock, DollarSign } from "lucide-react"
+
 const orders = [
-    { id: "ORD-001", customer: "Rina S.", driver: "Budi Santoso", status: "Ongoing", date: "2023-10-27 10:30", amount: "Rp 15.000" },
-    { id: "ORD-002", customer: "Ahmad J.", driver: "Siti Aminah", status: "Ongoing", date: "2023-10-27 10:45", amount: "Rp 25.000" },
-    { id: "ORD-005", customer: "Sarah M.", driver: "Rudi H.", status: "Completed", date: "2023-10-27 09:15", amount: "Rp 12.000" },
-    { id: "ORD-006", customer: "Doni P.", driver: "Eko W.", status: "Cancelled", date: "2023-10-27 08:30", amount: "Rp 0" },
-    { id: "ORD-007", customer: "Lina K.", driver: "Agus T.", status: "Completed", date: "2023-10-27 08:10", amount: "Rp 18.000" },
-    { id: "ORD-008", customer: "Fajar S.", driver: "Budi Santoso", status: "Completed", date: "2023-10-26 18:45", amount: "Rp 20.000" },
+    { id: "ORD-001", customer: "Rina S.", driver: "Budi Santoso", status: "Ongoing", date: "2023-10-27 10:30", amount: "Rp 15.000", origin: "Sawojajar", dest: "Suhat", dist: "4.2km" },
+    { id: "ORD-002", customer: "Ahmad J.", driver: "Siti Aminah", status: "Ongoing", date: "2023-10-27 10:45", amount: "Rp 25.000", origin: "Dinoyo", dest: "Matos", dist: "2.5km" },
+    { id: "ORD-005", customer: "Sarah M.", driver: "Rudi H.", status: "Completed", date: "2023-10-27 09:15", amount: "Rp 12.000", origin: "Landungsari", dest: "UM", dist: "5.1km" },
+    { id: "ORD-006", customer: "Doni P.", driver: "Eko W.", status: "Cancelled", date: "2023-10-27 08:30", amount: "Rp 0", origin: "Arjosari", dest: "Stasiun", dist: "7.8km" },
+    { id: "ORD-007", customer: "Lina K.", driver: "Agus T.", status: "Completed", date: "2023-10-27 08:10", amount: "Rp 18.000", origin: "Gadang", dest: "Klayatan", dist: "1.8km" },
 ]
 
 export default function OrdersPage() {
@@ -45,7 +54,9 @@ export default function OrdersPage() {
                     <h1 className="text-3xl font-bold tracking-tight">Order Management</h1>
                     <p className="text-muted-foreground">Manage ongoing and past orders.</p>
                 </div>
-                <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Export Data</Button>
+                <div className="flex gap-2">
+                    <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Export Data</Button>
+                </div>
             </div>
 
             <div className="flex items-center justify-between gap-4">
@@ -62,9 +73,6 @@ export default function OrdersPage() {
                             <SelectItem value="cancelled">Cancelled</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="ghost" size="icon">
-                        <Filter className="h-4 w-4" />
-                    </Button>
                 </div>
             </div>
 
@@ -103,23 +111,83 @@ export default function OrdersPage() {
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                                <span className="sr-only">Open menu</span>
-                                                <MoreHorizontal className="h-4 w-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                            <DropdownMenuItem>View Details</DropdownMenuItem>
-                                            <DropdownMenuSeparator />
-                                            <DropdownMenuItem>View Chronology</DropdownMenuItem>
-                                            {order.status === "Ongoing" && (
-                                                <DropdownMenuItem className="text-red-600">Cancel Order</DropdownMenuItem>
-                                            )}
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    <div className="flex items-center justify-end gap-2">
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button variant="outline" size="sm" className="h-8">
+                                                    <Info className="h-3.5 w-3.5 mr-1" /> Detail
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="max-w-md">
+                                                <DialogHeader>
+                                                    <DialogTitle>Order Detail: {order.id}</DialogTitle>
+                                                    <DialogDescription>Full operational record.</DialogDescription>
+                                                </DialogHeader>
+                                                <div className="space-y-4 py-4">
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div className="space-y-1">
+                                                            <p className="text-[10px] uppercase text-muted-foreground font-bold italic">Customer</p>
+                                                            <div className="flex items-center gap-2">
+                                                                <User className="size-3 text-primary" />
+                                                                <p className="text-sm font-semibold">{order.customer}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <p className="text-[10px] uppercase text-muted-foreground font-bold italic">Driver</p>
+                                                            <div className="flex items-center gap-2">
+                                                                <Truck className="size-3 text-primary" />
+                                                                <p className="text-sm font-semibold">{order.driver}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-2 border-t pt-4">
+                                                        <div className="flex items-center gap-2">
+                                                            <MapPin className="size-3 text-red-500" />
+                                                            <p className="text-xs font-medium">{order.origin}</p>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <MapPin className="size-3 text-green-500" />
+                                                            <p className="text-xs font-medium">{order.dest}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-2 border-t pt-4">
+                                                        <div className="p-2 bg-secondary/50 rounded-lg text-center">
+                                                            <p className="text-[10px] text-muted-foreground">Distance</p>
+                                                            <p className="text-xs font-bold">{order.dist}</p>
+                                                        </div>
+                                                        <div className="p-2 bg-secondary/50 rounded-lg text-center">
+                                                            <p className="text-[10px] text-muted-foreground">Amount</p>
+                                                            <p className="text-xs font-bold">{order.amount}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </DialogContent>
+                                        </Dialog>
+
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                                    <MoreHorizontal className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuLabel>Operational Actions</DropdownMenuLabel>
+                                                <DropdownMenuItem>
+                                                    <UserPlus className="mr-2 h-4 w-4" />
+                                                    Reassign Driver
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem className="text-orange-600">
+                                                    <AlertTriangle className="mr-2 h-4 w-4" />
+                                                    Mark as Problematic
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem className="text-red-600">
+                                                    <XCircle className="mr-2 h-4 w-4" />
+                                                    Cancel Order
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}

@@ -26,6 +26,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import { Search, MoreHorizontal, MessageSquareWarning, ArrowRightCircle } from "lucide-react"
 
 const complaints = [
@@ -129,23 +137,49 @@ export default function ComplaintsPage() {
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                                <span className="sr-only">Open menu</span>
-                                                <MoreHorizontal className="h-4 w-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                            <DropdownMenuItem>Review Evidence</DropdownMenuItem>
-                                            <DropdownMenuItem>Make Decision</DropdownMenuItem>
-                                            <DropdownMenuSeparator />
-                                            <DropdownMenuItem className="text-orange-600">
-                                                <ArrowRightCircle className="mr-2 h-4 w-4" /> Escalate to Master
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    <div className="flex items-center justify-end gap-2">
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button variant="outline" size="sm" className="h-8">
+                                                    Review
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="max-w-md">
+                                                <DialogHeader>
+                                                    <DialogTitle>Dispute Decision: {complaint.id}</DialogTitle>
+                                                    <DialogDescription>Review evidence and issue a final operational decision.</DialogDescription>
+                                                </DialogHeader>
+                                                <div className="space-y-4 py-4">
+                                                    <div className="p-3 bg-secondary/50 rounded-lg text-sm border font-mono">
+                                                        "The driver was 15 minutes late and very rude when I asked why." - {complaint.from}
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <Button variant="outline" className="text-xs uppercase font-bold text-green-700">Valid Order</Button>
+                                                        <Button variant="outline" className="text-xs uppercase font-bold text-red-700">Invalid/Fraud</Button>
+                                                    </div>
+                                                    <Button className="w-full bg-orange-600 hover:bg-orange-700">Confirm Decision</Button>
+                                                </div>
+                                            </DialogContent>
+                                        </Dialog>
+
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                                    <MoreHorizontal className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                <DropdownMenuItem>Review Full Timeline</DropdownMenuItem>
+                                                <DropdownMenuItem>Contact User</DropdownMenuItem>
+                                                <DropdownMenuItem>Contact Driver</DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem className="text-orange-600 font-medium">
+                                                    <ArrowRightCircle className="mr-2 h-4 w-4" /> Escalate to Master
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}

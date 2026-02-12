@@ -58,7 +58,7 @@ export default function MasterDashboard() {
             </div>
 
             {/* High-Level Overview */}
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-4">
                 <Card className="border-l-4 border-l-primary">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Total Regional Revenue</CardTitle>
@@ -66,27 +66,41 @@ export default function MasterDashboard() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">Rp 124.5M</div>
-                        <p className="text-xs text-muted-foreground">+8.2% vs previous week</p>
+                        <p className="text-xs text-green-600 font-bold flex items-center">
+                            <TrendingUp className="size-3 mr-1" /> +8.2% <span className="text-muted-foreground font-normal ml-1">vs last mo</span>
+                        </p>
                     </CardContent>
                 </Card>
                 <Card className="border-l-4 border-l-blue-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Active Operation Zones</CardTitle>
+                        <CardTitle className="text-sm font-medium">Daily Active Orders</CardTitle>
                         <MapPin className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">12 Zones</div>
-                        <p className="text-xs text-muted-foreground">3 Region Capitals Active</p>
+                        <div className="text-2xl font-bold">1,284</div>
+                        <p className="text-xs text-green-600 font-bold flex items-center">
+                            <TrendingUp className="size-3 mr-1" /> +12% <span className="text-muted-foreground font-normal ml-1">growth</span>
+                        </p>
+                    </CardContent>
+                </Card>
+                <Card className="border-l-4 border-l-orange-500">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Regional Profit Margin</CardTitle>
+                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">18.5%</div>
+                        <p className="text-xs text-muted-foreground">Average across 12 zones</p>
                     </CardContent>
                 </Card>
                 <Card className="border-l-4 border-l-yellow-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">System Integrity</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">System Compliance</CardTitle>
+                        <ShieldAlert className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-green-600">99.98%</div>
-                        <p className="text-xs text-muted-foreground">No critical configuration errors</p>
+                        <div className="text-2xl font-bold text-green-600">99.9%</div>
+                        <p className="text-xs text-muted-foreground">Certified Nodes: 12/12</p>
                     </CardContent>
                 </Card>
             </div>

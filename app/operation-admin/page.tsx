@@ -139,6 +139,23 @@ export default function DashboardPage() {
 
         {/* Sidebar Content Area */}
         <div className="col-span-1 lg:col-span-3 flex flex-col gap-6">
+          {/* Quick Actions */}
+          <Card className="border-orange-200 bg-orange-50/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-bold uppercase tracking-wider text-orange-900">Quick Operations</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-2">
+              <Button variant="outline" className="h-auto py-3 px-2 flex flex-col gap-1 border-orange-200 hover:bg-orange-100 text-orange-800">
+                <Activity className="h-4 w-4" />
+                <span className="text-[10px] uppercase font-bold">Broadcast</span>
+              </Button>
+              <Button variant="outline" className="h-auto py-3 px-2 flex flex-col gap-1 border-orange-200 hover:bg-orange-100 text-orange-800">
+                <MapPin className="h-4 w-4" />
+                <span className="text-[10px] uppercase font-bold">Heatmap</span>
+              </Button>
+            </CardContent>
+          </Card>
+
           {/* Alerts & Notifications */}
           <Card>
             <CardHeader>
@@ -149,21 +166,24 @@ export default function DashboardPage() {
               <div className="flex items-start gap-4 rounded-lg border p-3 bg-red-50 dark:bg-red-950/20">
                 <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
                 <div className="grid gap-1">
-                  <p className="font-medium text-red-900 dark:text-red-200">Driver Unresponsive</p>
+                  <p className="font-medium text-red-900 dark:text-red-200">Emergency Signal</p>
                   <p className="text-sm text-red-800 dark:text-red-300">
-                    Driver "Budi Santoso" has been stationary for 15 mins.
+                    Driver "Agus T." triggered PANIC button.
                   </p>
-                  <Button size="sm" variant="destructive" className="w-fit mt-1">Check Location</Button>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="destructive" className="mt-1">Call Driver</Button>
+                    <Button size="sm" variant="outline" className="mt-1 bg-white">Track Now</Button>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-start gap-4 rounded-lg border p-3 bg-blue-50 dark:bg-blue-950/20">
-                <MessageSquareWarning className="h-5 w-5 text-blue-600 mt-0.5" />
+              <div className="flex items-start gap-4 rounded-lg border p-3 bg-orange-50 dark:bg-orange-950/20 border-orange-200">
+                <MessageSquareWarning className="h-5 w-5 text-orange-600 mt-0.5" />
                 <div className="grid  gap-1">
-                  <p className="font-medium text-blue-900 dark:text-blue-200">New Complaint</p>
-                  <p className="text-sm text-blue-800 dark:text-blue-300">
-                    User reported "Rude behavior" for Order #ORD-882.
+                  <p className="font-medium text-orange-900 dark:text-orange-200">High Demand Alert</p>
+                  <p className="text-sm text-orange-800 dark:text-orange-300">
+                    Sudden surge in "Malang Kota" area.
                   </p>
-                  <Button size="sm" variant="outline" className="w-fit mt-1 border-blue-200 hover:bg-blue-100 text-blue-700">View Ticket</Button>
+                  <Button size="sm" variant="outline" className="w-fit mt-1 border-orange-200 hover:bg-orange-100 text-orange-700">Adjust Payout</Button>
                 </div>
               </div>
             </CardContent>
@@ -172,26 +192,32 @@ export default function DashboardPage() {
           {/* Recent Activity */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Latest actions across the platform.</CardDescription>
+              <CardTitle>Fleet Statistics</CardTitle>
+              <CardDescription>Real-time vehicle status.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-8">
-                {[
-                  { user: "System", action: "Automatic payout processed", time: "2 mins ago" },
-                  { user: "Admin Aulia", action: "Verified Driver 'Agus T.'", time: "15 mins ago" },
-                  { user: "Admin Risma", action: "Resolved Ticket #TKT-003", time: "1 hour ago" },
-                  { user: "System", action: "Daily report generated", time: "3 hours ago" },
-                ].map((item, i) => (
-                  <div className="flex items-center" key={i}>
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium leading-none">{item.action}</p>
-                      <p className="text-xs text-muted-foreground">
-                        by {item.user} • {item.time}
-                      </p>
-                    </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="size-2 rounded-full bg-green-500" />
+                    <span>In-Trip</span>
                   </div>
-                ))}
+                  <span className="font-bold">12</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="size-2 rounded-full bg-yellow-500" />
+                    <span>Idle (Searching)</span>
+                  </div>
+                  <span className="font-bold">6</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="size-2 rounded-full bg-red-500" />
+                    <span>Out-of-Service</span>
+                  </div>
+                  <span className="font-bold">2</span>
+                </div>
               </div>
             </CardContent>
           </Card>

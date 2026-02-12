@@ -10,6 +10,8 @@ import {
     User,
     LogOut,
     Command,
+    Activity,
+    Map,
 } from "lucide-react"
 
 import {
@@ -61,6 +63,18 @@ const data = {
             title: "Complaints & Disputes",
             url: "/operation-admin/complaints",
             icon: <MessageSquareWarning className="size-4" />,
+            items: [],
+        },
+        {
+            title: "Activity Monitoring",
+            url: "/operation-admin/activity",
+            icon: <Activity className="size-4" />,
+            items: [],
+        },
+        {
+            title: "Real-time Map",
+            url: "/operation-admin/map",
+            icon: <Map className="size-4" />,
             items: [],
         },
     ],
