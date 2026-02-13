@@ -8,6 +8,9 @@ import {
     MoreVertical,
     ShieldAlert,
     Search,
+    UserMinus,
+    Key,
+    Lock,
 } from "lucide-react"
 
 import {
@@ -30,6 +33,14 @@ import {
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const team = [
     { name: "Goldi", role: "Manager Admin", access: "Full System", status: "Active", email: "goldi@cakli.com" },
@@ -44,11 +55,11 @@ export default function RoleManagement() {
         <div className="flex flex-col gap-6 p-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Access Control</h1>
-                    <p className="text-muted-foreground">Manage administrative roles and system permissions.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Access Control (IAM)</h1>
+                    <p className="text-muted-foreground">Manage administrative roles, system permissions, and revocations.</p>
                 </div>
                 <Button className="bg-primary hover:bg-primary/90">
-                    <UserPlus className="mr-2 h-4 w-4" /> New Admin Access
+                    <UserPlus className="mr-2 h-4 w-4" /> Add New Admin
                 </Button>
             </div>
 
@@ -66,11 +77,11 @@ export default function RoleManagement() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Staff</TableHead>
-                                    <TableHead>Role</TableHead>
+                                    <TableHead>Staff Identity</TableHead>
+                                    <TableHead>Assigned Role</TableHead>
                                     <TableHead>Access Level</TableHead>
                                     <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Action</TableHead>
+                                    <TableHead className="text-right">Manage</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -88,7 +99,7 @@ export default function RoleManagement() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <p className="text-sm font-medium">{staff.role}</p>
+                                            <Badge variant="outline" className="font-medium bg-secondary/50">{staff.role}</Badge>
                                         </TableCell>
                                         <TableCell>
                                             <p className="text-xs text-muted-foreground font-mono">{staff.access}</p>
@@ -99,9 +110,27 @@ export default function RoleManagement() {
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <Button variant="ghost" size="icon">
-                                                <MoreVertical className="h-4 w-4" />
-                                            </Button>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon">
+                                                        <MoreVertical className="h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuLabel>Account Actions</DropdownMenuLabel>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem>
+                                                        <Key className="mr-2 h-4 w-4" /> Change Role / Permissions
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem>
+                                                        <Lock className="mr-2 h-4 w-4" /> Reset MFA
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem className="text-red-600 font-medium">
+                                                        <UserMinus className="mr-2 h-4 w-4" /> Revoke Access
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -128,7 +157,7 @@ export default function RoleManagement() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle className="text-sm">Quick Permissions Matrix</CardTitle>
+                            <CardTitle className="text-sm">Privilege Matrix</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {[
@@ -137,12 +166,12 @@ export default function RoleManagement() {
                                 { role: "Master Admin", p: "Tariff Edit, Global Halt" },
                             ].map((row, i) => (
                                 <div key={i} className="space-y-1">
-                                    <p className="text-[10px] font-bold text-muted-foreground uppercase">{row.role}</p>
-                                    <p className="text-xs">{row.p}</p>
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase bg-muted w-fit px-1 rounded">{row.role}</p>
+                                    <p className="text-xs pl-1">{row.p}</p>
                                 </div>
                             ))}
                             <Separator />
-                            <Button variant="outline" size="sm" className="w-full text-xs">View Full Matrix <ArrowRight className="size-3 ml-2" /></Button>
+                            <Button variant="outline" size="sm" className="w-full text-xs">View Full Policy <ArrowRight className="size-3 ml-2" /></Button>
                         </CardContent>
                     </Card>
                 </div>

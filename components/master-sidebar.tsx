@@ -57,6 +57,11 @@ const data = {
             url: "/master-admin/audit",
             icon: <ClipboardList className="size-4" />,
         },
+        {
+            title: "Cross-Area Analytics",
+            url: "/master-admin/analytics",
+            icon: <TrendingDown className="size-4" />,
+        },
     ],
 }
 
