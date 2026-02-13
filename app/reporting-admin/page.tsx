@@ -45,7 +45,6 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
-import { KpiCard } from "@/components/kpi-card"
 
 const hourlyData = [
     { name: "06:00", orders: 12, revenue: 150000 },
