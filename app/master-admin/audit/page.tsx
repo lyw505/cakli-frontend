@@ -37,11 +37,11 @@ import {
 } from "@/components/ui/select"
 
 const logs = [
-    { id: "LOG-001", user: "Admin Goldi", action: "Tariff Update", target: "v2.4.1", timestamp: "2024-02-09 08:30:12", severity: "High" },
-    { id: "LOG-002", user: "Admin Aulia", action: "Role Assigned", target: "Dev_Team_1", timestamp: "2024-02-09 08:15:00", severity: "Medium" },
-    { id: "LOG-003", user: "Admin Risma", action: "Report Generated", target: "Monthly_Jan_24", timestamp: "2024-02-09 07:45:22", severity: "Low" },
-    { id: "LOG-004", user: "System", action: "Security Patch", target: "Node-S3", timestamp: "2024-02-09 04:00:01", severity: "Critical" },
-    { id: "LOG-005", user: "Admin Goldi", action: "Zone Shutdown", target: "Kepunjen_Sub", timestamp: "2024-02-08 23:10:45", severity: "Critical" },
+    { id: "LOG-001", user: "Admin Goldi", action: "Pembaruan Tarif", target: "v2.4.1", timestamp: "2024-02-09 08:30:12", severity: "High" },
+    { id: "LOG-002", user: "Admin Aulia", action: "Peran Ditugaskan", target: "Dev_Team_1", timestamp: "2024-02-09 08:15:00", severity: "Medium" },
+    { id: "LOG-003", user: "Admin Risma", action: "Laporan Dibuat", target: "Bulanan_Jan_24", timestamp: "2024-02-09 07:45:22", severity: "Low" },
+    { id: "LOG-004", user: "Sistem", action: "Patch Keamanan", target: "Node-S3", timestamp: "2024-02-09 04:00:01", severity: "Critical" },
+    { id: "LOG-005", user: "Admin Goldi", action: "Penutupan Zona", target: "Kepunjen_Sub", timestamp: "2024-02-08 23:10:45", severity: "Critical" },
 ]
 
 export default function AuditLog() {
@@ -49,12 +49,12 @@ export default function AuditLog() {
         <div className="flex flex-col gap-6 p-6 font-sans">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">System Audit Vault</h1>
-                    <p className="text-muted-foreground">Immutable record of all administrative actions and system events.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Brankas Audit Sistem</h1>
+                    <p className="text-muted-foreground">Catatan abadi dari semua tindakan administratif dan acara sistem.</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline">
-                        <Download className="mr-2 h-4 w-4" /> Export Audit Log (.csv)
+                        <Download className="mr-2 h-4 w-4" /> Ekspor Log Audit (.csv)
                     </Button>
                 </div>
             </div>
@@ -63,20 +63,20 @@ export default function AuditLog() {
                 <div className="flex flex-1 items-center gap-2 max-w-md">
                     <div className="relative w-full">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="Search by actor, action, or target..." className="pl-8 bg-background border-none shadow-sm" />
+                        <Input placeholder="Cari berdasarkan aktor, tindakan, atau target..." className="pl-8 bg-background border-none shadow-sm" />
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <Select defaultValue="all">
                         <SelectTrigger className="w-[180px] bg-background border-none shadow-sm">
-                            <SelectValue placeholder="Severity" />
+                            <SelectValue placeholder="Tingkat Keparahan" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Severities</SelectItem>
-                            <SelectItem value="low">Low</SelectItem>
-                            <SelectItem value="medium">Medium</SelectItem>
-                            <SelectItem value="high">High</SelectItem>
-                            <SelectItem value="critical">Critical</SelectItem>
+                            <SelectItem value="all">Semua Tingkat</SelectItem>
+                            <SelectItem value="low">Rendah</SelectItem>
+                            <SelectItem value="medium">Sedang</SelectItem>
+                            <SelectItem value="high">Tinggi</SelectItem>
+                            <SelectItem value="critical">Kritis</SelectItem>
                         </SelectContent>
                     </Select>
                     <Button variant="ghost" size="icon" className="bg-background shadow-sm hover:shadow-md transition-shadow">
@@ -91,12 +91,12 @@ export default function AuditLog() {
                         <TableHeader className="bg-muted/50">
                             <TableRow>
                                 <TableHead className="w-[100px] pl-6">ID</TableHead>
-                                <TableHead>Timestamp</TableHead>
-                                <TableHead>Actor (Who)</TableHead>
-                                <TableHead>Action (What)</TableHead>
+                                <TableHead>Stempel Waktu</TableHead>
+                                <TableHead>Aktor (Siapa)</TableHead>
+                                <TableHead>Tindakan (Apa)</TableHead>
                                 <TableHead>Target</TableHead>
-                                <TableHead>Severity</TableHead>
-                                <TableHead className="text-right pr-6">Trace</TableHead>
+                                <TableHead>Tingkat Keparahan</TableHead>
+                                <TableHead className="text-right pr-6">Jejak</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -133,15 +133,15 @@ export default function AuditLog() {
 
             <div className="p-8 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center text-center opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-default">
                 <AlertCircle className="size-8 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-bold">Encrypted Audit Chain Enabled</h3>
+                <h3 className="text-lg font-bold">Rantai Audit Terenkripsi Diaktifkan</h3>
                 <p className="text-sm text-muted-foreground max-w-md">
-                    All logs are signed with RSA-4096 and stored in a decentralized vault.
-                    Modification of these logs is cryptographically impossible.
+                    Semua log ditandatangani dengan RSA-4096 dan disimpan dalam brankas terdesentralisasi.
+                    Modifikasi log ini secara kriptografis tidak mungkin dilakukan.
                 </p>
             </div>
 
             <p className="text-[10px] text-muted-foreground italic text-center uppercase tracking-[0.2em] font-mono">
-                VAULT ENDPOINT: v2-pci-compliance-cluster7 • NODE: IND-JKT-04
+                TITIK AKHIR BRANKAS: v2-pci-compliance-cluster7 • NODE: IND-JKT-04
             </p>
         </div>
     )

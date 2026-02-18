@@ -35,17 +35,17 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 
 const cityComparisonData = [
-    { city: "Malang", orders: 4500, revenue: 85000000, cancelRate: 2.1 },
-    { city: "Surabaya", orders: 9200, revenue: 180000000, cancelRate: 4.5 },
-    { city: "Batu", orders: 2100, revenue: 42000000, cancelRate: 1.8 },
-    { city: "Sidoarjo", orders: 3400, revenue: 62000000, cancelRate: 3.2 },
+    { city: "Malang", orders: 4500, revenue: 85000000, cancelRate: 2.1, color: "#E04D04" }, // Cakli Orange
+    { city: "Surabaya", orders: 9200, revenue: 180000000, cancelRate: 4.5, color: "#3b82f6" }, // Blue-500
+    { city: "Batu", orders: 2100, revenue: 42000000, cancelRate: 1.8, color: "#22c55e" }, // Green-500
+    { city: "Sidoarjo", orders: 3400, revenue: 62000000, cancelRate: 3.2, color: "#8b5cf6" }, // Purple-500
 ]
 
 const revenueShareData = [
-    { name: "Surabaya", value: 55, color: "#3b82f6" },
-    { name: "Malang", value: 25, color: "hsl(var(--primary))" },
-    { name: "Batu", value: 12, color: "#f59e0b" },
-    { name: "Others", value: 8, color: "#64748b" },
+    { name: "Surabaya", value: 55, color: "#3b82f6" }, // Blue-500
+    { name: "Malang", value: 25, color: "#E04D04" }, // Cakli Orange
+    { name: "Batu", value: 12, color: "#22c55e" }, // Green-500
+    { name: "Others", value: 8, color: "#8b5cf6" }, // Purple-500
 ]
 
 export default function AnalyticsPage() {
@@ -53,61 +53,76 @@ export default function AnalyticsPage() {
         <div className="flex flex-col gap-6 p-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Cross-Area Analytics</h1>
-                    <p className="text-muted-foreground">Deep dive into comparative performance between operational cities.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Analisis Lintas Area</h1>
+                    <p className="text-muted-foreground">Analisis mendalam perbandingan performa antar kota operasional.</p>
                 </div>
-                <Button variant="outline"><Filter className="mr-2 h-4 w-4" /> Regional Filter</Button>
+                <Button variant="outline"><Filter className="mr-2 h-4 w-4" /> Filter Regional</Button>
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">High Performance Area</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex justify-between items-end">
-                            <div>
-                                <h3 className="text-2xl font-bold italic">SURABAYA</h3>
-                                <p className="text-xs text-green-600 font-bold flex items-center">
-                                    <ArrowUpRight className="size-3 mr-1" /> +15.4% YoY Growth
-                                </p>
-                            </div>
-                            <Globe className="size-8 text-blue-500 opacity-20" />
+                <Card className="overflow-hidden">
+                    <div className="flex items-stretch h-full">
+                        <div className="w-1.5 bg-cakli-orange rounded-full my-4 ml-4 shrink-0" />
+                        <div className="flex-1">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm">Area Performa Tinggi</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex justify-between items-end">
+                                    <div>
+                                        <h3 className="text-2xl font-bold">SURABAYA</h3>
+                                        <p className="text-xs text-cakli-green font-bold flex items-center">
+                                            <ArrowUpRight className="size-3 mr-1" /> +15.4% Pertumbuhan YoY
+                                        </p>
+                                    </div>
+                                    <Globe className="size-8 text-orange-500 opacity-20" />
+                                </div>
+                            </CardContent>
                         </div>
-                    </CardContent>
+                    </div>
                 </Card>
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">Low Cancel Rate Area</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex justify-between items-end">
-                            <div>
-                                <h3 className="text-2xl font-bold italic">BATU</h3>
-                                <p className="text-xs text-green-600 font-bold flex items-center">
-                                    <ArrowDownRight className="size-3 mr-1" /> 1.8% Minimum
-                                </p>
-                            </div>
-                            <Map className="size-8 text-orange-500 opacity-20" />
+                <Card className="overflow-hidden">
+                    <div className="flex items-stretch h-full">
+                        <div className="w-1.5 bg-cakli-orange rounded-full my-4 ml-4 shrink-0" />
+                        <div className="flex-1">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm">Area Tingkat Pembatalan Rendah</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex justify-between items-end">
+                                    <div>
+                                        <h3 className="text-2xl font-bold">BATU</h3>
+                                        <p className="text-xs text-cakli-green font-bold flex items-center">
+                                            <ArrowDownRight className="size-3 mr-1" /> 1.8% Minimum
+                                        </p>
+                                    </div>
+                                    <Map className="size-8 text-orange-500 opacity-20" />
+                                </div>
+                            </CardContent>
                         </div>
-                    </CardContent>
+                    </div>
                 </Card>
-                <Card className="bg-primary text-primary-foreground">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm opacity-80 uppercase tracking-widest">Global Market Leader</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold italic">EAST JAVA HUB</div>
-                        <p className="text-xs opacity-70">Dominating 82% of regional traffic</p>
-                    </CardContent>
+                <Card className="overflow-hidden">
+                    <div className="flex items-stretch h-full">
+                        <div className="w-1.5 bg-cakli-orange rounded-full my-4 ml-4 shrink-0" />
+                        <div className="flex-1">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm">Pemimpin Pasar Global</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">HUB JAWA TIMUR</div>
+                                <p className="text-xs opacity-70">Mendominasi 82% lalu lintas regional</p>
+                            </CardContent>
+                        </div>
+                    </div>
                 </Card>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-2">
                 <Card>
                     <CardHeader>
-                        <CardTitle>City Order & Revenue Comparison</CardTitle>
-                        <CardDescription>Volume and financial scale per area.</CardDescription>
+                        <CardTitle>Perbandingan Pesanan & Pendapatan Kota</CardTitle>
+                        <CardDescription>Volume dan skala finansial per area.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="h-[300px]">
@@ -118,8 +133,12 @@ export default function AnalyticsPage() {
                                     <YAxis fontSize={12} tickLine={false} axisLine={false} />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="orders" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                                    <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} hide />
+                                    <Bar dataKey="orders" radius={[4, 4, 0, 0]}>
+                                        {cityComparisonData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Bar>
+                                    <Bar dataKey="revenue" fill="#E04D04" radius={[4, 4, 0, 0]} hide />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
@@ -128,8 +147,8 @@ export default function AnalyticsPage() {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Regional Revenue Share</CardTitle>
-                        <CardDescription>Market distribution among cities.</CardDescription>
+                        <CardTitle>Pangsa Pendapatan Regional</CardTitle>
+                        <CardDescription>Distribusi pasar antar kota.</CardDescription>
                     </CardHeader>
                     <CardContent className="flex items-center justify-center h-[300px]">
                         <ResponsiveContainer width="100%" height="100%">
@@ -157,16 +176,16 @@ export default function AnalyticsPage() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Efficiency & Cancel Rate by Area</CardTitle>
-                    <CardDescription>Operational quality tracking.</CardDescription>
+                    <CardTitle>Efisiensi & Tingkat Pembatalan per Area</CardTitle>
+                    <CardDescription>Pelacakan kualitas operasional.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     {cityComparisonData.map((city) => (
                         <div key={city.city} className="space-y-2">
                             <div className="flex items-center justify-between text-sm">
                                 <span className="font-medium">{city.city}</span>
-                                <span className={city.cancelRate > 4 ? "text-red-500 font-bold" : "text-muted-foreground"}>
-                                    {city.cancelRate}% Cancel Rate
+                                <span className={city.cancelRate > 4 ? "text-orange-500 font-bold" : "text-muted-foreground"}>
+                                    {city.cancelRate}% Tingkat Pembatalan
                                 </span>
                             </div>
                             <Progress value={city.cancelRate * 10} className="h-2" />

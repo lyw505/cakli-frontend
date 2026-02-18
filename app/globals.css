@@ -45,6 +45,9 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --color-cakli-orange: #E04D04;
+  --color-cakli-red: #E7000B;
+  --color-cakli-green: #00A63E;
 }
 
 :root {

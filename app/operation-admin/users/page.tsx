@@ -114,11 +114,11 @@ export default function UsersPage() {
                                             </DropdownMenuItem>
                                             <DropdownMenuSeparator />
                                             {user.status === "Active" ? (
-                                                <DropdownMenuItem className="text-red-600">
+                                                <DropdownMenuItem className="text-orange-900">
                                                     <UserX className="mr-2 h-4 w-4" /> Suspend User
                                                 </DropdownMenuItem>
                                             ) : (
-                                                <DropdownMenuItem className="text-green-600">
+                                                <DropdownMenuItem className="text-orange-600">
                                                     <UserCheck className="mr-2 h-4 w-4" /> Reactivate User
                                                 </DropdownMenuItem>
                                             )}

@@ -57,7 +57,7 @@ export default function MapPage() {
                             <Truck className="w-3 h-3 mr-2" />
                             12 Active Becak
                         </Badge>
-                        <Badge variant="secondary" className="bg-white/90 backdrop-blur shadow-sm border-red-200 text-red-700">
+                        <Badge variant="secondary" className="bg-white/90 backdrop-blur shadow-sm border-orange-200 text-orange-700">
                             <AlertCircle className="w-3 h-3 mr-2" />
                             2 Problematic Orders
                         </Badge>
@@ -81,15 +81,15 @@ export default function MapPage() {
                         <CardContent className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm font-medium">Malang Kota</span>
-                                <Badge className="bg-red-500">Very High</Badge>
+                                <Badge className="bg-orange-800">Very High</Badge>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm font-medium">Suhat</span>
-                                <Badge className="bg-orange-500">High</Badge>
+                                <Badge className="bg-orange-600">High</Badge>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm font-medium">Sawojajar</span>
-                                <Badge className="bg-yellow-500">Moderate</Badge>
+                                <Badge className="bg-orange-400">Moderate</Badge>
                             </div>
                         </CardContent>
                     </Card>
@@ -106,7 +106,7 @@ export default function MapPage() {
                             ].map((d, i) => (
                                 <div key={i} className="flex items-center justify-between p-2 rounded-md hover:bg-slate-50 transition-colors">
                                     <div className="flex items-center gap-2">
-                                        <div className={`size-2 rounded-full ${d.status === 'Active' ? 'bg-green-500' : 'bg-slate-300'}`} />
+                                        <div className={`size-2 rounded-full ${d.status === 'Active' ? 'bg-orange-500' : 'bg-slate-300'}`} />
                                         <span className="text-xs font-semibold">{d.name}</span>
                                     </div>
                                     <span className="text-[10px] text-muted-foreground">{d.dist}</span>

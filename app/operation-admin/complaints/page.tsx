@@ -154,8 +154,8 @@ export default function ComplaintsPage() {
                                                         "The driver was 15 minutes late and very rude when I asked why." - {complaint.from}
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-2">
-                                                        <Button variant="outline" className="text-xs uppercase font-bold text-green-700">Valid Order</Button>
-                                                        <Button variant="outline" className="text-xs uppercase font-bold text-red-700">Invalid/Fraud</Button>
+                                                        <Button variant="outline" className="text-xs uppercase font-bold text-orange-900">Valid Order</Button>
+                                                        <Button variant="outline" className="text-xs uppercase font-bold text-orange-700">Invalid/Fraud</Button>
                                                     </div>
                                                     <Button className="w-full bg-orange-600 hover:bg-orange-700">Confirm Decision</Button>
                                                 </div>

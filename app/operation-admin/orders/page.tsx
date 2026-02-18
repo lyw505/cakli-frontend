@@ -181,7 +181,7 @@ export default function OrdersPage() {
                                                     Mark as Problematic
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
-                                                <DropdownMenuItem className="text-red-600">
+                                                <DropdownMenuItem className="text-orange-900">
                                                     <XCircle className="mr-2 h-4 w-4" />
                                                     Cancel Order
                                                 </DropdownMenuItem>

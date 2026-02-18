@@ -30,7 +30,7 @@ export default function MasterAdminLayout({
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator className="hidden md:block" />
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>Configuration & Control</BreadcrumbPage>
+                                    <BreadcrumbPage>Konfigurasi & Kontrol</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>

@@ -27,7 +27,7 @@ export default function DashboardPage() {
           <p className="text-muted-foreground">Overview of current system status and activities.</p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-green-600 border-green-600 bg-green-50 dark:bg-green-950/20 px-3 py-1">
+          <Badge variant="outline" className="text-orange-700 border-orange-200 bg-orange-50 dark:bg-orange-950/20 px-3 py-1">
             <Activity className="w-3 h-3 mr-2" />
             System Normal
           </Badge>
@@ -44,7 +44,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">24</div>
-            <div className="flex items-center text-xs text-green-600">
+            <div className="flex items-center text-xs text-orange-600">
               <ArrowUpRight className="h-3 w-3 mr-1" />
               +2 from last hour
             </div>
@@ -63,11 +63,11 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Complaints</CardTitle>
-            <AlertCircle className="h-4 w-4 text-red-500" />
+            <AlertCircle className="h-4 w-4 text-orange-700" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-500">3</div>
-            <div className="flex items-center text-xs text-red-600">
+            <div className="text-2xl font-bold text-orange-700">3</div>
+            <div className="flex items-center text-xs text-orange-600">
               <ArrowUpRight className="h-3 w-3 mr-1" />
               +1 from yesterday
             </div>
@@ -76,11 +76,11 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Daily Revenue</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-green-500" />
+            <CheckCircle2 className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Rp 2.4M</div>
-            <div className="flex items-center text-xs text-green-600">
+            <div className="flex items-center text-xs text-orange-600">
               <ArrowUpRight className="h-3 w-3 mr-1" />
               +12% from yesterday
             </div>
@@ -163,16 +163,16 @@ export default function DashboardPage() {
               <CardDescription>Critical updates needing attention.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-start gap-4 rounded-lg border p-3 bg-red-50 dark:bg-red-950/20">
-                <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
+              <div className="flex items-start gap-4 rounded-lg border p-3 bg-orange-50 dark:bg-orange-950/20 border-orange-200">
+                <AlertCircle className="h-5 w-5 text-orange-700 mt-0.5" />
                 <div className="grid gap-1">
-                  <p className="font-medium text-red-900 dark:text-red-200">Emergency Signal</p>
-                  <p className="text-sm text-red-800 dark:text-red-300">
+                  <p className="font-medium text-orange-900 dark:text-orange-200">Emergency Signal</p>
+                  <p className="text-sm text-orange-800 dark:text-orange-300">
                     Driver "Agus T." triggered PANIC button.
                   </p>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="destructive" className="mt-1">Call Driver</Button>
-                    <Button size="sm" variant="outline" className="mt-1 bg-white">Track Now</Button>
+                    <Button size="sm" className="mt-1 bg-orange-700 hover:bg-orange-800 text-white border-none">Call Driver</Button>
+                    <Button size="sm" variant="outline" className="mt-1 bg-white border-orange-200 text-orange-700 hover:bg-orange-50">Track Now</Button>
                   </div>
                 </div>
               </div>
@@ -199,21 +199,21 @@ export default function DashboardPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
-                    <div className="size-2 rounded-full bg-green-500" />
+                    <div className="size-2 rounded-full bg-orange-600" />
                     <span>In-Trip</span>
                   </div>
                   <span className="font-bold">12</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
-                    <div className="size-2 rounded-full bg-yellow-500" />
+                    <div className="size-2 rounded-full bg-orange-300" />
                     <span>Idle (Searching)</span>
                   </div>
                   <span className="font-bold">6</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
-                    <div className="size-2 rounded-full bg-red-500" />
+                    <div className="size-2 rounded-full bg-stone-400" />
                     <span>Out-of-Service</span>
                   </div>
                   <span className="font-bold">2</span>

@@ -126,17 +126,17 @@ export default function DriversPage() {
                                                 <FileText className="mr-2 h-4 w-4" />
                                                 Vehicle Details
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem className="text-green-600">
+                                            <DropdownMenuItem className="text-orange-600">
                                                 <ShieldCheck className="mr-2 h-4 w-4" />
                                                 Verify Driver
                                             </DropdownMenuItem>
                                             <DropdownMenuSeparator />
                                             {driver.status === "Suspended" ? (
-                                                <DropdownMenuItem className="text-green-600">
+                                                <DropdownMenuItem className="text-orange-600">
                                                     <UserCheck className="mr-2 h-4 w-4" /> Reinstate Driver
                                                 </DropdownMenuItem>
                                             ) : (
-                                                <DropdownMenuItem className="text-red-600">
+                                                <DropdownMenuItem className="text-orange-900">
                                                     <UserX className="mr-2 h-4 w-4" /> Suspend Driver
                                                 </DropdownMenuItem>
                                             )}
