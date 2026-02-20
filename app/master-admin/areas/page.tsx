@@ -129,7 +129,7 @@ export default function AreaManagement() {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold flex items-center gap-2">
-                                    SEMUA REGION OP
+                                    Semua Region Aktif
                                 </div>
                                 <p className="text-xs mt-2 opacity-70">Latensi: 12ms | Klaster: SEA-CENTRAL</p>
                             </CardContent>
@@ -145,7 +145,7 @@ export default function AreaManagement() {
                             </CardHeader>
                             <CardContent className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-2xl font-bold">MINGGU</p>
+                                    <p className="text-2xl font-bold">Minggu</p>
                                     <p className="text-xs text-muted-foreground">02:00 WIB - 03:00 WIB</p>
                                 </div>
                             </CardContent>

@@ -11,6 +11,7 @@ import {
     TrendingDown,
     TrendingUp,
     BarChart3,
+    UserCheck,
 } from "lucide-react"
 
 import {
@@ -57,6 +58,11 @@ const data = {
             title: "Log Audit",
             url: "/master-admin/audit",
             icon: <ClipboardList className="size-4" />,
+        },
+        {
+            title: "Kebijakan Mitra",
+            url: "/master-admin/partners",
+            icon: <UserCheck className="size-4" />,
         },
         {
             title: "Analisis Lintas Area",
