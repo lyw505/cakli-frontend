@@ -32,6 +32,7 @@ const adminNavigation = {
     },
     items: [
       { title: "Dashboard", url: "/reporting-admin", icon: Home, exact: true },
+      { title: "Analytics", url: "/reporting-admin/analytics", icon: TrendingUp },
       { title: "Pendapatan", url: "/reporting-admin/reports/revenue", icon: Zap },
       { title: "Order History", url: "/reporting-admin/history", icon: History },
       { title: "Driver Performance", url: "/reporting-admin/reports/driver-performance", icon: FileText },
