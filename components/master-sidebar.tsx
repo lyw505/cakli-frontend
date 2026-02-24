@@ -50,7 +50,7 @@ const data = {
             icon: <Map className="size-4" />,
         },
         {
-            title: "Peran Admin",
+            title: "Akses Admin",
             url: "/master-admin/roles",
             icon: <ShieldCheck className="size-4" />,
         },
@@ -63,11 +63,6 @@ const data = {
             title: "Kebijakan Mitra",
             url: "/master-admin/partners",
             icon: <UserCheck className="size-4" />,
-        },
-        {
-            title: "Analisis Lintas Area",
-            url: "/master-admin/analytics",
-            icon: <BarChart3 className="size-4" />,
         },
     ],
 }

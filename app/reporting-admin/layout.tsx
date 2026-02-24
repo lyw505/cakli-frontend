@@ -26,11 +26,11 @@ export default function ReportingAdminLayout({
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href="#">Reporting Admin</BreadcrumbLink>
+                                    <BreadcrumbLink href="#">Admin Pelaporan</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator className="hidden md:block" />
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>Analytics</BreadcrumbPage>
+                                    <BreadcrumbPage>Analisis</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>

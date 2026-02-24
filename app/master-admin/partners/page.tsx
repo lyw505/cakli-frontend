@@ -173,7 +173,7 @@ export default function PartnerPolicyManagement() {
                             </div>
                         </div>
                         <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200">
-                            <h4 className="text-sm font-bold text-blue-900 border-b border-blue-200 pb-2 mb-2 italic">Standard Operasional Kelistrikan</h4>
+                            <h4 className="text-sm font-bold text-blue-900 border-b border-blue-200 pb-2 mb-2">Standard Operasional Kelistrikan</h4>
                             <ul className="text-xs space-y-2 text-blue-800 list-disc pl-4">
                                 <li>Wajib melakukan pemeriksaan daya setiap 30 hari.</li>
                                 <li>Modifikasi motor penggerak tanpa izin akan mengakibatkan pemutusan kontrak.</li>
@@ -203,10 +203,10 @@ export default function PartnerPolicyManagement() {
                         </TableHeader>
                         <TableBody>
                             {[
-                                { name: "KTP (Kartu Tanda Penduduk)", type: "OCR & Matching", expiry: "Seumur Hidup", required: "Ya" },
-                                { name: "SIM (Surat Izin Mengemudi)", type: "Manual Review", expiry: "5 Tahun", required: "Ya" },
-                                { name: "SKCK (Surat Keterangan Catatan Kepolisian)", type: "Manual Review", expiry: "6 Bulan", required: "Ya" },
-                                { name: "Sertifikasi Safety Driving Cakli", type: "Digital Certificate", expiry: "2 Tahun", required: "Ya" },
+                                { name: "KTP (Kartu Tanda Penduduk)", type: "OCR & Pencocokan", expiry: "Seumur Hidup", required: "Ya" },
+                                { name: "SIM (Surat Izin Mengemudi)", type: "Peninjauan Manual", expiry: "5 Tahun", required: "Ya" },
+                                { name: "SKCK (Surat Keterangan Catatan Kepolisian)", type: "Peninjauan Manual", expiry: "6 Bulan", required: "Ya" },
+                                { name: "Sertifikasi Safety Driving Cakli", type: "Sertifikat Digital", expiry: "2 Tahun", required: "Ya" },
                             ].map((row) => (
                                 <TableRow key={row.name}>
                                     <TableCell className="font-medium text-sm">{row.name}</TableCell>
@@ -215,7 +215,7 @@ export default function PartnerPolicyManagement() {
                                     </TableCell>
                                     <TableCell className="text-sm">{row.expiry}</TableCell>
                                     <TableCell>
-                                        <Badge className="bg-green-600">MANDATORY</Badge>
+                                        <Badge className="bg-green-600">WAJIB</Badge>
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="sm">Ubah Aturan</Button>

@@ -46,31 +46,38 @@ const orders = [
     { id: "ORD-007", customer: "Lina K.", driver: "Agus T.", status: "Completed", date: "2023-10-27 08:10", amount: "Rp 18.000", origin: "Gadang", dest: "Klayatan", dist: "1.8km" },
 ]
 
+function translateStatus(status: string) {
+    if (status === "Ongoing") return "Berlangsung"
+    if (status === "Completed") return "Selesai"
+    if (status === "Cancelled") return "Dibatalkan"
+    return status
+}
+
 export default function OrdersPage() {
     return (
         <div className="flex flex-col gap-6 p-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Order Management</h1>
-                    <p className="text-muted-foreground">Manage ongoing and past orders.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Manajemen Pesanan</h1>
+                    <p className="text-muted-foreground">Kelola pesanan yang sedang berlangsung dan yang sudah lewat.</p>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Export Data</Button>
+                    <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Ekspor Data</Button>
                 </div>
             </div>
 
             <div className="flex items-center justify-between gap-4">
                 <div className="flex flex-1 items-center gap-2">
-                    <Input placeholder="Search orders..." className="max-w-[300px]" />
+                    <Input placeholder="Cari pesanan..." className="max-w-[300px]" />
                     <Select defaultValue="all">
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Status</SelectItem>
-                            <SelectItem value="ongoing">Ongoing</SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
-                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                            <SelectItem value="all">Semua Status</SelectItem>
+                            <SelectItem value="ongoing">Berlangsung</SelectItem>
+                            <SelectItem value="completed">Selesai</SelectItem>
+                            <SelectItem value="cancelled">Dibatalkan</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -80,13 +87,13 @@ export default function OrdersPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Order ID</TableHead>
-                            <TableHead>Customer</TableHead>
+                            <TableHead>ID Pesanan</TableHead>
+                            <TableHead>Pelanggan</TableHead>
                             <TableHead>Driver</TableHead>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Amount</TableHead>
+                            <TableHead>Tanggal</TableHead>
+                            <TableHead>Biaya</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead className="text-right">Aksi</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -107,7 +114,7 @@ export default function OrdersPage() {
                                                     : "destructive"
                                         }
                                     >
-                                        {order.status}
+                                        {translateStatus(order.status)}
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="text-right">
@@ -120,20 +127,20 @@ export default function OrdersPage() {
                                             </DialogTrigger>
                                             <DialogContent className="max-w-md">
                                                 <DialogHeader>
-                                                    <DialogTitle>Order Detail: {order.id}</DialogTitle>
-                                                    <DialogDescription>Full operational record.</DialogDescription>
+                                                    <DialogTitle>Detail Pesanan: {order.id}</DialogTitle>
+                                                    <DialogDescription>Catatan operasional lengkap.</DialogDescription>
                                                 </DialogHeader>
                                                 <div className="space-y-4 py-4">
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div className="space-y-1">
-                                                            <p className="text-[10px] uppercase text-muted-foreground font-bold italic">Customer</p>
+                                                            <p className="text-[10px] uppercase text-muted-foreground font-bold">Pelanggan</p>
                                                             <div className="flex items-center gap-2">
                                                                 <User className="size-3 text-primary" />
                                                                 <p className="text-sm font-semibold">{order.customer}</p>
                                                             </div>
                                                         </div>
                                                         <div className="space-y-1">
-                                                            <p className="text-[10px] uppercase text-muted-foreground font-bold italic">Driver</p>
+                                                            <p className="text-[10px] uppercase text-muted-foreground font-bold">Driver</p>
                                                             <div className="flex items-center gap-2">
                                                                 <Truck className="size-3 text-primary" />
                                                                 <p className="text-sm font-semibold">{order.driver}</p>
@@ -152,11 +159,11 @@ export default function OrdersPage() {
                                                     </div>
                                                     <div className="grid grid-cols-2 gap-2 border-t pt-4">
                                                         <div className="p-2 bg-secondary/50 rounded-lg text-center">
-                                                            <p className="text-[10px] text-muted-foreground">Distance</p>
+                                                            <p className="text-[10px] text-muted-foreground">Jarak</p>
                                                             <p className="text-xs font-bold">{order.dist}</p>
                                                         </div>
                                                         <div className="p-2 bg-secondary/50 rounded-lg text-center">
-                                                            <p className="text-[10px] text-muted-foreground">Amount</p>
+                                                            <p className="text-[10px] text-muted-foreground">Biaya</p>
                                                             <p className="text-xs font-bold">{order.amount}</p>
                                                         </div>
                                                     </div>
@@ -171,19 +178,19 @@ export default function OrdersPage() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuLabel>Operational Actions</DropdownMenuLabel>
+                                                <DropdownMenuLabel>Aksi Operasional</DropdownMenuLabel>
                                                 <DropdownMenuItem>
                                                     <UserPlus className="mr-2 h-4 w-4" />
-                                                    Reassign Driver
+                                                    Tugaskan Ulang Driver
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem className="text-orange-600">
                                                     <AlertTriangle className="mr-2 h-4 w-4" />
-                                                    Mark as Problematic
+                                                    Tandai sebagai Bermasalah
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
                                                 <DropdownMenuItem className="text-orange-900">
                                                     <XCircle className="mr-2 h-4 w-4" />
-                                                    Cancel Order
+                                                    Batalkan Pesanan
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>

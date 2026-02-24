@@ -22,6 +22,8 @@ import {
     DollarSign,
     Zap,
     AlertCircle,
+    Search,
+    Filter,
 } from "lucide-react"
 
 import {
@@ -92,6 +94,11 @@ export default function TariffManagement() {
     const [reviewOpen, setReviewOpen] = React.useState(false)
     const [scheduleMode, setScheduleMode] = React.useState("now")
     const [rollbackTarget, setRollbackTarget] = React.useState<string | null>(null)
+    const [search, setSearch] = React.useState("")
+
+    const filteredZones = ZONE_DATA.filter(z =>
+        z.zone.toLowerCase().includes(search.toLowerCase())
+    )
 
     const resetReview = () => { setReviewStep(1); setReviewReason("") }
 
@@ -122,7 +129,7 @@ export default function TariffManagement() {
                                         </DialogHeader>
                                         <div className="space-y-3 my-4">
                                             <div className="rounded-lg border p-3 space-y-2">
-                                                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Before → After</p>
+                                                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Sebelum → Sesudah</p>
                                                 {[
                                                     { label: "Tarif Dasar/KM", before: "Rp 2.400", after: "Rp 2.500" },
                                                     { label: "Tarif Minimum", before: "Rp 10.000", after: "Rp 12.000" },
@@ -190,21 +197,6 @@ export default function TariffManagement() {
                         </Dialog>
                     </div>
 
-                    {/* REV 9: Impact Summary Header */}
-                    <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="outline" className="gap-1.5 py-1 px-2.5 text-xs border-green-300 text-green-700 bg-green-50">
-                            <TrendingUp className="size-3" /> +4.5% gross revenue
-                        </Badge>
-                        <Badge variant="outline" className="gap-1.5 py-1 px-2.5 text-xs border-blue-300 text-blue-700 bg-blue-50">
-                            <Percent className="size-3" /> +2.1% margin
-                        </Badge>
-                        <Badge variant="outline" className="gap-1.5 py-1 px-2.5 text-xs border-purple-300 text-purple-700 bg-purple-50">
-                            <DollarSign className="size-3" /> +0.8% driver payout
-                        </Badge>
-                        <Badge variant="outline" className="gap-1.5 py-1 px-2.5 text-xs border-orange-300 text-orange-700 bg-orange-50">
-                            <AlertCircle className="size-3" /> 3 zona terdampak signifikan
-                        </Badge>
-                    </div>
                 </div>
 
                 <Tabs defaultValue="active" className="w-full">
@@ -276,7 +268,7 @@ export default function TariffManagement() {
 
                                     {/* REV 12: Average Trip Value */}
                                     <div className="flex justify-between items-center p-2.5 rounded-md border">
-                                        <span className="text-xs text-muted-foreground">Average Trip Value</span>
+                                        <span className="text-xs text-muted-foreground">Nilai Perjalanan Rata-rata</span>
                                         <div className="flex items-center gap-1.5 text-xs">
                                             <span className="text-red-400">Rp 28.200</span>
                                             <ArrowRight className="size-3 text-muted-foreground" />
@@ -287,11 +279,11 @@ export default function TariffManagement() {
                                     {/* REV 2: Expanded metrics */}
                                     <div className="space-y-2">
                                         {[
-                                            { label: "Dampak ke Driver Payout", value: "+0.8%", color: "text-green-600" },
+                                            { label: "Dampak ke Pembayaran Driver", value: "+0.8%", color: "text-green-600" },
                                             { label: "Perubahan Take Rate Platform", value: "20% → 20.4%", color: "text-blue-600" },
                                             { label: "Estimasi Perubahan Margin", value: "+2.1%", color: "text-green-600" },
                                             { label: "Zona Paling Terdampak", value: "Batu, Kepanjen, Lahar Semeru", color: "text-black" },
-                                            { label: "Estimasi Risiko Cancel Meningkat", value: "+1.2%", color: "text-red-500" },
+                                            { label: "Estimasi Risiko Batal Meningkat", value: "+1.2%", color: "text-red-500" },
                                         ].map(item => (
                                             <div key={item.label} className="flex justify-between items-center text-xs border-b pb-1.5 last:border-0 last:pb-0">
                                                 <span className="text-muted-foreground">{item.label}</span>
@@ -309,26 +301,26 @@ export default function TariffManagement() {
                             <Card>
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-sm flex items-center gap-1.5">
-                                        <DollarSign className="size-3.5 text-cakli-orange" /> Fee Split & Margin
+                                        <DollarSign className="size-3.5 text-cakli-orange" /> Pembagian Biaya & Margin
                                     </CardTitle>
                                     <CardDescription className="text-xs">Pembagian biaya per perjalanan antara platform dan driver.</CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-3">
                                     <div className="grid gap-3">
                                         <div className="grid gap-1.5">
-                                            <Label className="text-xs">Platform Fee (%)</Label>
+                                            <Label className="text-xs">Biaya Platform (%)</Label>
                                             <Input defaultValue="20" type="number" className="h-8 text-xs" />
                                         </div>
                                         <div className="grid gap-1.5">
-                                            <Label className="text-xs">Driver Payout (%)</Label>
+                                            <Label className="text-xs">Pembayaran Driver (%)</Label>
                                             <Input defaultValue="80" type="number" className="h-8 text-xs" />
                                         </div>
                                         <div className="grid gap-1.5">
-                                            <Label className="text-xs">Net Margin per Trip</Label>
+                                            <Label className="text-xs">Margin Bersih per Perjalanan</Label>
                                             <div className="flex items-center gap-2">
                                                 <span className="text-muted-foreground text-xs font-semibold">Rp</span>
                                                 <Input defaultValue="5650" type="number" className="h-8 text-xs" readOnly />
-                                                <Badge variant="secondary" className="text-[10px] h-5 shrink-0">Auto-calc</Badge>
+                                                <Badge variant="secondary" className="text-[10px] h-5 shrink-0">Kalkulasi Otomatis</Badge>
                                             </div>
                                         </div>
                                     </div>
@@ -339,7 +331,7 @@ export default function TariffManagement() {
                             <Card className="border-red-200 dark:border-red-900">
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-sm flex items-center gap-1.5">
-                                        <ShieldAlert className="size-3.5 text-red-500" /> Guardrail / Threshold Warning
+                                        <ShieldAlert className="size-3.5 text-red-500" /> Pengaman / Peringatan Batas
                                     </CardTitle>
                                     <CardDescription className="text-xs">Peringatan otomatis jika perubahan melebihi ambang batas aman.</CardDescription>
                                 </CardHeader>
@@ -357,11 +349,11 @@ export default function TariffManagement() {
                                             <span className="font-bold text-red-500">+3.2% pengguna</span>
                                         </div>
                                         <div className="flex justify-between text-xs">
-                                            <span className="text-muted-foreground">Estimasi Kenaikan Cancel Rate</span>
+                                            <span className="text-muted-foreground">Estimasi Kenaikan Tkt Batal</span>
                                             <span className="font-bold text-red-500">+1.8% pesanan</span>
                                         </div>
                                         <div className="flex justify-between text-xs">
-                                            <span className="text-muted-foreground">Threshold Perubahan</span>
+                                            <span className="text-muted-foreground">Ambang Batas Perubahan</span>
                                             <div className="flex items-center gap-1.5">
                                                 <Input defaultValue="10" type="number" className="w-14 h-6 text-[10px] text-center" />
                                                 <span className="text-[10px] text-muted-foreground">%</span>
@@ -372,98 +364,41 @@ export default function TariffManagement() {
                             </Card>
                         </div>
 
-                        {/* ROW 3: Regional Multipliers (REV 3 + 10 + 11) */}
-                        <Card>
-                            <CardHeader className="pb-3">
-                                <CardTitle className="text-sm">Penyesuaian Regional (Multiplikator)</CardTitle>
-                                <CardDescription className="text-xs">Kompensasi biaya operasional per zona. Zona override ditandai visual berbeda.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="text-xs">Zona / Kota</TableHead>
-                                            <TableHead className="text-xs">Pengali</TableHead>
-                                            <TableHead className="text-xs">Tarif Efektif</TableHead>
-                                            <TableHead className="text-xs">Margin</TableHead>
-                                            <TableHead className="text-xs">Volume Order</TableHead>
-                                            <TableHead className="text-xs">Cancel Rate</TableHead>
-                                            <TableHead className="text-xs text-right">Status</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {ZONE_DATA.map((row) => (
-                                            <TableRow
-                                                key={row.zone}
-                                                className={row.override ? "bg-amber-50/60 dark:bg-amber-950/10 border-l-2 border-l-amber-400" : ""}
-                                            >
-                                                <TableCell className="font-medium text-xs">
-                                                    <div className="flex items-center gap-1.5">
-                                                        {row.override && (
-                                                            <Tooltip>
-                                                                <TooltipTrigger>
-                                                                    <Zap className="size-3 text-amber-500" />
-                                                                </TooltipTrigger>
-                                                                <TooltipContent side="right" className="max-w-[200px] text-xs">
-                                                                    {row.overrideNote}
-                                                                </TooltipContent>
-                                                            </Tooltip>
-                                                        )}
-                                                        {row.zone}
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Input className="w-16 h-7 text-xs" defaultValue={row.multiplier} />
-                                                </TableCell>
-                                                <TableCell className="font-mono text-xs">{row.effective}</TableCell>
-                                                <TableCell className="text-xs font-medium">{row.margin}</TableCell>
-                                                <TableCell className="text-xs">{row.volume}</TableCell>
-                                                <TableCell className="text-xs">
-                                                    <span className={parseFloat(row.cancel) > 5 ? "text-red-500 font-bold" : ""}>{row.cancel}</span>
-                                                </TableCell>
-                                                <TableCell className="text-right">
-                                                    {row.override ? (
-                                                        <Tooltip>
-                                                            <TooltipTrigger>
-                                                                <Badge variant="outline" className="text-[10px] border-amber-400 text-amber-700 bg-amber-50 gap-1">
-                                                                    <Zap className="size-2.5" /> Override
-                                                                </Badge>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent className="text-xs max-w-[200px]">{row.overrideNote}</TooltipContent>
-                                                        </Tooltip>
-                                                    ) : (
-                                                        <Badge className="text-[10px]">Inherit Global</Badge>
-                                                    )}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </CardContent>
-                        </Card>
-
-                        {/* ROW 4: Scheduling + Propagation (REV 4 + 7) */}
+                        {/* ROW 2: Scheduling + Propagation (SWAPPED TO BE ABOVE TABLE) */}
                         <div className="grid gap-4 lg:grid-cols-2">
                             {/* REV 7: Effective Date & Scheduling */}
                             <Card>
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-sm flex items-center gap-1.5">
-                                        <CalendarIcon className="size-3.5 text-cakli-orange" /> Effective Date & Scheduling
+                                        <CalendarIcon className="size-3.5 text-cakli-orange" /> Tanggal Efektif & Penjadwalan
                                     </CardTitle>
                                     <CardDescription className="text-xs">Tentukan kapan perubahan tarif mulai berlaku.</CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-3">
-                                    <div className="grid gap-1.5">
-                                        <Label className="text-xs">Mode Aktivasi</Label>
-                                        <Select value={scheduleMode} onValueChange={setScheduleMode}>
-                                            <SelectTrigger className="h-8 text-xs">
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="now">Aktif Sekarang</SelectItem>
-                                                <SelectItem value="schedule">Jadwalkan</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                    <div className="flex items-start gap-3">
+                                        <div className="grid gap-1.5 shrink-0 w-40">
+                                            <Label className="text-xs">Mode Aktivasi</Label>
+                                            <Select value={scheduleMode} onValueChange={setScheduleMode}>
+                                                <SelectTrigger className="h-8 text-xs">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="now">Aktif Sekarang</SelectItem>
+                                                    <SelectItem value="schedule">Jadwalkan</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        {scheduleMode === "now" && (
+                                            <div className="flex items-start gap-2 p-2 rounded-md bg-orange-50 dark:bg-orange-950/20 border border-orange-200 flex-1">
+                                                <Info className="size-3.5 text-orange-600 mt-0.5 shrink-0" />
+                                                <div>
+                                                    <p className="text-[10px] font-bold text-orange-900 dark:text-orange-200 uppercase tracking-wider">Catatan Propagasi</p>
+                                                    <p className="text-[10px] text-orange-800 dark:text-orange-300 leading-snug">
+                                                        Tarif baru berlaku dalam 15-30 menit setelah disimpan. Perubahan dicatat dan diaudit otomatis.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                     {scheduleMode === "schedule" && (
                                         <div className="grid grid-cols-2 gap-3">
@@ -478,7 +413,7 @@ export default function TariffManagement() {
                                         </div>
                                     )}
                                     <Button variant="outline" size="sm" className="w-full text-xs gap-1.5">
-                                        <Eye className="size-3" /> Preview Sebelum Aktif
+                                        <Eye className="size-3" /> Pratinjau Sebelum Aktif
                                     </Button>
                                 </CardContent>
                             </Card>
@@ -517,6 +452,110 @@ export default function TariffManagement() {
                                 </CardContent>
                             </Card>
                         </div>
+
+                        {/* ROW 3: Regional Multipliers (REV 3 + 10 + 11) */}
+                        <Card>
+                            <CardHeader className="pb-3 border-b flex flex-row items-center justify-between">
+                                <div>
+                                    <CardTitle className="text-sm">Penyesuaian Regional (Multiplikator)</CardTitle>
+                                    <CardDescription className="text-[11px]">Kompensasi biaya operasional per zona. Zona override ditandai visual berbeda.</CardDescription>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="relative group">
+                                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground group-focus-within:text-cakli-orange transition-colors" />
+                                        <Input
+                                            placeholder="Cari zona..."
+                                            className="pl-9 h-9 w-[200px] bg-white border-slate-200 text-xs shadow-sm"
+                                            value={search}
+                                            onChange={e => setSearch(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                <Table>
+                                    <TableHeader className="bg-slate-50/50">
+                                        <TableRow>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3 pl-5">Zona / Kota</TableHead>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3">Pengali</TableHead>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3">Tarif Efektif</TableHead>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3">Margin</TableHead>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3">Volume Pesanan</TableHead>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3">Tkt Pembatalan</TableHead>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3 text-right pr-5">Status</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {filteredZones.map((row) => (
+                                            <TableRow
+                                                key={row.zone}
+                                                className={row.override ? "bg-amber-50/40 border-l-2 border-l-amber-400 group transition-colors hover:bg-amber-50/60" : "hover:bg-slate-50/50 group transition-colors"}
+                                            >
+                                                <TableCell className="font-medium text-xs py-3 pl-5">
+                                                    <div className="flex items-center gap-1.5">
+                                                        {row.override && (
+                                                            <Tooltip>
+                                                                <TooltipTrigger>
+                                                                    <Zap className="size-3 text-amber-500" />
+                                                                </TooltipTrigger>
+                                                                <TooltipContent side="right" className="max-w-[200px] text-[10px]">
+                                                                    {row.overrideNote}
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        )}
+                                                        {row.zone}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="py-2">
+                                                    <Input className="w-16 h-8 text-xs bg-white shadow-sm" defaultValue={row.multiplier} />
+                                                </TableCell>
+                                                <TableCell className="font-mono text-xs py-3">{row.effective}</TableCell>
+                                                <TableCell className="text-xs font-semibold py-3">{row.margin}</TableCell>
+                                                <TableCell className="text-xs py-3">{row.volume}</TableCell>
+                                                <TableCell className="text-xs py-3">
+                                                    <span className={parseFloat(row.cancel) > 5 ? "text-red-500 font-bold" : "text-slate-600"}>{row.cancel}</span>
+                                                </TableCell>
+                                                <TableCell className="text-right py-3 pr-5">
+                                                    {row.override ? (
+                                                        <Badge variant="outline" className="text-[9px] border-amber-400 text-amber-700 bg-amber-50 gap-1 h-5">
+                                                            <Zap className="size-2.5" /> Ganti
+                                                        </Badge>
+                                                    ) : (
+                                                        <Badge className="text-[9px] h-5 bg-cakli-orange">Warisi Global</Badge>
+                                                    )}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+
+                            {/* ── PAGINATION ── */}
+                            <div className="flex items-center justify-between px-5 py-4 border-t border-slate-100 mt-auto">
+                                <p className="text-[10px] text-muted-foreground font-medium">
+                                    Menampilkan <span className="text-slate-900 font-bold">1–{filteredZones.length}</span> dari <span className="text-slate-900 font-bold">{ZONE_DATA.length}</span> zona
+                                </p>
+                                <div className="flex items-center gap-1.5">
+                                    <Button variant="outline" size="sm" className="h-8 w-8 p-0" disabled>
+                                        <ChevronRight className="size-4 rotate-180" />
+                                    </Button>
+                                    <div className="flex items-center gap-1">
+                                        {[1, 2, 3].map((p) => (
+                                            <Button key={p} variant={p === 1 ? "secondary" : "ghost"} size="sm" className="h-8 w-8 p-0 text-[10px] font-bold">
+                                                {p}
+                                            </Button>
+                                        ))}
+                                        <span className="text-[10px] px-1 text-muted-foreground">...</span>
+                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-[10px] font-bold">
+                                            12
+                                        </Button>
+                                    </div>
+                                    <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                                        <ChevronRight className="size-4" />
+                                    </Button>
+                                </div>
+                            </div>
+                        </Card>
                     </TabsContent>
 
                     {/* REV 8: Riwayat Versi + Rollback */}
@@ -544,7 +583,7 @@ export default function TariffManagement() {
                                                 <TableCell className="font-bold text-xs">{row.v}</TableCell>
                                                 <TableCell className="text-xs">{row.date}</TableCell>
                                                 <TableCell className="text-xs">{row.user}</TableCell>
-                                                <TableCell className="text-xs italic text-muted-foreground">{row.change}</TableCell>
+                                                <TableCell className="text-xs text-muted-foreground">{row.change}</TableCell>
                                                 <TableCell>
                                                     <Badge variant={row.status === "Aktif" ? "default" : "secondary"} className="text-[10px]">{row.status}</Badge>
                                                 </TableCell>
@@ -589,16 +628,6 @@ export default function TariffManagement() {
                     </TabsContent>
                 </Tabs>
 
-                {/* Propagation Note Footer */}
-                <div className="flex items-start gap-3 p-3 rounded-lg bg-orange-50 dark:bg-orange-950/20 border border-orange-200">
-                    <Info className="size-4 text-orange-600 mt-0.5 shrink-0" />
-                    <div>
-                        <p className="text-xs font-bold text-orange-900 dark:text-orange-200 uppercase tracking-wider">Catatan Propagasi</p>
-                        <p className="text-[11px] text-orange-800 dark:text-orange-300">
-                            Tarif baru akan berlaku dalam 15-30 menit di seluruh segmen pengguna setelah disimpan. Perubahan dicatat dan diaudit secara otomatis.
-                        </p>
-                    </div>
-                </div>
             </div>
         </TooltipProvider>
     )

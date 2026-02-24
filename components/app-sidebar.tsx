@@ -33,7 +33,7 @@ const data = {
       ),
     },
     {
-      title: "Lifecycle",
+      title: "Siklus Hidup",
       url: "#",
       icon: (
         <ListIcon
@@ -41,7 +41,7 @@ const data = {
       ),
     },
     {
-      title: "Analytics",
+      title: "Analisis",
       url: "#",
       icon: (
         <ChartBarIcon
@@ -49,7 +49,7 @@ const data = {
       ),
     },
     {
-      title: "Projects",
+      title: "Proyek",
       url: "#",
       icon: (
         <FolderIcon
@@ -57,7 +57,7 @@ const data = {
       ),
     },
     {
-      title: "Team",
+      title: "Tim",
       url: "#",
       icon: (
         <UsersIcon
@@ -67,7 +67,7 @@ const data = {
   ],
   navClouds: [
     {
-      title: "Capture",
+      title: "Tangkap",
       icon: (
         <CameraIcon
         />
@@ -76,11 +76,11 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "Proposal Aktif",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "Diarsipkan",
           url: "#",
         },
       ],
@@ -94,17 +94,17 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "Proposal Aktif",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "Diarsipkan",
           url: "#",
         },
       ],
     },
     {
-      title: "Prompts",
+      title: "Prompt",
       icon: (
         <FileTextIcon
         />
@@ -112,11 +112,11 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "Proposal Aktif",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "Diarsipkan",
           url: "#",
         },
       ],
@@ -124,7 +124,7 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Settings",
+      title: "Pengaturan",
       url: "#",
       icon: (
         <Settings2Icon
@@ -132,7 +132,7 @@ const data = {
       ),
     },
     {
-      title: "Get Help",
+      title: "Bantuan",
       url: "#",
       icon: (
         <CircleHelpIcon
@@ -140,7 +140,7 @@ const data = {
       ),
     },
     {
-      title: "Search",
+      title: "Cari",
       url: "#",
       icon: (
         <SearchIcon
@@ -150,7 +150,7 @@ const data = {
   ],
   documents: [
     {
-      name: "Data Library",
+      name: "Perpustakaan Data",
       url: "#",
       icon: (
         <DatabaseIcon
@@ -158,7 +158,7 @@ const data = {
       ),
     },
     {
-      name: "Reports",
+      name: "Laporan",
       url: "#",
       icon: (
         <FileChartColumnIcon
@@ -166,7 +166,7 @@ const data = {
       ),
     },
     {
-      name: "Word Assistant",
+      name: "Asisten Kata",
       url: "#",
       icon: (
         <FileIcon
@@ -188,7 +188,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <CommandIcon className="size-5!" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">Cakli Inc.</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

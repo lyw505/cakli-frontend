@@ -36,15 +36,22 @@ const users = [
     { id: "USR-005", name: "Sarah Mara", email: "sarah@example.com", status: "Active", joined: "2023-06-12", orders: 12 },
 ]
 
+function translateStatus(status: string) {
+    if (status === "Active") return "Aktif"
+    if (status === "Suspended") return "Ditangguhkan"
+    if (status === "Inactive") return "Tidak Aktif"
+    return status
+}
+
 export default function UsersPage() {
     return (
         <div className="flex flex-col gap-6 p-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-                    <p className="text-muted-foreground">Manage user accounts and status.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Manajemen Pengguna</h1>
+                    <p className="text-muted-foreground">Kelola akun dan status pengguna.</p>
                 </div>
-                <Button>Add New User</Button>
+                <Button>Tambah Pengguna Baru</Button>
             </div>
 
             <div className="flex items-center gap-4">
@@ -52,7 +59,7 @@ export default function UsersPage() {
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         type="search"
-                        placeholder="Search by name or email..."
+                        placeholder="Cari berdasarkan nama atau email..."
                         className="pl-8"
                     />
                 </div>
@@ -61,10 +68,10 @@ export default function UsersPage() {
                         <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="suspended">Suspended</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
+                        <SelectItem value="all">Semua Status</SelectItem>
+                        <SelectItem value="active">Aktif</SelectItem>
+                        <SelectItem value="suspended">Ditangguhkan</SelectItem>
+                        <SelectItem value="inactive">Tidak Aktif</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
@@ -73,11 +80,11 @@ export default function UsersPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>User</TableHead>
+                            <TableHead>Pengguna</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead>Joined Date</TableHead>
-                            <TableHead>Total Orders</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead>Tanggal Bergabung</TableHead>
+                            <TableHead>Total Pesanan</TableHead>
+                            <TableHead className="text-right">Aksi</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -89,7 +96,7 @@ export default function UsersPage() {
                                 </TableCell>
                                 <TableCell>
                                     <Badge variant={user.status === "Active" ? "outline" : "destructive"}>
-                                        {user.status}
+                                        {translateStatus(user.status)}
                                     </Badge>
                                 </TableCell>
                                 <TableCell>{user.joined}</TableCell>
@@ -98,28 +105,28 @@ export default function UsersPage() {
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <Button variant="ghost" className="h-8 w-8 p-0">
-                                                <span className="sr-only">Open menu</span>
+                                                <span className="sr-only">Buka menu</span>
                                                 <MoreHorizontal className="h-4 w-4" />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Account Management</DropdownMenuLabel>
+                                            <DropdownMenuLabel>Manajemen Akun</DropdownMenuLabel>
                                             <DropdownMenuItem>
                                                 <FileText className="mr-2 h-4 w-4" />
-                                                Order History
+                                                Riwayat Pesanan
                                             </DropdownMenuItem>
                                             <DropdownMenuItem className="text-orange-600">
                                                 <MessageSquareWarning className="mr-2 h-4 w-4" />
-                                                Check Reports
+                                                Periksa Laporan
                                             </DropdownMenuItem>
                                             <DropdownMenuSeparator />
                                             {user.status === "Active" ? (
                                                 <DropdownMenuItem className="text-orange-900">
-                                                    <UserX className="mr-2 h-4 w-4" /> Suspend User
+                                                    <UserX className="mr-2 h-4 w-4" /> Tangguhkan Pengguna
                                                 </DropdownMenuItem>
                                             ) : (
                                                 <DropdownMenuItem className="text-orange-600">
-                                                    <UserCheck className="mr-2 h-4 w-4" /> Reactivate User
+                                                    <UserCheck className="mr-2 h-4 w-4" /> Aktifkan Kembali Pengguna
                                                 </DropdownMenuItem>
                                             )}
                                         </DropdownMenuContent>

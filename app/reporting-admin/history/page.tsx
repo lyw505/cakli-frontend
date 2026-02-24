@@ -52,6 +52,12 @@ const orderHistory = [
     { id: "ORD-92816", customer: "Deni", driver: "Bambang", origin: "Gadang", dest: "Klayatan", price: 10000, status: "Completed", date: "2024-02-12 10:35", dist: "1.8km", duration: "5m" },
 ]
 
+function translateStatus(status: string) {
+    if (status === "Completed") return "Selesai"
+    if (status === "Cancelled") return "Dibatalkan"
+    return status
+}
+
 export default function OrderHistoryPage() {
     const [selectedOrder, setSelectedOrder] = React.useState<typeof orderHistory[0] | null>(null)
 
@@ -59,33 +65,33 @@ export default function OrderHistoryPage() {
         <div className="flex flex-col gap-6 p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Order Audit Logs</h1>
-                    <p className="text-muted-foreground">Comprehensive history of all transactions and trip data.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Log Audit Pesanan</h1>
+                    <p className="text-muted-foreground">Riwayat komprehensif semua transaksi dan data perjalanan.</p>
                 </div>
             </div>
 
             <Card>
                 <CardHeader className="pb-3">
-                    <CardTitle className="text-lg">Audit Search</CardTitle>
+                    <CardTitle className="text-lg">Pencarian Audit</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-wrap gap-4">
                         <div className="relative flex-1 min-w-[300px]">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Search by Order ID, Customer, or Driver..." className="pl-8" />
+                            <Input placeholder="Cari berdasarkan ID Pesanan, Pelanggan, atau Driver..." className="pl-8" />
                         </div>
                         <Select defaultValue="all">
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Status" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">All Status</SelectItem>
-                                <SelectItem value="completed">Completed</SelectItem>
-                                <SelectItem value="cancelled">Cancelled</SelectItem>
+                                <SelectItem value="all">Semua Status</SelectItem>
+                                <SelectItem value="completed">Selesai</SelectItem>
+                                <SelectItem value="cancelled">Dibatalkan</SelectItem>
                             </SelectContent>
                         </Select>
                         <Button variant="outline" className="gap-2">
-                            <Filter className="h-4 w-4" /> More Filters
+                            <Filter className="h-4 w-4" /> Filter Lainnya
                         </Button>
                     </div>
                 </CardContent>
@@ -94,14 +100,14 @@ export default function OrderHistoryPage() {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Order ID</TableHead>
-                        <TableHead>Date & Time</TableHead>
-                        <TableHead>Customer</TableHead>
+                        <TableHead>ID Pesanan</TableHead>
+                        <TableHead>Tanggal & Waktu</TableHead>
+                        <TableHead>Pelanggan</TableHead>
                         <TableHead>Driver</TableHead>
-                        <TableHead>Trip</TableHead>
-                        <TableHead>Tariff</TableHead>
+                        <TableHead>Perjalanan</TableHead>
+                        <TableHead>Tarif</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Action</TableHead>
+                        <TableHead className="text-right">Aksi</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -120,7 +126,7 @@ export default function OrderHistoryPage() {
                             <TableCell className="font-semibold text-sm">Rp {order.price.toLocaleString()}</TableCell>
                             <TableCell>
                                 <Badge variant={order.status === "Completed" ? "default" : "destructive"}>
-                                    {order.status}
+                                    {translateStatus(order.status)}
                                 </Badge>
                             </TableCell>
                             <TableCell className="text-right">
@@ -132,20 +138,20 @@ export default function OrderHistoryPage() {
                                     </DialogTrigger>
                                     <DialogContent className="max-w-md">
                                         <DialogHeader>
-                                            <DialogTitle>Order Detail Audit</DialogTitle>
-                                            <DialogDescription>Full record for {order.id}</DialogDescription>
+                                            <DialogTitle>Audit Detail Pesanan</DialogTitle>
+                                            <DialogDescription>Rekaman lengkap untuk {order.id}</DialogDescription>
                                         </DialogHeader>
                                         <div className="space-y-4 py-4">
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-1">
-                                                    <p className="text-[10px] uppercase text-muted-foreground font-bold italic">Entity: Customer</p>
+                                                    <p className="text-[10px] uppercase text-muted-foreground font-bold">Entitas: Pelanggan</p>
                                                     <div className="flex items-center gap-2">
                                                         <User className="size-3 text-orange-500" />
                                                         <p className="text-sm font-semibold">{order.customer}</p>
                                                     </div>
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <p className="text-[10px] uppercase text-muted-foreground font-bold italic">Entity: Driver</p>
+                                                    <p className="text-[10px] uppercase text-muted-foreground font-bold">Entitas: Driver</p>
                                                     <div className="flex items-center gap-2">
                                                         <Truck className="size-3 text-orange-500" />
                                                         <p className="text-sm font-semibold">{order.driver}</p>
@@ -154,7 +160,7 @@ export default function OrderHistoryPage() {
                                             </div>
                                             <Separator />
                                             <div className="space-y-2">
-                                                <p className="text-[10px] uppercase text-muted-foreground font-bold italic">Trip Path</p>
+                                                <p className="text-[10px] uppercase text-muted-foreground font-bold">Jalur Perjalanan</p>
                                                 <div className="space-y-1">
                                                     <div className="flex items-center gap-2">
                                                         <MapPin className="size-3 text-red-500" />
@@ -170,17 +176,17 @@ export default function OrderHistoryPage() {
                                             <div className="grid grid-cols-3 gap-2">
                                                 <div className="p-3 bg-secondary/50 rounded-lg text-center space-y-1">
                                                     <Route className="size-3 mx-auto text-muted-foreground" />
-                                                    <p className="text-[10px] text-muted-foreground">Distance</p>
+                                                    <p className="text-[10px] text-muted-foreground">Jarak</p>
                                                     <p className="text-xs font-bold">{order.dist}</p>
                                                 </div>
                                                 <div className="p-3 bg-secondary/50 rounded-lg text-center space-y-1">
                                                     <Clock className="size-3 mx-auto text-muted-foreground" />
-                                                    <p className="text-[10px] text-muted-foreground">Duration</p>
+                                                    <p className="text-[10px] text-muted-foreground">Durasi</p>
                                                     <p className="text-xs font-bold">{order.duration}</p>
                                                 </div>
                                                 <div className="p-3 bg-secondary/50 rounded-lg text-center space-y-1">
                                                     <DollarSign className="size-3 mx-auto text-muted-foreground" />
-                                                    <p className="text-[10px] text-muted-foreground">Tariff</p>
+                                                    <p className="text-[10px] text-muted-foreground">Tarif</p>
                                                     <p className="text-xs font-bold">Rp {order.price.toLocaleString()}</p>
                                                 </div>
                                             </div>

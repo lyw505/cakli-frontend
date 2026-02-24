@@ -59,8 +59,8 @@ const hourlyData = [
 ]
 
 const statusData = [
-    { name: "Completed", value: 2350, color: "#10b981" },
-    { name: "Cancelled", value: 142, color: "#ef4444" },
+    { name: "Selesai", value: 2350, color: "#10b981" },
+    { name: "Dibatalkan", value: 142, color: "#ef4444" },
 ]
 
 const dailyTrendData = [
@@ -116,7 +116,7 @@ export default function ReportingDashboard() {
                                             format(date.from, "LLL dd, y")
                                         )
                                     ) : (
-                                        <span>Pick a date range</span>
+                                        <span>Pilih rentang tanggal</span>
                                     )}
                                 </Button>
                             </PopoverTrigger>
@@ -142,42 +142,42 @@ export default function ReportingDashboard() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card className="border-l-4 border-l-orange-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Total Orders</CardTitle>
+                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Total Pesanan</CardTitle>
                         <ShoppingCart className="h-4 w-4 text-orange-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold">2,492</div>
-                        <p className="text-xs text-muted-foreground mt-1">In selected period</p>
+                        <div className="text-3xl font-bold">2.492</div>
+                        <p className="text-xs text-muted-foreground mt-1">Dalam periode terpilih</p>
                     </CardContent>
                 </Card>
                 <Card className="border-l-4 border-l-orange-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Total Revenue</CardTitle>
+                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Total Pendapatan</CardTitle>
                         <Wallet className="h-4 w-4 text-orange-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold">Rp 45.2M</div>
-                        <p className="text-xs text-muted-foreground mt-1">Gross earnings</p>
+                        <div className="text-3xl font-bold">Rp 45,2jt</div>
+                        <p className="text-xs text-muted-foreground mt-1">Pendapatan kotor</p>
                     </CardContent>
                 </Card>
                 <Card className="border-l-4 border-l-orange-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Active Drivers</CardTitle>
+                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Driver Aktif</CardTitle>
                         <Users className="h-4 w-4 text-orange-500" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold">142</div>
-                        <p className="text-xs text-green-600 font-medium mt-1">Currently Online</p>
+                        <p className="text-xs text-green-600 font-medium mt-1">Sedang Online</p>
                     </CardContent>
                 </Card>
                 <Card className="border-l-4 border-l-orange-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Completion Rate</CardTitle>
+                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Tingkat Penyelesaian</CardTitle>
                         <CheckCircle2 className="h-4 w-4 text-orange-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold">94.3%</div>
-                        <p className="text-xs text-muted-foreground mt-1">Avg. fulfillment success</p>
+                        <div className="text-3xl font-bold">94,3%</div>
+                        <p className="text-xs text-muted-foreground mt-1">Rata-rata keberhasilan pemenuhan</p>
                     </CardContent>
                 </Card>
             </div>
@@ -186,8 +186,8 @@ export default function ReportingDashboard() {
                 {/* Busy Hours Chart (Bar Chart as requested) */}
                 <Card className="lg:col-span-4">
                     <CardHeader>
-                        <CardTitle>Peak Busy Hours</CardTitle>
-                        <CardDescription>Bar chart showing hours with highest order volume.</CardDescription>
+                        <CardTitle>Jam Sibuk Puncak</CardTitle>
+                        <CardDescription>Grafik batang menunjukkan jam dengan volume pesanan tertinggi.</CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
                         <div className="h-[300px]">
@@ -231,8 +231,8 @@ export default function ReportingDashboard() {
                 {/* Top Areas */}
                 <Card className="lg:col-span-3">
                     <CardHeader>
-                        <CardTitle>Top Areas by Volume</CardTitle>
-                        <CardDescription>Areas with the highest concentration of orders.</CardDescription>
+                        <CardTitle>Area Teratas berdasarkan Volume</CardTitle>
+                        <CardDescription>Area dengan konsentrasi pesanan tertinggi.</CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
                         <div className="h-[300px]">
@@ -262,8 +262,8 @@ export default function ReportingDashboard() {
                 {/* Status Comparison (Bar Chart as requested) */}
                 <Card className="lg:col-span-3">
                     <CardHeader>
-                        <CardTitle>Order Status Comparison</CardTitle>
-                        <CardDescription>Completed vs. Cancelled orders.</CardDescription>
+                        <CardTitle>Perbandingan Status Pesanan</CardTitle>
+                        <CardDescription>Pesanan Selesai vs. Dibatalkan.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="h-[250px] mb-6">
@@ -293,16 +293,16 @@ export default function ReportingDashboard() {
                             <div className="flex items-center justify-between text-sm border-t pt-3">
                                 <div className="flex items-center gap-2 font-medium">
                                     <CheckCircle2 className="h-4 w-4 text-green-500" />
-                                    <span>2,350 Completed</span>
+                                    <span>2.350 Selesai</span>
                                 </div>
-                                <span className="text-muted-foreground">94.3%</span>
+                                <span className="text-muted-foreground">94,3%</span>
                             </div>
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2 font-medium">
                                     <Ban className="h-4 w-4 text-red-500" />
-                                    <span>142 Cancelled</span>
+                                    <span>142 Dibatalkan</span>
                                 </div>
-                                <span className="text-muted-foreground">5.7%</span>
+                                <span className="text-muted-foreground">5,7%</span>
                             </div>
                         </div>
                     </CardContent>
@@ -311,8 +311,8 @@ export default function ReportingDashboard() {
                 {/* Order Trend Line Chart */}
                 <Card className="lg:col-span-4">
                     <CardHeader>
-                        <CardTitle>Order Trend (Selected Period)</CardTitle>
-                        <CardDescription>Line chart visualizing order volume fluctuations over days.</CardDescription>
+                        <CardTitle>Tren Pesanan (Periode Terpilih)</CardTitle>
+                        <CardDescription>Grafik garis memvisualisasikan fluktuasi volume pesanan selama beberapa hari.</CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
                         <div className="h-[250px]">
@@ -357,7 +357,7 @@ export default function ReportingDashboard() {
             <div className="p-4 bg-orange-50/50 border border-orange-100 rounded-lg flex gap-3">
                 <Info className="h-5 w-5 text-orange-600 shrink-0" />
                 <p className="text-sm text-orange-900 leading-relaxed">
-                    <strong>Read-Only Mode:</strong> This dashboard is optimized for data analysis and reporting. No data can be modified from this view. For operational controls, please switch to the Operation Admin portal.
+                    <strong>Mode Baca-Saja:</strong> Dashboard ini dioptimalkan untuk analisis data dan pelaporan. Tidak ada data yang dapat diubah dari tampilan ini. Untuk kontrol operasional, silakan beralih ke portal Admin Operasional.
                 </p>
             </div>
         </div>
