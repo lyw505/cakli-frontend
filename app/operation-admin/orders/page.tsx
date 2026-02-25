@@ -1,28 +1,6 @@
 "use client"
 
 import React, { useState, useMemo } from "react"
-import {
-    Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-    Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select"
-import {
-    Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog"
-import {
-    DropdownMenu, DropdownMenuContent, DropdownMenuItem,
-    DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Textarea } from "@/components/ui/textarea"
-import {
-    Download, Search, MapPin, User, Truck, Clock, ArrowRight, Eye,
-    RotateCcw, MoreHorizontal, XCircle, AlertTriangle, UserPlus,
-    CheckCircle2, Circle, ChevronLeft, ChevronRight, Phone, CreditCard,
-    FileText, CalendarDays, Banknote, Copy, PowerOff, Star, ShieldAlert,
-} from "lucide-react"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type StatusType = "pending" | "assigned" | "on-trip" | "selesai" | "batal" | "issue" | "unassigned"
@@ -293,34 +271,316 @@ const INITIAL_ORDERS: Order[] = [
 
 // ─── Status Config ─────────────────────────────────────────────────────────────
 const STATUS_CONFIG: Record<StatusType, { label: string; pill: string; dot: string }> = {
-    pending: { label: "Pending", pill: "bg-amber-50 text-amber-700 ring-1 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:ring-amber-700", dot: "bg-amber-400" },
-    unassigned: { label: "Menunggu Driver", pill: "bg-slate-100 text-slate-600 ring-1 ring-slate-300 dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-600", dot: "bg-slate-400" },
-    assigned: { label: "Assigned", pill: "bg-blue-50 text-blue-700 ring-1 ring-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:ring-blue-700", dot: "bg-blue-500" },
-    "on-trip": { label: "On Trip", pill: "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 dark:ring-indigo-700", dot: "bg-indigo-500" },
-    selesai: { label: "Selesai", pill: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:ring-emerald-700", dot: "bg-emerald-500" },
-    batal: { label: "Batal", pill: "bg-red-50 text-red-700 ring-1 ring-red-200 dark:bg-red-900/30 dark:text-red-400 dark:ring-red-700", dot: "bg-red-500" },
-    issue: { label: "Issue", pill: "bg-orange-50 text-orange-700 ring-1 ring-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:ring-orange-700", dot: "bg-orange-500" },
+    pending: { label: "Pending", pill: "bg-amber-50 text-amber-700 ring-1 ring-amber-200", dot: "bg-amber-400" },
+    unassigned: { label: "Mencari", pill: "bg-slate-100 text-slate-600 ring-1 ring-slate-300", dot: "bg-slate-400" },
+    assigned: { label: "Assigned", pill: "bg-blue-50 text-blue-700 ring-1 ring-blue-200", dot: "bg-blue-500" },
+    "on-trip": { label: "On Trip", pill: "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200", dot: "bg-indigo-500" },
+    selesai: { label: "Selesai", pill: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200", dot: "bg-emerald-500" },
+    batal: { label: "Batal", pill: "bg-red-50 text-red-700 ring-1 ring-red-200", dot: "bg-red-500" },
+    issue: { label: "Issue", pill: "bg-orange-50 text-orange-700 ring-1 ring-orange-200", dot: "bg-orange-500" },
 }
 
-// used for scalable future features (driver reassign list, area filter)
 const DRIVER_OPTIONS = Array.from(
     new Set(INITIAL_ORDERS.map((o) => o.driver).filter((d) => d !== "-"))
 ).sort()
 
 const PAGE_SIZE = 7
 
+// ─── Icons ────────────────────────────────────────────────────────────────────
+const Icons = {
+    Download: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>,
+    Search: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
+    MapPin: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>,
+    User: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+    Truck: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>,
+    Eye: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>,
+    RotateCcw: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/></svg>,
+    MoreHorizontal: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>,
+    XCircle: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>,
+    AlertTriangle: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>,
+    UserPlus: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>,
+    CheckCircle2: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>,
+    ChevronLeft: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6"/></svg>,
+    ChevronRight: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"/></svg>,
+    Phone: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+    CreditCard: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>,
+    CalendarDays: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>,
+    Star: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+    ShieldAlert: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>,
+    X: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
+    ChevronDown: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m6 9 6 6 6-6"/></svg>,
+    PowerOff: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18.36 6.64A9 9 0 0 1 20.77 15"/><path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"/><path d="M12 2v4"/><path d="m2 2 20 20"/></svg>,
+}
+
+// ─── Native UI Components ─────────────────────────────────────────────────────
+
+function Button({ 
+    children, 
+    onClick, 
+    disabled = false, 
+    variant = "default", 
+    size = "default",
+    className = "", 
+    style = {},
+    type = "button"
+}: { 
+    children: React.ReactNode
+    onClick?: () => void
+    disabled?: boolean
+    variant?: "default" | "outline" | "ghost"
+    size?: "default" | "sm" | "xs"
+    className?: string
+    style?: React.CSSProperties
+    type?: "button" | "submit"
+}) {
+    const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed"
+    
+    const variants = {
+        default: "bg-slate-900 text-white hover:bg-slate-800 border border-transparent",
+        outline: "bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 hover:border-slate-400",
+        ghost: "bg-transparent hover:bg-slate-100 text-slate-600"
+    }
+
+    const sizes = {
+        default: "h-10 px-4 text-sm",
+        sm: "h-8 px-3 text-xs",
+        xs: "h-6 px-2 text-[10px]"
+    }
+
+    return (
+        <button
+            type={type}
+            onClick={onClick}
+            disabled={disabled}
+            className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+            style={style}
+        >
+            {children}
+        </button>
+    )
+}
+
+function Input({ 
+    value, 
+    onChange, 
+    placeholder, 
+    className = "",
+    type = "text",
+    id
+}: { 
+    value: string
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    placeholder?: string
+    className?: string
+    type?: string
+    id?: string
+}) {
+    return (
+        <input
+            id={id}
+            type={type}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            className={`w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400 ${className}`}
+        />
+    )
+}
+
+function Textarea({ 
+    value, 
+    onChange, 
+    placeholder, 
+    className = "",
+    rows = 3
+}: { 
+    value: string
+    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+    placeholder?: string
+    className?: string
+    rows?: number
+}) {
+    return (
+        <textarea
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            rows={rows}
+            className={`w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-400 resize-none ${className}`}
+        />
+    )
+}
+
+function Select({ 
+    value, 
+    onChange, 
+    options, 
+    placeholder,
+    className = "",
+    id
+}: { 
+    value: string
+    onChange: (value: string) => void
+    options: { value: string; label: React.ReactNode }[]
+    placeholder?: string
+    className?: string
+    id?: string
+}) {
+    const [isOpen, setIsOpen] = useState(false)
+    const ref = React.useRef<HTMLDivElement>(null)
+
+    React.useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (ref.current && !ref.current.contains(event.target as Node)) {
+                setIsOpen(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => document.removeEventListener("mousedown", handleClickOutside)
+    }, [])
+
+    const selectedLabel = options.find(o => o.value === value)?.label || placeholder
+
+    return (
+        <div className={`relative ${className}`} ref={ref} id={id}>
+            <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full h-10 px-3 rounded-lg border border-slate-300 bg-white text-sm text-slate-900 flex items-center justify-between hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
+            >
+                <span className={value ? "text-slate-900" : "text-slate-400"}>{selectedLabel}</span>
+                <Icons.ChevronDown />
+            </button>
+            {isOpen && (
+                <div className="absolute z-50 w-full mt-1 py-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+                    {options.map((option) => (
+                        <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => {
+                                onChange(option.value)
+                                setIsOpen(false)
+                            }}
+                            className={`w-full px-3 py-2 text-left text-sm hover:bg-slate-50 ${value === option.value ? "bg-slate-50 font-medium" : ""}`}
+                        >
+                            {option.label}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+
+function Modal({ 
+    isOpen, 
+    onClose, 
+    children, 
+    maxWidth = "md"
+}: { 
+    isOpen: boolean
+    onClose: () => void
+    children: React.ReactNode
+    maxWidth?: "sm" | "md" | "lg" | "xl" | "4xl"
+}) {
+    if (!isOpen) return null
+
+    const maxWidths = {
+        sm: "max-w-sm",
+        md: "max-w-md",
+        lg: "max-w-lg",
+        xl: "max-w-xl",
+        "4xl": "max-w-4xl"
+    }
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div 
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+                onClick={onClose}
+            />
+            <div className={`relative w-full ${maxWidths[maxWidth]} bg-white rounded-xl shadow-xl overflow-hidden max-h-[90vh] flex flex-col`}>
+                {children}
+            </div>
+        </div>
+    )
+}
+
+function DropdownMenu({ 
+    trigger, 
+    children 
+}: { 
+    trigger: React.ReactNode
+    children: React.ReactNode
+}) {
+    const [isOpen, setIsOpen] = useState(false)
+    const ref = React.useRef<HTMLDivElement>(null)
+
+    React.useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (ref.current && !ref.current.contains(event.target as Node)) {
+                setIsOpen(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => document.removeEventListener("mousedown", handleClickOutside)
+    }, [])
+
+    return (
+        <div className="relative inline-block" ref={ref}>
+            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
+                {trigger}
+            </div>
+            {isOpen && (
+                <div className="absolute right-0 mt-1 w-56 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50">
+                    {children}
+                </div>
+            )}
+        </div>
+    )
+}
+
+function DropdownItem({ 
+    children, 
+    onClick, 
+    className = "",
+    disabled = false
+}: { 
+    children: React.ReactNode
+    onClick?: () => void
+    className?: string
+    disabled?: boolean
+}) {
+    return (
+        <button
+            onClick={onClick}
+            disabled={disabled}
+            className={`w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-700 ${className}`}
+        >
+            {children}
+        </button>
+    )
+}
+
+function DropdownLabel({ children }: { children: React.ReactNode }) {
+    return <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">{children}</div>
+}
+
+function DropdownSeparator() {
+    return <div className="h-px bg-slate-200 my-1" />
+}
+
 // ─── Sub-components ────────────────────────────────────────────────────────────
 function StatusPill({ status }: { status: StatusType }) {
     const cfg = STATUS_CONFIG[status]
     return (
-        <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${cfg.pill}`}>
-            <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
+        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${cfg.pill}`}>
+            <span className={`h-1 w-1 rounded-full ${cfg.dot}`} />
             {cfg.label}
         </span>
     )
 }
 
-// ─── Timeline helper: contextual pending message ───────────────────────────────
 function timelineHint(label: string, orderStatus: StatusType): string {
     if (orderStatus === "batal") return "Order dibatalkan"
     if (orderStatus === "issue") return "Tertunda - Menunggu resolusi"
@@ -334,16 +594,14 @@ function timelineHint(label: string, orderStatus: StatusType): string {
 // ─── Detail Dialog ─────────────────────────────────────────────────────────────
 function DetailDialog({ order, onReassign }: { order: Order; onReassign: () => void }) {
     const [showAlamat, setShowAlamat] = useState(false)
-    const copyPhone = (phone: string) => navigator.clipboard?.writeText(phone)
 
     return (
         <div className="space-y-6 pt-1">
-            {/* Top Info: Anomaly, Rating, and Duration */}
             {(order.isAnomaly || order.rating || (order.durasiAktual && order.durasiAktual !== "-")) && (
                 <div className="flex flex-wrap gap-4">
                     {order.isAnomaly && (
-                        <div className="flex-1 min-w-[300px] border border-red-200 bg-red-50 dark:bg-red-950/20 rounded-xl p-3 flex gap-3 text-red-700 dark:text-red-400">
-                            <ShieldAlert className="h-5 w-5 shrink-0" />
+                        <div className="flex-1 min-w-[300px] border border-red-200 bg-red-50 rounded-xl p-3 flex gap-3 text-red-700">
+                            <Icons.ShieldAlert />
                             <div>
                                 <p className="text-xs font-bold uppercase tracking-wider">Terdeteksi Anomali</p>
                                 <p className="text-sm mt-0.5">{order.anomalyReason}</p>
@@ -352,52 +610,52 @@ function DetailDialog({ order, onReassign }: { order: Order; onReassign: () => v
                     )}
                     <div className="flex gap-4">
                         {order.rating && (
-                            <div className="border rounded-xl p-3 bg-card flex flex-col items-center justify-center min-w-[100px]">
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Rating</p>
+                            <div className="border rounded-xl p-3 bg-white flex flex-col items-center justify-center min-w-[100px]">
+                                <p className="text-[10px] font-bold text-slate-500 uppercase mb-1">Rating</p>
                                 <div className="flex items-center gap-1">
                                     <span className="text-lg font-bold">{order.rating}</span>
-                                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                                    <Icons.Star />
                                 </div>
                             </div>
                         )}
                         {order.durasiAktual && (
-                            <div className="border rounded-xl p-3 bg-card flex flex-col items-center justify-center min-w-[120px]">
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Durasi Aktual</p>
+                            <div className="border rounded-xl p-3 bg-white flex flex-col items-center justify-center min-w-[120px]">
+                                <p className="text-[10px] font-bold text-slate-500 uppercase mb-1">Durasi Aktual</p>
                                 <p className="text-lg font-bold">{order.durasiAktual}</p>
                             </div>
                         )}
                         {order.totalWaktuOrder && (
-                            <div className="border rounded-xl p-3 bg-card flex flex-col items-center justify-center min-w-[120px]">
-                                <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Total Waktu</p>
-                                <p className="text-lg font-bold text-muted-foreground">{order.totalWaktuOrder}</p>
+                            <div className="border rounded-xl p-3 bg-white flex flex-col items-center justify-center min-w-[120px]">
+                                <p className="text-[10px] font-bold text-slate-500 uppercase mb-1">Total Waktu</p>
+                                <p className="text-lg font-bold text-slate-500">{order.totalWaktuOrder}</p>
                             </div>
                         )}
                     </div>
                 </div>
             )}
-            {/* Top Row: Customer & Driver */}
+            
             <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-xl border bg-muted/20 p-4 space-y-3">
-                    <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Customer</p>
+                <div className="rounded-xl border bg-slate-50 p-4 space-y-3">
+                    <p className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Customer</p>
                     <div>
                         <p className="text-base font-bold leading-tight">{order.customer}</p>
                         <a href={`tel:${order.customerPhone}`} className="text-xs text-blue-600 hover:underline flex items-center gap-1 mt-1 font-medium">
-                            <Phone className="h-2.5 w-2.5" /> {order.customerPhone}
+                            <Icons.Phone /> {order.customerPhone}
                         </a>
                     </div>
                     {order.customerNote && (
-                        <div className="rounded-lg bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200/50 p-2 text-[11px] leading-snug text-amber-700 dark:text-amber-400 font-medium">
+                        <div className="rounded-lg bg-amber-50 border border-amber-200 p-2 text-[11px] leading-snug text-amber-700 font-medium">
                             {order.customerNote}
                         </div>
                     )}
                 </div>
 
-                <div className="rounded-xl border bg-muted/20 p-4 space-y-3">
-                    <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Driver</p>
+                <div className="rounded-xl border bg-slate-50 p-4 space-y-3">
+                    <p className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Driver</p>
                     {order.driver === "-" ? (
                         <div className="flex flex-col gap-2">
-                            <p className="text-xs text-muted-foreground italic">Belum ditugaskan</p>
-                            <Button size="sm" className="h-7 text-[10px] bg-[#E04D04] hover:bg-[#E04D04]/90 font-bold" onClick={onReassign}>Tugaskan</Button>
+                            <p className="text-xs text-slate-500 italic">Belum ditugaskan</p>
+                            <Button size="xs" className="bg-[#E04D04] hover:bg-[#E04D04]/90 font-bold text-white w-fit" onClick={onReassign}>Tugaskan</Button>
                         </div>
                     ) : (
                         <>
@@ -407,34 +665,33 @@ function DetailDialog({ order, onReassign }: { order: Order; onReassign: () => v
                                     <span className={`text-[8px] rounded-full px-1 py-0.5 font-bold ${order.driverActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>{order.driverActive ? "AKTIF" : "OFFLINE"}</span>
                                 </div>
                                 <a href={`tel:${order.driverPhone}`} className="text-xs text-blue-600 hover:underline flex items-center gap-1 mt-1 font-medium">
-                                    <Phone className="h-2.5 w-2.5" /> {order.driverPhone}
+                                    <Icons.Phone /> {order.driverPhone}
                                 </a>
                             </div>
                             {!order.driverActive && (
-                                <Button size="sm" variant="outline" className="h-7 w-full text-[10px] font-bold border-[#E04D04]/20 text-[#E04D04] hover:bg-[#E04D04]/5" onClick={onReassign}>Ganti Driver</Button>
+                                <Button size="xs" variant="outline" className="border-[#E04D04]/20 text-[#E04D04] hover:bg-[#E04D04]/5 w-fit" onClick={onReassign}>Ganti Driver</Button>
                             )}
                         </>
                     )}
                 </div>
             </div>
 
-            {/* Middle Row: Rute & Alamat */}
-            <div className="rounded-xl border p-4 space-y-3 bg-card/30">
+            <div className="rounded-xl border p-4 space-y-3 bg-white">
                 <div className="flex items-center justify-between">
-                    <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Rute</p>
+                    <p className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Rute</p>
                     <button onClick={() => setShowAlamat(!showAlamat)} className="text-[10px] font-bold text-blue-600 hover:underline">
                         {showAlamat ? "Tutup Alamat" : "Detail Alamat"}
                     </button>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="flex-1 space-y-1.5 relative py-1">
-                        <div className="absolute left-[5px] top-2 bottom-2 w-[1px] bg-border border-dashed" />
+                        <div className="absolute left-[5px] top-2 bottom-2 w-[1px] bg-slate-200 border-dashed" />
                         <div className="flex items-center gap-3 relative">
-                            <div className="h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-red-100 dark:ring-red-900/30" />
+                            <Icons.MapPin className="text-red-500" />
                             <p className="text-sm font-bold truncate">{order.pickup}</p>
                         </div>
                         <div className="flex items-center gap-3 relative">
-                            <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-emerald-100 dark:ring-emerald-900/30" />
+                            <Icons.MapPin className="text-emerald-500" />
                             <p className="text-sm font-bold truncate">{order.dropoff}</p>
                         </div>
                     </div>
@@ -444,27 +701,25 @@ function DetailDialog({ order, onReassign }: { order: Order; onReassign: () => v
                     </div>
                 </div>
                 {showAlamat && (
-                    <div className="grid grid-cols-2 gap-4 pt-3 border-t border-dashed text-[11px] leading-relaxed font-medium text-muted-foreground">
+                    <div className="grid grid-cols-2 gap-4 pt-3 border-t border-dashed text-[11px] leading-relaxed font-medium text-slate-500">
                         <p>Pickup: Jl. Raya {order.pickup} No. 123...</p>
                         <p>Dropoff: Kawasan {order.dropoff} Blok B...</p>
                     </div>
                 )}
             </div>
 
-            {/* Bottom Grid: Finance, Transaksi & Timeline */}
             <div className="grid grid-cols-2 gap-4">
-                {/* Finance & Payment combined */}
                 <div className="space-y-4">
-                    <div className="rounded-xl border p-4 bg-muted/5 space-y-3">
-                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Biaya & Pembayaran</p>
+                    <div className="rounded-xl border p-4 bg-slate-50 space-y-3">
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Biaya & Pembayaran</p>
                         <div className="space-y-2">
-                            <div className="flex justify-between text-xs font-medium text-muted-foreground">
+                            <div className="flex justify-between text-xs font-medium text-slate-500">
                                 <span>Tarif Dasar</span>
-                                <span className="text-foreground">{order.biayaBreakdown?.base || order.estimasi}</span>
+                                <span className="text-slate-900">{order.biayaBreakdown?.base || order.estimasi}</span>
                             </div>
-                            <div className="flex justify-between text-xs font-medium text-muted-foreground">
+                            <div className="flex justify-between text-xs font-medium text-slate-500">
                                 <span>Layanan</span>
-                                <span className="text-foreground">{order.biayaBreakdown?.service || "Rp 0"}</span>
+                                <span className="text-slate-900">{order.biayaBreakdown?.service || "Rp 0"}</span>
                             </div>
                             <div className="flex justify-between text-sm pt-2 border-t font-black border-dashed">
                                 <span>Total</span>
@@ -472,23 +727,22 @@ function DetailDialog({ order, onReassign }: { order: Order; onReassign: () => v
                             </div>
                         </div>
                         <div className="pt-2 border-t border-dashed flex justify-between items-center text-[10px] font-bold">
-                            <span className="text-muted-foreground uppercase">{order.metodePembayaran}</span>
+                            <span className="text-slate-500 uppercase">{order.metodePembayaran}</span>
                             <span className={`px-2 py-0.5 rounded-md ${order.statusPembayaran === "lunas" ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-600"}`}>{order.statusPembayaran === "lunas" ? "LUNAS" : "BELUM"}</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Timeline */}
                 <div className="rounded-xl border p-4 space-y-3">
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Timeline</p>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Timeline</p>
                     <div className="relative pl-4 space-y-3">
-                        <div className="absolute left-[19px] top-1.5 bottom-1.5 w-[1px] bg-slate-100" />
+                        <div className="absolute left-[19px] top-1.5 bottom-1.5 w-[1px] bg-slate-200" />
                         {order.timeline.map((ev, i) => (
                             <div key={i} className="relative flex gap-3 text-[10px] group">
                                 <div className={`mt-1 h-2 w-2 rounded-full z-10 ring-2 ring-white ${ev.done ? "bg-emerald-500" : "bg-slate-200"}`} />
                                 <div className="min-w-0">
-                                    <p className={`font-bold truncate ${ev.done ? "text-foreground" : "text-muted-foreground"}`}>{ev.label}</p>
-                                    <p className="text-[9px] text-muted-foreground italic font-medium">{ev.timestamp === "-" ? timelineHint(ev.label, order.status) : ev.timestamp}</p>
+                                    <p className={`font-bold truncate ${ev.done ? "text-slate-900" : "text-slate-500"}`}>{ev.label}</p>
+                                    <p className="text-[9px] text-slate-500 italic font-medium">{ev.timestamp === "-" ? timelineHint(ev.label, order.status) : ev.timestamp}</p>
                                 </div>
                             </div>
                         ))}
@@ -496,20 +750,19 @@ function DetailDialog({ order, onReassign }: { order: Order; onReassign: () => v
                 </div>
             </div>
 
-            {/* Full Width Audit Log at the bottom */}
-            <div className="rounded-xl border p-4 bg-muted/20">
-                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Audit Log</p>
+            <div className="rounded-xl border p-4 bg-slate-50">
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Audit Log</p>
                 <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
                     {order.auditLog.map((log, i) => (
-                        <div key={i} className="text-[10px] flex gap-3 bg-card p-2 rounded border border-border/50">
-                            <span className="font-mono text-muted-foreground shrink-0 border-r pr-2">{log.time.split(" ")[1]}</span>
+                        <div key={i} className="text-[10px] flex gap-3 bg-white p-2 rounded border border-slate-200">
+                            <span className="font-mono text-slate-500 shrink-0 border-r pr-2">{log.time.split(" ")[1]}</span>
                             <div className="flex-1 min-w-0">
-                                <p className="font-bold truncate text-primary/80">{log.by}</p>
-                                <p className="font-medium text-foreground">{log.action}</p>
+                                <p className="font-bold truncate text-slate-700">{log.by}</p>
+                                <p className="font-medium text-slate-900">{log.action}</p>
                             </div>
                         </div>
                     ))}
-                    {order.auditLog.length === 0 && <p className="text-[10px] text-center italic text-muted-foreground py-2">Tidak ada data</p>}
+                    {order.auditLog.length === 0 && <p className="text-[10px] text-center italic text-slate-500 py-2">Tidak ada data</p>}
                 </div>
             </div>
         </div>
@@ -520,22 +773,17 @@ function DetailDialog({ order, onReassign }: { order: Order; onReassign: () => v
 export default function OrdersPage() {
     const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS)
 
-    // Visible filters (simplified — area & driver hidden, kept in data)
     const [search, setSearch] = useState("")
     const [filterStatus, setFilterStatus] = useState("all")
     const [filterDate, setFilterDate] = useState("")
     const [page, setPage] = useState(1)
 
-    // Hidden filters kept for scalability (not rendered in UI yet)
     const [filterDriver] = useState("all")
     const [filterArea] = useState("all")
 
-    // Detail dialog
     const [detailOrder, setDetailOrder] = useState<Order | null>(null)
-    // sync detail view when orders state changes (e.g. after reassign/deactivate)
     const liveDetail = detailOrder ? orders.find(o => o.id === detailOrder.id) ?? detailOrder : null
 
-    // Action dialogs
     const [cancelTarget, setCancelTarget] = useState<Order | null>(null)
     const [cancelReason, setCancelReason] = useState("")
     const [issueTarget, setIssueTarget] = useState<Order | null>(null)
@@ -564,7 +812,6 @@ export default function OrdersPage() {
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
     const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
-    // ── Actions ──────────────────────────────────────────────────────────────
     const now = () =>
         new Date().toLocaleString("sv-SE", { timeZone: "Asia/Jakarta" }).replace("T", " ").slice(0, 16)
 
@@ -606,7 +853,6 @@ export default function OrdersPage() {
         setDetailOrder(null)
     }
 
-    // Auto-deactivation: mark driver inactive → release from order if still pending/assigned/unassigned
     const deactivateDriver = (orderId: string) => {
         const t = now()
         setOrders((prev) => prev.map((o) => {
@@ -633,426 +879,443 @@ export default function OrdersPage() {
 
     const canAct = (o: Order) => o.status !== "selesai" && o.status !== "batal"
 
+    const statusOptions = [
+        { value: "all", label: "Semua Status" },
+        ...(Object.keys(STATUS_CONFIG) as StatusType[]).map((s) => ({
+            value: s,
+            label: (
+                <span className="flex items-center gap-2">
+                    <span className={`h-2 w-2 rounded-full ${STATUS_CONFIG[s].dot}`} />
+                    {STATUS_CONFIG[s].label}
+                </span>
+            )
+        }))
+    ]
+
     return (
-        <div className="flex flex-col gap-6 p-6">
+        <div className="flex flex-col gap-6 p-6 bg-white min-h-screen">
 
             {/* ── Header ── */}
             <div className="flex items-start justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Order Management</h1>
-                    <p className="text-muted-foreground text-sm mt-1">
+                    <h1 className="text-2xl font-bold tracking-tight text-slate-900">Order Management</h1>
+                    <p className="text-slate-500 text-sm mt-1">
                         Pusat kendali operasional — monitoring, intervensi, dan pengambilan keputusan berbasis data.
                     </p>
                 </div>
                 <Button variant="outline" size="sm" className="gap-2 shrink-0">
-                    <Download className="h-4 w-4" /> Export CSV
+                    <Icons.Download /> Export CSV
                 </Button>
             </div>
 
-            {/* ── Filter Panel & Table Container with proper spacing ── */}
-            <div className="space-y-2">
-                <div className="rounded-xl border bg-card shadow-sm p-4">
+            {/* ── Filter Panel & Table Container ── */}
+            <div className="space-y-4">
+                <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-5">
                     <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                            <p className="text-sm font-semibold">Filter Order</p>
+                            <p className="text-sm font-semibold text-slate-900">Filter Order</p>
                             {activeFilters > 0 && (
-                                <span className="rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 leading-none">
+                                <span className="rounded-full bg-slate-900 text-white text-[10px] font-bold px-1.5 py-0.5 leading-none">
                                     {activeFilters}
                                 </span>
                             )}
                         </div>
                         {(activeFilters > 0 || search) && (
-                            <Button variant="ghost" size="sm" onClick={resetFilters} className="h-7 text-xs gap-1 text-muted-foreground">
-                                <RotateCcw className="h-3 w-3" /> Reset
+                            <Button variant="ghost" size="sm" onClick={resetFilters} className="h-7 text-xs gap-1 text-slate-500">
+                                <Icons.RotateCcw /> Reset
                             </Button>
                         )}
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {/* Search */}
                         <div className="relative sm:col-span-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                <Icons.Search />
+                            </div>
                             <Input
-                                id="order-search"
                                 placeholder="Cari kode order, customer, atau driver…"
-                                className="pl-9 text-sm"
+                                className="pl-10 text-sm"
                                 value={search}
                                 onChange={(e) => { setSearch(e.target.value); setPage(1) }}
                             />
                         </div>
 
-                        {/* Status */}
                         <div className="relative">
-                            <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v); setPage(1) }}>
-                                <SelectTrigger id="filter-status" className="text-sm">
-                                    <SelectValue placeholder="Semua Status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">Semua Status</SelectItem>
-                                    {(Object.keys(STATUS_CONFIG) as StatusType[]).map((s) => (
-                                        <SelectItem key={s} value={s}>
-                                            <span className="flex items-center gap-2">
-                                                <span className={`h-2 w-2 rounded-full ${STATUS_CONFIG[s].dot}`} />
-                                                {STATUS_CONFIG[s].label}
-                                            </span>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <Select 
+                                value={filterStatus} 
+                                onChange={(v) => { setFilterStatus(v); setPage(1) }}
+                                options={statusOptions}
+                            />
                         </div>
 
-                        {/* Tanggal */}
                         <div className="relative">
-                            <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none z-10" />
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                <Icons.CalendarDays />
+                            </div>
                             <Input
-                                id="filter-date"
                                 type="date"
                                 value={filterDate}
                                 onChange={(e) => { setFilterDate(e.target.value); setPage(1) }}
-                                className="text-sm pl-9"
+                                className="text-sm pl-10"
                             />
                         </div>
                     </div>
                 </div>
 
                 {/* ── Table Container ── */}
-                <div className="rounded-xl border shadow-sm overflow-hidden mt-4">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="bg-muted/40 hover:bg-muted/40">
-                                <TableHead className="font-semibold w-[110px]">Kode Order</TableHead>
-                                <TableHead className="font-semibold">Customer</TableHead>
-                                <TableHead className="font-semibold">Driver</TableHead>
-                                <TableHead className="font-semibold">Pickup → Dropoff</TableHead>
-                                <TableHead className="font-semibold w-[110px]">Status</TableHead>
-                                <TableHead className="font-semibold w-[140px]">Waktu Order</TableHead>
-                                <TableHead className="font-semibold w-[120px]">Est. Biaya</TableHead>
-                                <TableHead className="font-semibold text-right pr-4 w-[120px]">Aksi</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
+                <div className="rounded-xl border border-slate-200 shadow-sm overflow-hidden bg-white">
+                    <table className="w-full table-fixed">
+                        <thead className="bg-slate-50 border-b border-slate-200">
+                            <tr>
+                                <th className="h-12 text-left text-sm font-semibold text-slate-700 pl-6 w-[100px]">Kode Order</th>
+                                <th className="h-12 text-left text-sm font-semibold text-slate-700 w-[120px]">Customer</th>
+                                <th className="h-12 text-left text-sm font-semibold text-slate-700 w-[120px]">Driver</th>
+                                <th className="h-12 text-left text-sm font-semibold text-slate-700 w-[220px]">Pickup → Dropoff</th>
+                                <th className="h-12 text-left text-sm font-semibold text-slate-700 w-[90px]">Status</th>
+                                <th className="h-12 text-left text-sm font-semibold text-slate-700 w-[140px]">Waktu Order</th>
+                                <th className="h-12 text-left text-sm font-semibold text-slate-700 w-[100px]">Est. Biaya</th>
+                                <th className="h-12 text-right text-sm font-semibold text-slate-700 pr-6 w-[90px]">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-200">
                             {paginated.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={8} className="py-20 text-center">
-                                        <div className="flex flex-col items-center gap-3 text-muted-foreground">
-                                            <Search className="h-10 w-10 opacity-20" />
+                                <tr>
+                                    <td colSpan={8} className="py-20 text-center">
+                                        <div className="flex flex-col items-center gap-3 text-slate-500">
+                                            <Icons.Search />
                                             <p className="text-sm font-medium">Tidak ada order yang sesuai filter</p>
                                             <Button variant="ghost" size="sm" onClick={resetFilters} className="gap-1">
-                                                <RotateCcw className="h-3.5 w-3.5" /> Reset Filter
+                                                <Icons.RotateCcw /> Reset Filter
                                             </Button>
                                         </div>
-                                    </TableCell>
-                                </TableRow>
+                                    </td>
+                                </tr>
                             ) : paginated.map((order) => (
-                                <TableRow key={order.id} className="hover:bg-muted/20 transition-colors group">
-
-                                    {/* Kode */}
-                                    <TableCell className="font-mono font-bold text-sm text-primary">{order.id}</TableCell>
-
-                                    {/* Customer */}
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                                                <User className="h-3.5 w-3.5 text-primary" />
-                                            </div>
-                                            <span className="text-sm font-medium">{order.customer}</span>
-                                        </div>
-                                    </TableCell>
-
-                                    {/* Driver */}
-                                    <TableCell>
+                                <tr key={order.id} className="hover:bg-slate-50 transition-colors">
+                                    <td className="py-4 pl-6 font-mono font-bold text-sm truncate" style={{ color: '#E04D04' }}>{order.id}</td>
+                                    <td className="py-4 truncate pr-2">
+                                        <span className="text-sm font-medium text-slate-900">{order.customer}</span>
+                                    </td>
+                                    <td className="py-4 truncate pr-2">
                                         {order.driver === "-"
-                                            ? <span className="text-xs text-muted-foreground italic">Belum ditugaskan</span>
-                                            : (
-                                                <div className="flex items-center gap-1.5 text-sm">
-                                                    <Truck className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                                                    <span>{order.driver}</span>
-                                                </div>
-                                            )
+                                            ? <span className="text-xs text-slate-500 italic">Belum ditugaskan</span>
+                                            : <span className="text-sm text-slate-900">{order.driver}</span>
                                         }
-                                    </TableCell>
-
-                                    {/* Route */}
-                                    <TableCell>
-                                        <div className="flex items-center gap-1 text-sm flex-wrap">
-                                            <MapPin className="h-3 w-3 text-red-500 shrink-0" />
-                                            <span className="font-medium">{order.pickup}</span>
-                                            <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0" />
-                                            <MapPin className="h-3 w-3 text-emerald-500 shrink-0" />
-                                            <span className="font-medium">{order.dropoff}</span>
+                                    </td>
+                                    <td className="py-4 pr-2">
+                                        <div className="flex items-center gap-1 text-sm truncate">
+                                            <div className="flex items-center gap-1 min-w-0">
+                                                <Icons.MapPin className="text-red-500 shrink-0" />
+                                                <span className="font-medium text-slate-900 truncate">{order.pickup}</span>
+                                            </div>
+                                            <span className="text-slate-400 shrink-0">→</span>
+                                            <div className="flex items-center gap-1 min-w-0">
+                                                <Icons.MapPin className="text-emerald-500 shrink-0" />
+                                                <span className="font-medium text-slate-900 truncate">{order.dropoff}</span>
+                                            </div>
+                                            <span className="text-xs text-slate-500 ml-1 shrink-0">({order.dist})</span>
                                         </div>
-                                        <p className="text-[11px] text-muted-foreground mt-0.5">{order.dist}</p>
-                                    </TableCell>
-
-                                    {/* Status */}
-                                    <TableCell><StatusPill status={order.status} /></TableCell>
-
-                                    {/* Waktu */}
-                                    <TableCell>
-                                        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                                            <Clock className="h-3.5 w-3.5 shrink-0" />
-                                            {order.date}
+                                    </td>
+                                    <td className="py-4">
+                                        <div className="flex justify-start">
+                                            <StatusPill status={order.status} />
                                         </div>
-                                    </TableCell>
-
-                                    {/* Estimasi */}
-                                    <TableCell>
-                                        <span className="text-sm font-semibold">{order.estimasi}</span>
-                                    </TableCell>
-
-                                    {/* Aksi */}
-                                    <TableCell className="text-right pr-4">
+                                    </td>
+                                    <td className="py-4">
+                                        <span className="text-sm text-slate-500">{order.date}</span>
+                                    </td>
+                                    <td className="py-4">
+                                        <span className="text-sm font-semibold text-slate-900">{order.estimasi}</span>
+                                    </td>
+                                    <td className="py-4 text-right pr-6">
                                         <div className="flex items-center justify-end gap-1">
-                                            {/* View Detail Button */}
                                             <Button
-                                                id={`btn-detail-${order.id}`}
                                                 variant="outline"
                                                 size="sm"
-                                                className="h-8 gap-1.5 text-xs"
+                                                className="h-8 gap-1.5 text-xs shrink-0"
                                                 onClick={() => setDetailOrder(order)}
                                             >
-                                                <Eye className="h-3.5 w-3.5" /> Detail
+                                                <Icons.Eye /> Detail
                                             </Button>
 
-                                            {/* Action Dropdown — always shown for every row */}
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                        <MoreHorizontal className="h-4 w-4" />
+                                            <DropdownMenu
+                                                trigger={
+                                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 shrink-0">
+                                                        <Icons.MoreHorizontal />
                                                     </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="w-56">
-                                                    <DropdownMenuLabel>Aksi Operasional</DropdownMenuLabel>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem
-                                                        onClick={() => { setReassignTarget(order); setReassignDriver("") }}
-                                                        disabled={!canAct(order)}
-                                                    >
-                                                        <UserPlus className="mr-2 h-4 w-4 text-[#E04D04]" /> Ganti Driver
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() => deactivateDriver(order.id)}
-                                                        disabled={!(canAct(order) && order.driver !== "-" && order.driverActive)}
-                                                        className="text-red-500 focus:text-red-500"
-                                                    >
-                                                        <PowerOff className="mr-2 h-4 w-4" /> Nonaktifkan Driver
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() => { setIssueTarget(order); setIssueNote("") }}
-                                                        disabled={!canAct(order)}
-                                                        className="text-orange-600 focus:text-orange-600"
-                                                    >
-                                                        <AlertTriangle className="mr-2 h-4 w-4" /> Tandai Bermasalah
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem
-                                                        onClick={() => { setCancelTarget(order); setCancelReason("") }}
-                                                        disabled={!canAct(order)}
-                                                        className="text-red-600 focus:text-red-600"
-                                                    >
-                                                        <XCircle className="mr-2 h-4 w-4" /> Batalkan Order
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
+                                                }
+                                            >
+                                                <DropdownLabel>Aksi Operasional</DropdownLabel>
+                                                <DropdownSeparator />
+                                                <DropdownItem
+                                                    onClick={() => { setReassignTarget(order); setReassignDriver("") }}
+                                                    disabled={!canAct(order)}
+                                                >
+                                                    <Icons.UserPlus /> Ganti Driver
+                                                </DropdownItem>
+                                                <DropdownItem
+                                                    onClick={() => deactivateDriver(order.id)}
+                                                    disabled={!(canAct(order) && order.driver !== "-" && order.driverActive)}
+                                                    className="text-red-500"
+                                                >
+                                                    <Icons.PowerOff /> Nonaktifkan Driver
+                                                </DropdownItem>
+                                                <DropdownItem
+                                                    onClick={() => { setIssueTarget(order); setIssueNote("") }}
+                                                    disabled={!canAct(order)}
+                                                    className="text-orange-600"
+                                                >
+                                                    <Icons.AlertTriangle /> Tandai Bermasalah
+                                                </DropdownItem>
+                                                <DropdownSeparator />
+                                                <DropdownItem
+                                                    onClick={() => { setCancelTarget(order); setCancelReason("") }}
+                                                    disabled={!canAct(order)}
+                                                    className="text-red-600"
+                                                >
+                                                    <Icons.XCircle /> Batalkan Order
+                                                </DropdownItem>
                                             </DropdownMenu>
                                         </div>
-                                    </TableCell>
-                                </TableRow>
+                                    </td>
+                                </tr>
                             ))}
-                        </TableBody>
-                    </Table>
+                        </tbody>
+                    </table>
                 </div>
 
-                {/* ── Summary Bar (below table) ── */}
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
+                {/* ── Summary Bar ── */}
+                <div className="flex items-center justify-between text-sm text-slate-500 px-1">
                     <span>
-                        Menampilkan <span className="font-semibold text-foreground">{filtered.length}</span> dari{" "}
-                        <span className="font-semibold text-foreground">{orders.length}</span> order
+                        Menampilkan <span className="font-semibold text-slate-900">{filtered.length}</span> dari{" "}
+                        <span className="font-semibold text-slate-900">{orders.length}</span> order
                     </span>
                     <span>Halaman {page} dari {totalPages}</span>
                 </div>
-                {/* ── Pagination (centered, numbered, slightly bigger) ── */}
+
+                {/* ── Pagination tanpa border ── */}
                 {totalPages > 1 && (
-                    <div className="flex items-center justify-center gap-1.5">
+                    <div className="flex items-center justify-center gap-2 pt-2">
                         <Button
-                            variant="outline" size="sm"
+                            variant="ghost" 
+                            size="sm"
                             onClick={() => setPage((p) => Math.max(1, p - 1))}
                             disabled={page === 1}
-                            className="h-9 w-9 p-0"
+                            className="h-8 px-3 gap-1 text-xs"
+                            style={{ color: page !== 1 ? '#E04D04' : '#94a3b8' }}
                         >
-                            <ChevronLeft className="h-4 w-4" />
+                            <Icons.ChevronLeft className="h-3.5 w-3.5" />
+                            <span>Prev</span>
                         </Button>
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
-                            const show = p === 1 || p === totalPages || Math.abs(p - page) <= 1
-                            if (!show) {
-                                const prevShow = p - 1 === 1 || Math.abs((p - 1) - page) <= 1
-                                if (!prevShow) return null
-                                return <span key={`ellipsis-${p}`} className="px-1 text-muted-foreground">…</span>
-                            }
-                            return (
-                                <Button key={p} variant={page === p ? "default" : "outline"} size="sm"
-                                    onClick={() => setPage(p)} className="h-9 w-9 p-0 text-sm">
-                                    {p}
-                                </Button>
-                            )
-                        })}
+                        
+                        <div className="flex gap-1">
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                                const show = p === 1 || p === totalPages || Math.abs(p - page) <= 1
+                                if (!show) {
+                                    const prevShow = p - 1 === 1 || Math.abs((p - 1) - page) <= 1
+                                    if (!prevShow) return null
+                                    return <span key={`ellipsis-${p}`} className="px-1 text-slate-400">…</span>
+                                }
+                                return (
+                                    <Button 
+                                        key={p} 
+                                        variant={page === p ? "default" : "ghost"} 
+                                        size="sm"
+                                        onClick={() => setPage(p)} 
+                                        className="h-8 w-8 p-0 text-xs"
+                                        style={page === p ? { 
+                                            backgroundColor: '#E04D04', 
+                                            color: 'white'
+                                        } : { 
+                                            color: '#64748B'
+                                        }}
+                                    >
+                                        {p}
+                                    </Button>
+                                )
+                            })}
+                        </div>
+
                         <Button
-                            variant="outline" size="sm"
+                            variant="ghost" 
+                            size="sm"
                             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                             disabled={page === totalPages}
-                            className="h-9 w-9 p-0"
+                            className="h-8 px-3 gap-1 text-xs"
+                            style={{ color: page < totalPages ? '#E04D04' : '#94a3b8' }}
                         >
-                            <ChevronRight className="h-4 w-4" />
+                            <span>Next</span>
+                            <Icons.ChevronRight className="h-3.5 w-3.5" />
                         </Button>
                     </div>
                 )}
 
-                {/* ══════════════════════════════════════════════════════════
-                DIALOGS
-            ══════════════════════════════════════════════════════════ */}
+                {/* ═══════════════════════════════════════════════════════════
+                    DIALOGS
+                ═══════════════════════════════════════════════════════════ */}
 
-                {/* Detail Order — uses liveDetail so it updates if state changes */}
-                <Dialog open={!!detailOrder} onOpenChange={(o) => { if (!o) setDetailOrder(null) }}>
-                    <DialogContent className="sm:max-w-xl lg:max-w-2xl max-h-[90vh] overflow-y-auto p-6">
-                        <DialogHeader className="mb-2">
-                            <DialogTitle className="flex items-center gap-2 flex-wrap">
+                {/* Detail Order */}
+                <Modal isOpen={!!detailOrder} onClose={() => setDetailOrder(null)} maxWidth="4xl">
+                    <div className="px-6 py-4 border-b border-slate-200 flex items-start justify-between bg-white">
+                        <div>
+                            <h2 className="text-xl font-semibold text-slate-900 flex items-center gap-2 flex-wrap">
                                 <span>Detail Order</span>
-                                <span className="font-mono text-muted-foreground text-sm">{liveDetail?.id}</span>
+                                <span className="font-mono text-sm" style={{ color: '#E04D04' }}>{liveDetail?.id}</span>
                                 {liveDetail && <StatusPill status={liveDetail.status} />}
-                            </DialogTitle>
-                            <DialogDescription>
-                                Informasi lengkap transaksi — durasi, breakdown biaya, rating, audit log &amp; rute.
-                            </DialogDescription>
-                        </DialogHeader>
+                            </h2>
+                            <p className="text-sm text-slate-500 mt-1">
+                                Informasi lengkap transaksi — durasi, breakdown biaya, rating, audit log & rute.
+                            </p>
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => setDetailOrder(null)} className="h-8 w-8 p-0">
+                            <Icons.X />
+                        </Button>
+                    </div>
+                    <div className="p-6 overflow-y-auto max-h-[70vh] bg-white">
                         {liveDetail && <DetailDialog order={liveDetail} onReassign={() => { setReassignTarget(liveDetail); setReassignDriver(""); setDetailOrder(null) }} />}
-                    </DialogContent>
-                </Dialog>
-
-                {/* Cancel Order */}
-                <Dialog open={!!cancelTarget} onOpenChange={(o) => { if (!o) setCancelTarget(null) }}>
-                    <DialogContent className="max-w-md">
-                        <DialogHeader>
-                            <DialogTitle className="flex items-center gap-2 text-red-600">
-                                <XCircle className="h-5 w-5" /> Batalkan Order
-                            </DialogTitle>
-                            <DialogDescription>
-                                Order <span className="font-mono font-semibold">{cancelTarget?.id}</span> —{" "}
-                                {cancelTarget?.customer} akan dibatalkan. Tindakan ini tercatat di audit log.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-3 pt-1">
-                            <div>
-                                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                                    Alasan Pembatalan <span className="text-red-500">*</span>
-                                </label>
-                                <Textarea
-                                    placeholder="Contoh: Driver tidak datang, kesalahan pemesanan, gangguan sistem…"
-                                    className="mt-1.5 text-sm"
-                                    rows={3}
-                                    value={cancelReason}
-                                    onChange={(e) => setCancelReason(e.target.value)}
-                                />
-                            </div>
-                            <p className="text-xs text-muted-foreground">Dibatalkan oleh: <strong>Admin</strong></p>
-                            <div className="flex gap-2 justify-end">
-                                <Button variant="outline" size="sm" onClick={() => setCancelTarget(null)}>Tutup</Button>
-                                <Button
-                                    variant="destructive" size="sm"
-                                    disabled={!cancelReason.trim()}
-                                    onClick={applyCancel}
-                                >
-                                    <XCircle className="mr-2 h-4 w-4" /> Konfirmasi Batalkan
-                                </Button>
-                            </div>
-                        </div>
-                    </DialogContent>
-                </Dialog>
-
-                {/* Mark as Issue */}
-                <Dialog open={!!issueTarget} onOpenChange={(o) => { if (!o) setIssueTarget(null) }}>
-                    <DialogContent className="max-w-md">
-                        <DialogHeader>
-                            <DialogTitle className="flex items-center gap-2 text-orange-600">
-                                <AlertTriangle className="h-5 w-5" /> Tandai Bermasalah
-                            </DialogTitle>
-                            <DialogDescription>
-                                Order <span className="font-mono font-semibold">{issueTarget?.id}</span> akan ditandai sebagai <strong>Issue</strong>.
-                                Order tidak dibatalkan, namun butuh perhatian admin.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-3 pt-1">
-                            <div>
-                                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                                    Catatan Masalah <span className="text-red-500">*</span>
-                                </label>
-                                <Textarea
-                                    placeholder="Contoh: Driver sulit dihubungi, customer komplain, keterlambatan…"
-                                    className="mt-1.5 text-sm"
-                                    rows={3}
-                                    value={issueNote}
-                                    onChange={(e) => setIssueNote(e.target.value)}
-                                />
-                            </div>
-                            <div className="flex gap-2 justify-end">
-                                <Button variant="outline" size="sm" onClick={() => setIssueTarget(null)}>Tutup</Button>
-                                <Button
-                                    className="bg-orange-500 hover:bg-orange-600 text-white" size="sm"
-                                    disabled={!issueNote.trim()}
-                                    onClick={applyIssue}
-                                >
-                                    <AlertTriangle className="mr-2 h-4 w-4" /> Tandai Bermasalah
-                                </Button>
-                            </div>
-                        </div>
-                    </DialogContent>
-                </Dialog>
+                    </div>
+                </Modal>
 
                 {/* Reassign Driver */}
-                <Dialog open={!!reassignTarget} onOpenChange={(o) => { if (!o) setReassignTarget(null) }}>
-                    <DialogContent className="max-w-md">
-                        <DialogHeader>
-                            <DialogTitle className="flex items-center gap-2 text-[#E04D04]">
-                                <UserPlus className="h-5 w-5" /> Ganti Driver
-                            </DialogTitle>
-                            <DialogDescription>
-                                Pilih driver pengganti untuk order{" "}
-                                <span className="font-mono font-semibold">{reassignTarget?.id}</span>.
-                                Driver sebelumnya: <strong>{reassignTarget?.driver === "-" ? "Belum ditugaskan" : reassignTarget?.driver}</strong>.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-3 pt-1">
-                            <div>
-                                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                                    Pilih Driver Aktif <span className="text-red-500">*</span>
-                                </label>
-                                <Select value={reassignDriver} onValueChange={setReassignDriver}>
-                                    <SelectTrigger className="mt-1.5 text-sm">
-                                        <SelectValue placeholder="Pilih driver…" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {DRIVER_OPTIONS
-                                            .filter((d) => d !== reassignTarget?.driver)
-                                            .map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)
-                                        }
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                                Pergantian akan tercatat di audit log dan notifikasi dikirim ke driver baru.
-                            </p>
-                            <div className="flex gap-2 justify-end">
-                                <Button variant="outline" size="sm" onClick={() => setReassignTarget(null)}>Tutup</Button>
-                                <Button
-                                    className="bg-[#E04D04] hover:bg-[#E04D04]/90 text-white" size="sm"
-                                    disabled={!reassignDriver}
-                                    onClick={applyReassign}
-                                >
-                                    <UserPlus className="mr-2 h-4 w-4" /> Konfirmasi Ganti Driver
-                                </Button>
-                            </div>
+                <Modal isOpen={!!reassignTarget} onClose={() => setReassignTarget(null)}>
+                    <div className="px-5 py-4 border-b border-slate-200">
+                        <div className="flex items-center gap-2 text-[#E04D04]">
+                            <Icons.UserPlus />
+                            <span className="font-semibold text-base">Ganti Driver</span>
                         </div>
-                    </DialogContent>
-                </Dialog>
+                    </div>
+                    <div className="px-5 py-4 space-y-4 bg-white">
+                        <p className="text-sm text-slate-600 leading-relaxed">
+                            Pilih driver pengganti untuk order{" "}
+                            <span className="font-mono font-semibold" style={{ color: '#E04D04' }}>{reassignTarget?.id}</span>.
+                            Driver sebelumnya: <strong className="text-slate-900">{reassignTarget?.driver === "-" ? "Belum ditugaskan" : reassignTarget?.driver}</strong>.
+                        </p>
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                                Pilih Driver Aktif <span className="text-red-500">*</span>
+                            </label>
+                            <Select 
+                                value={reassignDriver} 
+                                onChange={setReassignDriver}
+                                options={DRIVER_OPTIONS
+                                    .filter((d) => d !== reassignTarget?.driver)
+                                    .map((d) => ({ value: d, label: d }))}
+                                placeholder="Pilih driver…"
+                            />
+                        </div>
+                        <p className="text-xs text-slate-500">
+                            Pergantian akan tercatat di audit log dan notifikasi dikirim ke driver baru.
+                        </p>
+                        <div className="flex gap-2 justify-end pt-2">
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => setReassignTarget(null)}
+                            >
+                                Tutup
+                            </Button>
+                            <Button
+                                size="sm"
+                                disabled={!reassignDriver}
+                                onClick={applyReassign}
+                                style={{ backgroundColor: '#E04D04', color: 'white' }}
+                            >
+                                <Icons.UserPlus /> Konfirmasi Ganti Driver
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
 
+                {/* Cancel Order */}
+                <Modal isOpen={!!cancelTarget} onClose={() => setCancelTarget(null)}>
+                    <div className="px-5 py-4 border-b border-slate-200">
+                        <div className="flex items-center gap-2 text-red-600">
+                            <Icons.XCircle />
+                            <span className="font-semibold text-base">Batalkan Order</span>
+                        </div>
+                    </div>
+                    <div className="px-5 py-4 space-y-4 bg-white">
+                        <p className="text-sm text-slate-600 leading-relaxed">
+                            Order <span className="font-mono font-semibold" style={{ color: '#E04D04' }}>{cancelTarget?.id}</span> —{" "}
+                            {cancelTarget?.customer} akan dibatalkan. Tindakan ini tercatat di audit log.
+                        </p>
+                        <div>
+                            <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                                Alasan Pembatalan <span className="text-red-500">*</span>
+                            </label>
+                            <Textarea
+                                placeholder="Contoh: Driver tidak datang, kesalahan pemesanan, gangguan sistem…"
+                                className="mt-1.5 text-sm"
+                                rows={3}
+                                value={cancelReason}
+                                onChange={(e) => setCancelReason(e.target.value)}
+                            />
+                        </div>
+                        <p className="text-xs text-slate-500">Dibatalkan oleh: <strong>Admin</strong></p>
+                        <div className="flex gap-2 justify-end pt-2">
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => setCancelTarget(null)}
+                            >
+                                Tutup
+                            </Button>
+                            <Button
+                                size="sm"
+                                disabled={!cancelReason.trim()}
+                                onClick={applyCancel}
+                                style={{ backgroundColor: '#DC2626', color: 'white' }}
+                            >
+                                <Icons.XCircle /> Konfirmasi Batalkan
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
+
+                {/* Mark as Issue */}
+                <Modal isOpen={!!issueTarget} onClose={() => setIssueTarget(null)}>
+                    <div className="px-5 py-4 border-b border-slate-200">
+                        <div className="flex items-center gap-2 text-orange-600">
+                            <Icons.AlertTriangle />
+                            <span className="font-semibold text-base">Tandai Bermasalah</span>
+                        </div>
+                    </div>
+                    <div className="px-5 py-4 space-y-4 bg-white">
+                        <p className="text-sm text-slate-600 leading-relaxed">
+                            Order <span className="font-mono font-semibold" style={{ color: '#E04D04' }}>{issueTarget?.id}</span> akan ditandai sebagai <strong>Issue</strong>.
+                            Order tidak dibatalkan, namun butuh perhatian admin.
+                        </p>
+                        <div>
+                            <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                                Catatan Masalah <span className="text-red-500">*</span>
+                            </label>
+                            <Textarea
+                                placeholder="Contoh: Driver sulit dihubungi, customer komplain, keterlambatan…"
+                                className="mt-1.5 text-sm"
+                                rows={3}
+                                value={issueNote}
+                                onChange={(e) => setIssueNote(e.target.value)}
+                            />
+                        </div>
+                        <div className="flex gap-2 justify-end pt-2">
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => setIssueTarget(null)}
+                            >
+                                Tutup
+                            </Button>
+                            <Button
+                                size="sm"
+                                disabled={!issueNote.trim()}
+                                onClick={applyIssue}
+                                style={{ backgroundColor: '#F97316', color: 'white' }}
+                            >
+                                <Icons.AlertTriangle /> Tandai Bermasalah
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
             </div>
         </div>
     )
