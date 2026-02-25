@@ -26,46 +26,46 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 const adminNavigation = {
   "reporting-admin": {
     user: {
-      name: "Reporting Admin",
+      name: "Admin Pelaporan",
       email: "finance@cakli.com",
       avatar: "/avatars/reporting.jpg",
     },
     items: [
       { title: "Dashboard", url: "/reporting-admin", icon: Home, exact: true },
-      { title: "Analytics", url: "/reporting-admin/analytics", icon: TrendingUp },
+      { title: "Analitik", url: "/reporting-admin/analytics", icon: TrendingUp },
       { title: "Pendapatan", url: "/reporting-admin/reports/revenue", icon: Zap },
-      { title: "Order History", url: "/reporting-admin/history", icon: History },
-      { title: "Driver Performance", url: "/reporting-admin/reports/driver-performance", icon: FileText },
-      { title: "Cancellation Report", url: "/reporting-admin/reports/cancellation", icon: TrendingDown },
+      { title: "Riwayat Pesanan", url: "/reporting-admin/history", icon: History },
+      { title: "Performa Pengemudi", url: "/reporting-admin/reports/driver-performance", icon: FileText },
+      { title: "Laporan Pembatalan", url: "/reporting-admin/reports/cancellation", icon: TrendingDown },
     ],
   },
   "master-admin": {
     user: {
-      name: "Master Admin",
+      name: "Admin Utama",
       email: "superadmin@cakli.com",
       avatar: "/avatars/master.jpg",
     },
     items: [
-      { title: "Global Dashboard", url: "/master-admin", icon: LayoutDashboard, exact: true },
-      { title: "Tariff Management", url: "/master-admin/tariffs", icon: TrendingUp },
-      { title: "Area & Zone", url: "/master-admin/areas", icon: Map },
-      { title: "Admin Roles", url: "/master-admin/roles", icon: ShieldCheck },
-      { title: "Audit Log", url: "/master-admin/audit", icon: ClipboardList },
-      { title: "Cross-Area Analytics", url: "/master-admin/analytics", icon: TrendingDown },
+      { title: "Dashboard Global", url: "/master-admin", icon: LayoutDashboard, exact: true },
+      { title: "Manajemen Tarif", url: "/master-admin/tariffs", icon: TrendingUp },
+      { title: "Area & Zona", url: "/master-admin/areas", icon: Map },
+      { title: "Peran Admin", url: "/master-admin/roles", icon: ShieldCheck },
+      { title: "Log Audit", url: "/master-admin/audit", icon: ClipboardList },
+      { title: "Analitik Lintas Area", url: "/master-admin/analytics", icon: TrendingDown },
     ],
   },
   "operation-admin": {
     user: {
-      name: "Operation Admin",
+      name: "Admin Operasional",
       email: "admin@cakli.com",
       avatar: "/avatars/admin.jpg",
     },
     items: [
       { title: "Dashboard", url: "/operation-admin", icon: LayoutDashboard, exact: true },
-      { title: "Order Management", url: "/operation-admin/orders", icon: ShoppingCart },
-      { title: "User Management", url: "/operation-admin/users", icon: Users },
-      { title: "Driver Management", url: "/operation-admin/drivers", icon: Car },
-      { title: "Complaints & Disputes", url: "/operation-admin/complaints", icon: MessageSquareWarning },
+      { title: "Manajemen Pesanan", url: "/operation-admin/orders", icon: ShoppingCart },
+      { title: "Manajemen Pengguna", url: "/operation-admin/users", icon: Users },
+      { title: "Manajemen Pengemudi", url: "/operation-admin/drivers", icon: Car },
+      { title: "Keluhan & Sengketa", url: "/operation-admin/complaints", icon: MessageSquareWarning },
     ],
   },
 }

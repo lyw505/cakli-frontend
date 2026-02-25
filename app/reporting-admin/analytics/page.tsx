@@ -41,6 +41,8 @@ import {
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 
+import { cn } from "@/lib/utils"
+
 const comparisonData = [
     { city: "Malang", orders: 15230, revenue: 18500, cancelRate: 4.2 },
     { city: "Surabaya", orders: 42100, revenue: 84200, cancelRate: 6.8 },
@@ -57,26 +59,44 @@ const growthTrend = [
 ]
 
 export default function CrossAreaAnalytics() {
+    const [timeFilter, setTimeFilter] = React.useState("harian")
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Cross-Area Analytics</h1>
-                    <p className="text-muted-foreground">Comparative performance metrics across operational regions.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Analitik Lintas Area</h1>
+                    <p className="text-muted-foreground">Metrik performa komparatif di seluruh wilayah operasional.</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-3">
+                    <div className="inline-flex items-center p-1 bg-secondary/50 rounded-xl border border-border/50">
+                        {['harian', 'mingguan', 'bulanan', 'tahunan'].map((item) => (
+                            <button
+                                key={item}
+                                onClick={() => setTimeFilter(item)}
+                                className={cn(
+                                    "px-4 py-1.5 text-sm font-medium rounded-lg transition-all duration-200",
+                                    timeFilter === item
+                                        ? "bg-white text-[#E65100] shadow-sm"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-white/50"
+                                )}
+                            >
+                                {item.charAt(0).toUpperCase() + item.slice(1)}
+                            </button>
+                        ))}
+                    </div>
                     <Select defaultValue="all">
                         <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Region Filter" />
+                            <SelectValue placeholder="Filter Wilayah" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Regions</SelectItem>
-                            <SelectItem value="active">Active Only</SelectItem>
-                            <SelectItem value="growth">High Growth Only</SelectItem>
+                            <SelectItem value="all">Semua Wilayah</SelectItem>
+                            <SelectItem value="active">Hanya Aktif</SelectItem>
+                            <SelectItem value="growth">Pertumbuhan Tinggi</SelectItem>
                         </SelectContent>
                     </Select>
                     <Button variant="outline">
-                        <Download className="mr-2 h-4 w-4" /> Export Report
+                        <Download className="mr-2 h-4 w-4" /> Ekspor Laporan
                     </Button>
                 </div>
             </div>
@@ -85,35 +105,35 @@ export default function CrossAreaAnalytics() {
             <div className="grid gap-4 md:grid-cols-3">
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Top Revenue City</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Kota Pendapatan Tertinggi</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold flex items-center gap-2">
                             Surabaya <ArrowUpRight className="text-green-500 size-5" />
                         </div>
-                        <p className="text-xs text-muted-foreground">Contributes 68% of total gross revenue</p>
+                        <p className="text-xs text-muted-foreground">Menyumbang 68% dari total pendapatan kotor</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Lowest Cancel Rate</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Tingkat Pembatalan Terendah</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold flex items-center gap-2">
                             Batu <Badge variant="secondary" className="ml-2 text-green-600 bg-green-50">2.1%</Badge>
                         </div>
-                        <p className="text-xs text-muted-foreground">Highest customer satisfaction score (4.9/5)</p>
+                        <p className="text-xs text-muted-foreground">Skor kepuasan pelanggan tertinggi (4.9/5)</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Fastest Growth</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Pertumbuhan Tercepat</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold flex items-center gap-2">
                             Sidoarjo <TrendingUp className="text-blue-500 size-5" />
                         </div>
-                        <p className="text-xs text-muted-foreground">+5.8% MoM New User Acquisition</p>
+                        <p className="text-xs text-muted-foreground">+5.8% MoM Akuisisi Pengguna Baru</p>
                     </CardContent>
                 </Card>
             </div>
@@ -122,8 +142,8 @@ export default function CrossAreaAnalytics() {
                 {/* Revenue vs Orders Comparison */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Revenue vs Order Volume</CardTitle>
-                        <CardDescription>Correlation between trip volume and gross revenue per city.</CardDescription>
+                        <CardTitle>Pendapatan vs Volume Pesanan</CardTitle>
+                        <CardDescription>Korelasi antara volume perjalanan dan pendapatan kotor per kota.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="h-[300px]">
@@ -135,8 +155,8 @@ export default function CrossAreaAnalytics() {
                                     <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" fontSize={12} tickLine={false} axisLine={false} />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar yAxisId="left" dataKey="revenue" name="Revenue (juta)" fill="#8884d8" radius={[4, 4, 0, 0]} />
-                                    <Bar yAxisId="right" dataKey="orders" name="Orders" fill="#82ca9d" radius={[4, 4, 0, 0]} />
+                                    <Bar yAxisId="left" dataKey="revenue" name="Pendapatan (juta)" fill="#8884d8" radius={[4, 4, 0, 0]} />
+                                    <Bar yAxisId="right" dataKey="orders" name="Pesanan" fill="#82ca9d" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
@@ -146,8 +166,8 @@ export default function CrossAreaAnalytics() {
                 {/* Cancel Rate Analysis */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Cancellation Rate Analysis</CardTitle>
-                        <CardDescription>Percentage of trips cancelled by driver or user.</CardDescription>
+                        <CardTitle>Analisis Tingkat Pembatalan</CardTitle>
+                        <CardDescription>Persentase perjalanan yang dibatalkan oleh pengemudi atau pengguna.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="h-[300px]">
@@ -158,7 +178,7 @@ export default function CrossAreaAnalytics() {
                                     <YAxis dataKey="city" type="category" fontSize={12} tickLine={false} axisLine={false} width={80} />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="cancelRate" name="Cancel Rate %" fill="#ef4444" radius={[0, 4, 4, 0]} barSize={30} />
+                                    <Bar dataKey="cancelRate" name="Tingkat Pembatalan %" fill="#ef4444" radius={[0, 4, 4, 0]} barSize={30} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
@@ -171,25 +191,25 @@ export default function CrossAreaAnalytics() {
                 <CardHeader>
                     <div className="flex items-center gap-2">
                         <Map className="size-5 text-blue-600" />
-                        <CardTitle>Expansion Strategy Insights</CardTitle>
+                        <CardTitle>Wawasan Strategi Ekspansi</CardTitle>
                     </div>
-                    <CardDescription>AI-driven recommendations for next operational zones based on current data.</CardDescription>
+                    <CardDescription>Rekomendasi berbasis AI untuk zona operasional berikutnya berdasarkan data saat ini.</CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-4 md:grid-cols-2">
                     <div className="p-4 bg-white dark:bg-slate-900 rounded-lg shadow-sm border">
                         <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                            <ArrowUpRight className="size-4 text-green-500" /> Primary Target: Gresik
+                            <ArrowUpRight className="size-4 text-green-500" /> Target Utama: Gresik
                         </h4>
                         <p className="text-xs text-muted-foreground">
-                            High demand spillover from Surabaya West. Estimated 15% market capture in first 3 months due to industrial zone commute patterns.
+                            Limpahan permintaan tinggi dari Surabaya Barat. Estimasi 15% penguasaan pasar dalam 3 bulan pertama karena pola komuter zona industri.
                         </p>
                     </div>
                     <div className="p-4 bg-white dark:bg-slate-900 rounded-lg shadow-sm border">
                         <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                            <AlertCircle className="size-4 text-orange-500" /> Optimization Needed: Surabaya East
+                            <AlertCircle className="size-4 text-orange-500" /> Butuh Optimasi: Surabaya Timur
                         </h4>
                         <p className="text-xs text-muted-foreground">
-                            Current cancel rate (6.8%) indicates driver shortage. Recommend increasing driver incentives in East Zones by 5% to match demand.
+                            Tingkat pembatalan saat ini (6.8%) menunjukkan kekurangan pengemudi. Merekomendasikan peningkatan insentif pengemudi di Zona Timur sebesar 5% untuk mengimbangi permintaan.
                         </p>
                     </div>
                 </CardContent>
