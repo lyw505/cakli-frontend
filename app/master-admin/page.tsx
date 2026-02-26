@@ -104,9 +104,6 @@ export default function MasterDashboard() {
                         <h1 className="text-3xl font-bold tracking-tight">Kontrol Sistem Global</h1>
                         <p className="text-muted-foreground text-sm">Data terkonsolidasi tingkat tinggi dan perbandingan regional.</p>
                     </div>
-                    <Badge variant="destructive" className="animate-pulse">
-                        <ShieldAlert className="size-3 mr-1" /> Akses Kritis
-                    </Badge>
                 </div>
 
                 {/* ===== BENTO ROW 1: KPI Cards (4 cols) ===== */}

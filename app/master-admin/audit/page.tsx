@@ -264,12 +264,9 @@ export default function AuditLog() {
                     <h1 className="text-2xl font-bold tracking-tight">Log Audit</h1>
                     <p className="text-sm text-muted-foreground mt-0.5">Catatan permanen seluruh aktivitas administratif dan event sistem.</p>
                 </div>
-                <div className="flex flex-col items-end gap-1 px-4 py-2 bg-red-50 border border-red-100 rounded-lg">
-                    <p className="text-[10px] uppercase font-bold text-red-600 tracking-wider">Tingkat Risiko Sistem</p>
-                    <div className="flex items-center gap-1.5 font-bold text-red-700">
-                        <ShieldAlert className="size-4" /> MENINGKAT
-                    </div>
-                </div>
+                <Badge variant="destructive" className="animate-pulse h-7 px-3">
+                    <ShieldAlert className="size-3.5 mr-1.5" /> Akses Kritis
+                </Badge>
             </div>
 
             {/* ── SUMMARY BAR (24H) ── */}
@@ -277,7 +274,7 @@ export default function AuditLog() {
                 {SUMMARY_24H.map((item, i) => {
                     const isCritical = item.label === "Critical Events" || item.label === "Failed Actions"
                     return (
-                        <Card key={i} className={`overflow-hidden border-slate-200 shadow-sm transition-all ${isCritical ? "border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.1)]" : "ring-1 ring-slate-200 border-none"}`}>
+                        <Card key={i} className={`overflow-hidden border-slate-200 transition-all ${isCritical ? "border-red-500/50" : "ring-1 ring-slate-200 border-none"}`}>
                             <div className="flex items-stretch h-full relative">
                                 <div className={`w-1.5 rounded-full my-3 ml-3 shrink-0 ${isCritical ? "bg-red-500" : "bg-cakli-orange"}`} />
                                 <div className="flex-1">
@@ -319,7 +316,7 @@ export default function AuditLog() {
             {/* ── INTEGRITY & RETENTION (MOVED FROM FOOTER) ── */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Integrity Panel (Light Theme) */}
-                <div className="lg:col-span-8 bg-white rounded-xl p-5 border shadow-sm relative overflow-hidden group ring-1 ring-slate-200">
+                <div className="lg:col-span-8 bg-white rounded-xl p-5 border relative overflow-hidden group ring-1 ring-slate-200">
                     <div className="absolute right-0 top-0 opacity-[0.03] p-4 text-slate-900">
                         <Fingerprint className="size-24" />
                     </div>
@@ -360,7 +357,7 @@ export default function AuditLog() {
 
                 {/* Retention & Export */}
                 <div className="lg:col-span-4 flex flex-col gap-4">
-                    <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-white">
+                    <Card className="border-none ring-1 ring-slate-200 bg-white">
                         <CardHeader className="p-4 pb-0">
                             <CardTitle className="text-xs font-bold flex items-center gap-2">
                                 <Database className="size-3.5 text-blue-500" /> Kebijakan Retensi
@@ -386,61 +383,56 @@ export default function AuditLog() {
                 </div>
             </div>
 
-            {/* ── FILTER PANEL ── */}
-            <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-slate-50/50">
-                <CardContent className="p-4 flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-2 bg-white px-3 h-9 rounded-md border shadow-sm flex-1 min-w-[200px]">
-                        <Search className="size-4 text-muted-foreground" />
-                        <Input
-                            placeholder="Cari Log ID, Aktor, atau Aksi..."
-                            className="border-none shadow-none h-full text-xs p-0 focus-visible:ring-0"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
+            {/* ── FILTER ROW ── */}
+            <div className="flex items-center gap-2 mb-3">
+                <div className="relative group">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground group-focus-within:text-cakli-orange transition-colors" />
+                    <Input
+                        placeholder="Cari Log ID, Aktor, atau Aksi..."
+                        className="pl-9 h-9 w-[200px] bg-white border-slate-200 text-xs"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
 
-                    <Select value={severityFilter} onValueChange={setSeverityFilter}>
-                        <SelectTrigger className="w-[140px] h-9 text-xs bg-white">
-                            <SelectValue placeholder="Tingkat" />
-                        </SelectTrigger>
-                        <SelectContent className="text-xs">
-                            <SelectItem value="all">Semua Tingkat</SelectItem>
-                            <SelectItem value="Critical">Hanya Kritis</SelectItem>
-                            <SelectItem value="High">Tinggi</SelectItem>
-                            <SelectItem value="Medium">Sedang</SelectItem>
-                            <SelectItem value="Low">Rendah</SelectItem>
-                        </SelectContent>
-                    </Select>
+                <Select value={severityFilter} onValueChange={setSeverityFilter}>
+                    <SelectTrigger className="w-[130px] h-9 text-xs bg-white text-slate-600">
+                        <SelectValue placeholder="Tingkat" />
+                    </SelectTrigger>
+                    <SelectContent className="text-xs">
+                        <SelectItem value="all">Semua Tingkat</SelectItem>
+                        <SelectItem value="Critical">Hanya Kritis</SelectItem>
+                        <SelectItem value="High">Tinggi</SelectItem>
+                        <SelectItem value="Medium">Sedang</SelectItem>
+                        <SelectItem value="Low">Rendah</SelectItem>
+                    </SelectContent>
+                </Select>
 
-                    <Select value={moduleFilter} onValueChange={setModuleFilter}>
-                        <SelectTrigger className="w-[140px] h-9 text-xs bg-white">
-                            <SelectValue placeholder="Modul" />
-                        </SelectTrigger>
-                        <SelectContent className="text-xs">
-                            <SelectItem value="all">Semua Modul</SelectItem>
-                            {Array.from(new Set(AUDIT_LOGS.map(l => l.module))).map(m => (
-                                <SelectItem key={m} value={m}>{m}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                <Select value={moduleFilter} onValueChange={setModuleFilter}>
+                    <SelectTrigger className="w-[130px] h-9 text-xs bg-white text-slate-600">
+                        <SelectValue placeholder="Modul" />
+                    </SelectTrigger>
+                    <SelectContent className="text-xs">
+                        <SelectItem value="all">Semua Modul</SelectItem>
+                        {Array.from(new Set(AUDIT_LOGS.map(l => l.module))).map(m => (
+                            <SelectItem key={m} value={m}>{m}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
 
-                    <Button variant="outline" size="sm" className="h-9 gap-2 text-xs bg-white">
-                        <Calendar className="size-3.5" /> Rentang Tanggal
+                <Button variant="outline" size="sm" className="h-9 gap-2 text-[11px] bg-white border-slate-200 text-slate-600">
+                    <Calendar className="size-3.5" /> Rentang Tanggal
+                </Button>
+
+                <div className="ml-auto flex items-center gap-2">
+                    <Button className="bg-cakli-orange hover:bg-cakli-orange/90 text-white text-xs gap-2 h-9 px-4">
+                        <Download className="size-4" /> Manajemen Ekspor
                     </Button>
-
-                    <Separator orientation="vertical" className="h-6" />
-
-                    <div className="flex-1 lg:flex-none">
-                        <Button className="w-full lg:w-auto bg-cakli-orange hover:bg-cakli-orange/90 text-white text-xs gap-2 h-9 px-4">
-                            <Download className="size-4" /> Manajemen Ekspor
-                        </Button>
-                    </div>
-
-                </CardContent>
-            </Card>
+                </div>
+            </div>
 
             {/* ── MAIN LOG TABLE ── */}
-            <Card className="border-none shadow-sm ring-1 ring-slate-200">
+            <Card className="border-none ring-1 ring-slate-200">
                 <CardContent className="p-0">
                     <Table>
                         <TableHeader className="bg-slate-50/50">
@@ -535,7 +527,7 @@ export default function AuditLog() {
 
             {/* ── DETAIL SIDE DRAWER ── */}
             {selectedLog && (
-                <div className="fixed top-0 right-0 h-full w-[420px] bg-white border-l shadow-2xl z-50 flex flex-col overflow-hidden">
+                <div className="fixed top-0 right-0 h-full w-[420px] bg-white border-l z-50 flex flex-col overflow-hidden">
                     {/* Header */}
                     <div className="flex items-center justify-between px-5 py-4 border-b shrink-0 bg-slate-50/50">
                         <div className="flex items-center gap-3">
@@ -586,7 +578,7 @@ export default function AuditLog() {
                             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Metadata Aktor</p>
                             <div className="space-y-2">
                                 <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-100">
-                                    <Avatar className="size-9 border-2 border-white shadow-sm font-bold">
+                                    <Avatar className="size-9 border-2 border-white font-bold">
                                         <AvatarFallback className="text-xs bg-white text-slate-800">{selectedLog.actor.name[0]}</AvatarFallback>
                                     </Avatar>
                                     <div className="flex-1">
@@ -619,7 +611,7 @@ export default function AuditLog() {
                         {/* Section C: Action Detail (Before/After) - NOW LIGHT THEME */}
                         <div className="space-y-3">
                             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Detail Tindakan</p>
-                            <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-4">
+                            <div className="p-4 bg-white rounded-xl border border-slate-200 space-y-4">
                                 <div className="flex items-center justify-between">
                                     <span className="text-[11px] font-bold text-slate-500">Tindakan:</span>
                                     <Badge className="bg-blue-50 text-blue-600 border-blue-200 text-[10px] h-5">{selectedLog.action}</Badge>
@@ -633,14 +625,14 @@ export default function AuditLog() {
                                         <div className="flex flex-col gap-4">
                                             <div className="space-y-1 flex flex-col items-center">
                                                 <p className="text-[8px] font-bold text-red-500 uppercase tracking-widest text-center">SEBELUM</p>
-                                                <div className="bg-red-50 border border-red-100 p-2.5 rounded-lg w-full max-w-[240px] text-center shadow-sm">
+                                                <div className="bg-red-50 border border-red-100 p-2.5 rounded-lg w-full max-w-[240px] text-center">
                                                     <p className="text-sm font-mono font-bold text-red-600">{selectedLog.details.changes.before}</p>
                                                 </div>
                                             </div>
 
                                             <div className="space-y-1 flex flex-col items-center">
                                                 <p className="text-[8px] font-bold text-green-500 uppercase tracking-widest text-center">SESUDAH</p>
-                                                <div className="bg-green-50 border border-green-100 p-2.5 rounded-lg w-full max-w-[240px] text-center shadow-sm">
+                                                <div className="bg-green-50 border border-green-100 p-2.5 rounded-lg w-full max-w-[240px] text-center">
                                                     <p className="text-sm font-mono font-bold text-green-600">{selectedLog.details.changes.after}</p>
                                                 </div>
                                             </div>

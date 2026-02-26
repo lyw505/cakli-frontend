@@ -301,7 +301,7 @@ export default function TariffManagement() {
                             <Card>
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-sm flex items-center gap-1.5">
-                                        <DollarSign className="size-3.5 text-cakli-orange" /> Pembagian Biaya & Margin
+                                        Pembagian Biaya & Margin
                                     </CardTitle>
                                     <CardDescription className="text-xs">Pembagian biaya per perjalanan antara platform dan driver.</CardDescription>
                                 </CardHeader>
@@ -370,7 +370,7 @@ export default function TariffManagement() {
                             <Card>
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-sm flex items-center gap-1.5">
-                                        <CalendarIcon className="size-3.5 text-cakli-orange" /> Tanggal Efektif & Penjadwalan
+                                        Tanggal Efektif & Penjadwalan
                                     </CardTitle>
                                     <CardDescription className="text-xs">Tentukan kapan perubahan tarif mulai berlaku.</CardDescription>
                                 </CardHeader>
@@ -422,7 +422,7 @@ export default function TariffManagement() {
                             <Card>
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-sm flex items-center gap-1.5">
-                                        <Zap className="size-3.5 text-cakli-orange" /> Status Propagasi
+                                        Status Propagasi
                                     </CardTitle>
                                     <CardDescription className="text-xs">Status sinkronisasi tarif ke seluruh node.</CardDescription>
                                 </CardHeader>
@@ -465,7 +465,7 @@ export default function TariffManagement() {
                                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground group-focus-within:text-cakli-orange transition-colors" />
                                         <Input
                                             placeholder="Cari zona..."
-                                            className="pl-9 h-9 w-[200px] bg-white border-slate-200 text-xs shadow-sm"
+                                            className="pl-9 h-9 w-[280px] bg-white border-slate-200 text-xs"
                                             value={search}
                                             onChange={e => setSearch(e.target.value)}
                                         />
@@ -507,7 +507,7 @@ export default function TariffManagement() {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="py-2">
-                                                    <Input className="w-16 h-8 text-xs bg-white shadow-sm" defaultValue={row.multiplier} />
+                                                    <Input className="w-16 h-8 text-xs bg-white" defaultValue={row.multiplier} />
                                                 </TableCell>
                                                 <TableCell className="font-mono text-xs py-3">{row.effective}</TableCell>
                                                 <TableCell className="text-xs font-semibold py-3">{row.margin}</TableCell>
@@ -518,10 +518,10 @@ export default function TariffManagement() {
                                                 <TableCell className="text-right py-3 pr-5">
                                                     {row.override ? (
                                                         <Badge variant="outline" className="text-[9px] border-amber-400 text-amber-700 bg-amber-50 gap-1 h-5">
-                                                            <Zap className="size-2.5" /> Ganti
+                                                            <Zap className="size-2.5" /> Penyesuaian
                                                         </Badge>
                                                     ) : (
-                                                        <Badge className="text-[9px] h-5 bg-cakli-orange">Warisi Global</Badge>
+                                                        <Badge className="text-[9px] h-5 bg-cakli-orange">Global</Badge>
                                                     )}
                                                 </TableCell>
                                             </TableRow>

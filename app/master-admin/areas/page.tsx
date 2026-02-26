@@ -203,7 +203,7 @@ export default function AreasPage() {
                         { label: "Driver Aktif", value: "482", sub: "92% Online", icon: Users },
                         { label: "Utilisasi Rata-rata %", value: "74%", sub: "Optimal", icon: Activity },
                     ].map((card, i) => (
-                        <Card key={i} className="overflow-hidden border-slate-200 shadow-sm transition-all hover:shadow-md">
+                        <Card key={i} className="overflow-hidden border-slate-200 transition-all">
                             <div className="flex items-stretch h-full relative">
                                 <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
                                 <div className="flex-1">
@@ -272,7 +272,7 @@ export default function AreasPage() {
                     </div>
 
                     {/* Right: Pending Regional Requests (half page) */}
-                    <Card className="border-none shadow-sm ring-1 ring-slate-200 h-full flex flex-col">
+                    <Card className="border-none ring-1 ring-slate-200 h-full flex flex-col">
                         <CardHeader className="pb-3 border-b">
                             <CardTitle className="text-sm flex items-center gap-2">
                                 <Clock className="size-4 text-cakli-orange" /> Permintaan Regional Tertunda
@@ -325,7 +325,7 @@ export default function AreasPage() {
                                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground group-focus-within:text-cakli-orange transition-colors" />
                                 <Input
                                     placeholder="Cari ID zona, kota..."
-                                    className="pl-9 h-9 w-[280px] bg-white border-slate-200 text-xs shadow-sm"
+                                    className="pl-9 h-9 w-[280px] bg-white border-slate-200 text-xs"
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
                                 />
@@ -334,7 +334,7 @@ export default function AreasPage() {
                     </div>
 
                     <TabsContent value="table" className="mt-0">
-                        <Card className="border-none shadow-sm ring-1 ring-slate-200">
+                        <Card className="border-none ring-1 ring-slate-200">
                             <CardContent className="p-0">
                                 <Table>
                                     <TableHeader className="bg-slate-50/50">
@@ -458,17 +458,17 @@ export default function AreasPage() {
 
                                 {/* Map Controls */}
                                 <div className="absolute top-4 left-4 flex flex-col gap-2">
-                                    <div className="bg-white/90 backdrop-blur-md p-2 rounded-lg shadow-sm border space-y-3">
+                                    <div className="bg-white/90 backdrop-blur-md p-2 rounded-lg border space-y-3">
                                         <div className="flex items-center gap-2">
-                                            <div className="size-3 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
+                                            <div className="size-3 rounded-full bg-green-500" />
                                             <span className="text-[10px] font-bold">Kesehatan: OK</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <div className="size-3 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]" />
+                                            <div className="size-3 rounded-full bg-orange-500" />
                                             <span className="text-[10px] font-bold">Stagnan</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <div className="size-3 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                                            <div className="size-3 rounded-full bg-red-500" />
                                             <span className="text-[10px] font-bold">Risiko/Rugi</span>
                                         </div>
                                     </div>
@@ -480,7 +480,7 @@ export default function AreasPage() {
                                     onClick={() => setSelectedZone(ZONES[0])}
                                 />
                                 <div
-                                    className="absolute top-1/2 left-1/2 size-5 bg-orange-500 rounded-full cursor-pointer hover:scale-125 transition-transform animate-pulse ring-4 ring-orange-500/20 shadow-lg"
+                                    className="absolute top-1/2 left-1/2 size-5 bg-orange-500 rounded-full cursor-pointer hover:scale-125 transition-transform animate-pulse ring-4 ring-orange-500/20"
                                     onClick={() => setSelectedZone(ZONES[1])}
                                 />
                                 <div
@@ -489,13 +489,13 @@ export default function AreasPage() {
                                 />
 
                                 <div className="absolute bottom-4 right-4 flex gap-2">
-                                    <Button size="icon" variant="secondary" className="bg-white/90 backdrop-blur-sm shadow-md border-none"><Maximize2 className="size-4" /></Button>
-                                    <Button size="icon" variant="secondary" className="bg-white/90 backdrop-blur-sm shadow-md border-none"><Layers className="size-4" /></Button>
+                                    <Button size="icon" variant="secondary" className="bg-white/90 backdrop-blur-sm border-none"><Maximize2 className="size-4" /></Button>
+                                    <Button size="icon" variant="secondary" className="bg-white/90 backdrop-blur-sm border-none"><Layers className="size-4" /></Button>
                                 </div>
                             </Card>
 
                             {/* Map Side Panel */}
-                            <Card className="w-80 border-none shadow-sm ring-1 ring-slate-200">
+                            <Card className="w-80 border-none ring-1 ring-slate-200">
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-sm">Wawasan Zona</CardTitle>
                                     <CardDescription className="text-xs">Pilih zona di peta untuk melihat detail.</CardDescription>

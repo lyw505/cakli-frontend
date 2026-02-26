@@ -350,7 +350,7 @@ export default function RoleManagement() {
                     { label: "Ditangguhkan / Dikunci", value: String(suspended), sub: "perlu perhatian", icon: Lock, danger: true, isSuspended: true },
                     { label: "Peran Berubah (7H)", value: "3", sub: "Perubahan terakhir 2j lalu", icon: Activity, danger: false },
                 ].map((card, i) => (
-                    <Card key={i} className={`overflow-hidden border-slate-200 shadow-sm transition-all ${card.isSuspended ? "border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.1)]" : ""}`}>
+                    <Card key={i} className={`overflow-hidden border-slate-200 transition-all ${card.isSuspended ? "border-red-500/50" : ""}`}>
                         <div className="flex items-stretch h-full relative">
                             <div className={`w-1.5 rounded-full my-3 ml-3 shrink-0 ${card.isSuspended ? "bg-red-500" : "bg-cakli-orange"}`} />
                             <div className="flex-1">
@@ -396,14 +396,14 @@ export default function RoleManagement() {
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground group-focus-within:text-cakli-orange transition-colors" />
                             <Input
                                 placeholder="Cari nama atau email..."
-                                className="pl-9 h-9 w-[200px] bg-white border-slate-200 text-xs shadow-sm"
+                                className="pl-9 h-9 w-[200px] bg-white border-slate-200 text-xs"
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                             />
                         </div>
 
                         <Select value={roleFilter} onValueChange={setRoleFilter}>
-                            <SelectTrigger className="w-[130px] h-9 text-xs bg-white shadow-sm">
+                            <SelectTrigger className="w-[130px] h-9 text-xs bg-white">
                                 <SelectValue placeholder="Semua Role" />
                             </SelectTrigger>
                             <SelectContent className="text-xs">
@@ -415,7 +415,7 @@ export default function RoleManagement() {
                         </Select>
 
                         <Select value={statusFilter} onValueChange={setStatusFilter}>
-                            <SelectTrigger className="w-[130px] h-9 text-xs bg-white shadow-sm">
+                            <SelectTrigger className="w-[130px] h-9 text-xs bg-white">
                                 <SelectValue placeholder="Semua Status" />
                             </SelectTrigger>
                             <SelectContent className="text-xs">
@@ -429,10 +429,9 @@ export default function RoleManagement() {
                     </div>
                 </div>
 
-                {/* ── TAB: ADMIN TABLE ── */}
                 <TabsContent value="admins" className="mt-0">
-                    <div className={`flex gap-4 transition-all ${selectedAdmin ? "lg:pr-[400px]" : ""}`}>
-                        <Card className="border-none shadow-sm ring-1 ring-slate-200 flex-1 min-w-0">
+                    <div className="flex gap-4">
+                        <Card className="border-none ring-1 ring-slate-200 flex-1 min-w-0">
                             <CardContent className="p-0">
                                 <Table>
                                     <TableHeader className="bg-slate-50/50">
@@ -575,7 +574,7 @@ export default function RoleManagement() {
 
                 {/* ── TAB: PERMISSION MATRIX ── */}
                 <TabsContent value="matrix" className="mt-0">
-                    <Card className="border-none shadow-sm ring-1 ring-slate-200">
+                    <Card className="border-none ring-1 ring-slate-200">
                         <CardHeader className="pb-3 border-b">
                             <CardTitle className="text-sm">Matriks Izin</CardTitle>
                             <CardDescription className="text-xs">Cakupan aksi per modul untuk tiap peran admin.</CardDescription>
@@ -621,7 +620,7 @@ export default function RoleManagement() {
 
                 {/* ── TAB: ACTIVITY LOG ── */}
                 <TabsContent value="log" className="mt-0">
-                    <Card className="border-none shadow-sm ring-1 ring-slate-200">
+                    <Card className="border-none ring-1 ring-slate-200">
                         <CardHeader className="pb-3 border-b">
                             <CardTitle className="text-sm">Log Aktivitas Admin</CardTitle>
                             <CardDescription className="text-xs">Semua aksi administratif tercatat secara real-time.</CardDescription>
@@ -680,7 +679,7 @@ export default function RoleManagement() {
 
             {/* ── SIDE PANEL DETAIL ── */}
             {selectedAdmin && (
-                <div className="fixed top-0 right-0 h-full w-[380px] bg-white border-l shadow-2xl z-50 flex flex-col overflow-hidden">
+                <div className="fixed top-0 right-0 h-full w-[380px] bg-white border-l z-50 flex flex-col overflow-hidden">
                     {/* Header */}
                     <div className="flex items-center justify-between px-5 py-4 border-b shrink-0">
                         <div className="flex items-center gap-3">
