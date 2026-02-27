@@ -1,58 +1,19 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { 
-    Search, 
-    MoreVertical, 
-    UserCheck, 
-    UserX, 
-    FileText, 
-    Bike, 
+    Search,
+    MoreVertical,
+    UserCheck,
+    UserX,
+    FileText,
+    Bike,
     Shield,
     Star,
     AlertCircle,
     Phone,
     Mail,
     Calendar,
-    Download,
     RefreshCw,
     History,
     FileWarning,
@@ -66,16 +27,65 @@ import {
     Plus,
     ChevronLeft,
     ChevronRight,
+    RotateCcw,
     Upload,
     Camera,
     IdCard,
     User,
-    Lock,
-    Users,
     FileClock,
-    AlertOctagon,
-    RotateCcw
+    ChevronDown,
+    Info,
+    TrendingUp,
+    TrendingDown,
+    Activity,
+    Filter
 } from "lucide-react"
+
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Progress } from "@/components/ui/progress"
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 
 // Tipe data untuk Audit Log
 interface AuditLog {
@@ -134,7 +144,7 @@ interface Driver {
 }
 
 // Data dummy Audit Log
-const auditLogs: AuditLog[] = [
+const INITIAL_AUDIT_LOGS: AuditLog[] = [
     {
         id: "AUD-001",
         action: "Suspend Driver",
@@ -142,7 +152,7 @@ const auditLogs: AuditLog[] = [
         adminRole: "Super Admin",
         timestamp: "2024-02-26 14:30",
         reason: "Pelanggaran berat - menolak order 3x berturut-turut",
-        details: "Driver Rudi H. disuspend karena menolak order 3x dalam 1 jam"
+        details: "Suspend driver: Rudi H. (DRV-005)"
     },
     {
         id: "AUD-002",
@@ -151,7 +161,7 @@ const auditLogs: AuditLog[] = [
         adminRole: "Supervisor",
         timestamp: "2024-02-26 10:15",
         reason: "Dokumen lengkap dan valid",
-        details: "Driver Dewi Lestari diverifikasi setelah upload KTP dan SIM"
+        details: "Verifikasi driver: Dewi Lestari (DRV-006)"
     },
     {
         id: "AUD-003",
@@ -160,7 +170,7 @@ const auditLogs: AuditLog[] = [
         adminRole: "Super Admin",
         timestamp: "2024-02-25 09:00",
         reason: "Masa suspend selesai dan driver telah mengikuti pelatihan",
-        details: "Driver Agus T. diaktifkan kembali setelah masa suspend 3 hari"
+        details: "Reaktifasi driver: Agus T. (DRV-004)"
     },
     {
         id: "AUD-004",
@@ -169,19 +179,19 @@ const auditLogs: AuditLog[] = [
         adminRole: "Operator",
         timestamp: "2024-02-24 16:20",
         reason: "Perbaikan alamat",
-        details: "Alamat driver Siti Aminah diperbaiki"
+        details: "Edit data driver: Siti Aminah (DRV-002)"
     }
 ]
 
 // Data dummy dengan suspend/reactivation history
-const drivers: Driver[] = [
-    { 
-        id: "DRV-001", 
-        name: "Budi Santoso", 
+const INITIAL_DRIVERS: Driver[] = [
+    {
+        id: "DRV-001",
+        name: "Budi Santoso",
         nik: "3174123456789012",
         status: "Aktif",
         onlineStatus: "Online",
-        vehicle: "Becak Listrik A-01", 
+        vehicle: "Becak Listrik A-01",
         phone: "081234567890",
         email: "budi@example.com",
         rating: 4.8,
@@ -201,13 +211,13 @@ const drivers: Driver[] = [
             destination: "Jl. Thamrin No. 45"
         }
     },
-    { 
-        id: "DRV-002", 
-        name: "Siti Aminah", 
+    {
+        id: "DRV-002",
+        name: "Siti Aminah",
         nik: "3174234567890123",
         status: "Aktif",
         onlineStatus: "Offline",
-        vehicle: "Becak Listrik A-02", 
+        vehicle: "Becak Listrik A-02",
         phone: "081234567891",
         email: "siti@example.com",
         rating: 4.9,
@@ -220,13 +230,13 @@ const drivers: Driver[] = [
         reports: 0,
         lastActive: "2024-02-26 10:15"
     },
-    { 
-        id: "DRV-003", 
-        name: "Joko Widodo", 
+    {
+        id: "DRV-003",
+        name: "Joko Widodo",
         nik: "3174345678901234",
         status: "Aktif",
         onlineStatus: "Online",
-        vehicle: "Becak Listrik A-03", 
+        vehicle: "Becak Listrik A-03",
         phone: "081234567892",
         email: "joko@example.com",
         rating: 4.7,
@@ -246,13 +256,13 @@ const drivers: Driver[] = [
             destination: "Jl. Kuningan No. 23"
         }
     },
-    { 
-        id: "DRV-004", 
-        name: "Agus T.", 
+    {
+        id: "DRV-004",
+        name: "Agus T.",
         nik: "3174456789012345",
         status: "Aktif",
         onlineStatus: "Online",
-        vehicle: "Becak Listrik B-01", 
+        vehicle: "Becak Listrik B-01",
         phone: "081234567893",
         email: "agus@example.com",
         rating: 4.5,
@@ -286,13 +296,13 @@ const drivers: Driver[] = [
             }
         ]
     },
-    { 
-        id: "DRV-005", 
-        name: "Rudi H.", 
+    {
+        id: "DRV-005",
+        name: "Rudi H.",
         nik: "3174567890123456",
         status: "Suspend",
         onlineStatus: "Offline",
-        vehicle: "Becak Listrik B-02", 
+        vehicle: "Becak Listrik B-02",
         phone: "081234567894",
         email: "rudi@example.com",
         rating: 3.2,
@@ -312,13 +322,13 @@ const drivers: Driver[] = [
             }
         ]
     },
-    { 
-        id: "DRV-006", 
-        name: "Dewi Lestari", 
+    {
+        id: "DRV-006",
+        name: "Dewi Lestari",
         nik: "3174678901234567",
         status: "Pending Verifikasi",
         onlineStatus: "Offline",
-        vehicle: "Becak Listrik C-01", 
+        vehicle: "Becak Listrik C-01",
         phone: "081234567895",
         email: "dewi@example.com",
         rating: 0,
@@ -333,7 +343,82 @@ const drivers: Driver[] = [
     }
 ]
 
+
+
+// Stat Card Component mirip gambar
+const StatCard = ({
+    title,
+    value,
+    subtitle,
+    subtitleColor = "text-gray-400",
+    borderColor = "border-[#E04D04]",
+    icon: Icon
+}: {
+    title: string;
+    value: React.ReactNode;
+    subtitle: string;
+    subtitleColor?: string;
+    borderColor?: string;
+    icon?: any;
+}) => (
+    <div className={`bg-white rounded-lg border-l-4 ${borderColor} shadow-sm p-4 relative hover:shadow-md transition-all duration-300`}>
+        {/* Icon di pojok kanan atas - lebih soft */}
+        {Icon && (
+            <div className="absolute top-4 right-4 text-gray-200">
+                <Icon className="h-5 w-5" />
+            </div>
+        )}
+
+        <div className="space-y-1">
+            <h3 className="text-sm font-medium text-gray-500">{title}</h3>
+
+            <div className="text-2xl font-bold text-gray-900">
+                {value}
+            </div>
+
+            <div className={`text-xs ${subtitleColor}`}>
+                {subtitle}
+            </div>
+        </div>
+    </div>
+)
+
+// Modal Wrapper Component
+const Modal = ({
+    isOpen,
+    onClose,
+    title,
+    description,
+    children,
+    maxWidth = "max-w-md"
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    title?: string;
+    description?: string;
+    children: React.ReactNode;
+    maxWidth?: string;
+}) => (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className={cn(maxWidth, "p-0 overflow-hidden max-h-[90vh] flex flex-col")}>
+            {title ? (
+                <div className="px-6 pt-6 mb-4 flex-shrink-0">
+                    <DialogTitle className="text-xl font-bold">{title}</DialogTitle>
+                    {description && <DialogDescription className="mt-1.5 text-sm text-muted-foreground">{description}</DialogDescription>}
+                </div>
+            ) : (
+                <DialogTitle className="sr-only">Dialog</DialogTitle>
+            )}
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
+                {children}
+            </div>
+        </DialogContent>
+    </Dialog>
+)
+
 export default function DriversPage() {
+    const [driverList, setDriverList] = useState<Driver[]>(INITIAL_DRIVERS)
+    const [logList, setLogList] = useState<AuditLog[]>(INITIAL_AUDIT_LOGS)
     const [searchQuery, setSearchQuery] = useState("")
     const [statusFilter, setStatusFilter] = useState("all")
     const [onlineFilter, setOnlineFilter] = useState("all")
@@ -346,49 +431,47 @@ export default function DriversPage() {
     const [actionReason, setActionReason] = useState("")
     const [activeTab, setActiveTab] = useState("personal")
     const [currentPage, setCurrentPage] = useState(1)
+    const [detailTab, setDetailTab] = useState("info")
 
     // Simulasi role-based control
     const [currentUserRole, setCurrentUserRole] = useState<UserRole>("Super Admin")
-    const itemsPerPage = 10
-    const totalItems = drivers.length
-    const totalPages = Math.ceil(totalItems / itemsPerPage)
 
     const getStatusBadge = (status: Driver["status"]) => {
-        switch(status) {
+        switch (status) {
             case "Aktif":
-                return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-0">Aktif</Badge>
+                return <Badge variant="success">Aktif</Badge>
             case "Pending Verifikasi":
-                return <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100 border-0">Pending Verifikasi</Badge>
+                return <Badge variant="warning">Pending Verifikasi</Badge>
             case "Suspend":
-                return <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-0">Suspend</Badge>
+                return <Badge variant="danger">Suspend</Badge>
             case "Nonaktif":
-                return <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-100 border-0">Nonaktif</Badge>
+                return <Badge variant="neutral">Nonaktif</Badge>
             default:
                 return <Badge variant="outline">{status}</Badge>
         }
     }
 
     const getOnlineStatusBadge = (status: Driver["onlineStatus"]) => {
-        switch(status) {
+        switch (status) {
             case "Online":
-                return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-0">Online</Badge>
+                return <Badge variant="success">Online</Badge>
             case "Offline":
-                return <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-100 border-0">Offline</Badge>
+                return <Badge variant="neutral">Offline</Badge>
         }
     }
 
     const getTripStatusBadge = (status: string) => {
-        switch(status) {
+        switch (status) {
             case "On Trip":
-                return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-0">On Trip</Badge>
+                return <Badge variant="blue">On Trip</Badge>
             case "Assigned":
-                return <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100 border-0">Assigned</Badge>
+                return <Badge variant="purple">Assigned</Badge>
             case "Issue":
-                return <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-0">Issue</Badge>
+                return <Badge variant="orange">Issue</Badge>
             case "Selesai":
-                return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-0">Selesai</Badge>
+                return <Badge variant="success">Selesai</Badge>
             case "Batal":
-                return <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-0">Batal</Badge>
+                return <Badge variant="danger">Batal</Badge>
             default:
                 return <Badge variant="outline">{status}</Badge>
         }
@@ -415,18 +498,17 @@ export default function DriversPage() {
         return name.split(" ").map(n => n[0]).join("").toUpperCase()
     }
 
-    const filteredDrivers = drivers.filter(driver => {
+    const filteredDrivers = driverList.filter(driver => {
         const matchesSearch = driver.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                             driver.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                             driver.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                             driver.nik.includes(searchQuery)
+            driver.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            driver.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            driver.nik.includes(searchQuery)
         const matchesStatus = statusFilter === "all" || driver.status.toLowerCase() === statusFilter.toLowerCase()
         const matchesOnline = onlineFilter === "all" || driver.onlineStatus.toLowerCase() === onlineFilter.toLowerCase()
         return matchesSearch && matchesStatus && matchesOnline
     })
 
     const handleAction = (driver: Driver, action: "suspend" | "reinstate" | "verify") => {
-        // Cek permission
         if (action === "suspend" && !canSuspend()) {
             alert("Anda tidak memiliki izin untuk melakukan suspend driver")
             return
@@ -447,1068 +529,1001 @@ export default function DriversPage() {
     }
 
     const confirmAction = () => {
-        if (!actionReason.trim()) {
+        if (!actionReason.trim() || !selectedDriver || !actionType) {
             alert("Alasan wajib diisi!")
             return
         }
 
-        // Simpan ke audit log
+        const newStatus: Driver["status"] =
+            actionType === "suspend" ? "Suspend" : "Aktif";
+
+        // Update driver status in the list
+        setDriverList(prev => prev.map(d =>
+            d.id === selectedDriver.id ? { ...d, status: newStatus } : d
+        ));
+
+        // Create new log
         const newAuditLog: AuditLog = {
-            id: `AUD-${Math.floor(Math.random() * 1000)}`,
-            action: actionType === "suspend" ? "Suspend Driver" : 
-                    actionType === "reinstate" ? "Aktivasi Kembali" : "Verifikasi Driver",
+            id: `AUD-${Math.floor(Math.random() * 10000)}`,
+            action: actionType === "suspend" ? "Suspend Driver" :
+                actionType === "reinstate" ? "Aktivasi Kembali" : "Verifikasi Driver",
             admin: "Admin Utama",
             adminRole: currentUserRole,
-            timestamp: new Date().toLocaleString(),
+            timestamp: new Date().toLocaleString('id-ID', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).replace(/\//g, '-'),
             reason: actionReason,
-            details: `${actionType} driver: ${selectedDriver?.name} (${selectedDriver?.id})`
+            details: `${actionType === "suspend" ? "Suspend" : actionType === "reinstate" ? "Reaktifasi" : "Verifikasi"} driver: ${selectedDriver.name} (${selectedDriver.id})`
         }
-        
-        auditLogs.unshift(newAuditLog)
-        console.log(`${actionType} driver:`, selectedDriver?.id, "Alasan:", actionReason)
-        
+
+        setLogList(prev => [newAuditLog, ...prev]);
+
+        // If detail modal is open, update the selected driver object there too
+        if (isDetailOpen) {
+            setSelectedDriver({ ...selectedDriver, status: newStatus });
+        }
+
         setIsConfirmDialogOpen(false)
         setActionType(null)
         setActionReason("")
     }
 
+    // Data untuk select options
+    const roleOptions = [
+        { value: "Super Admin", label: "Super Admin" },
+        { value: "Admin", label: "Admin" },
+        { value: "Supervisor", label: "Supervisor" },
+        { value: "Operator", label: "Operator" }
+    ]
+
+    const statusOptions = [
+        { value: "all", label: "Semua Status" },
+        { value: "aktif", label: "Aktif" },
+        { value: "pending verifikasi", label: "Pending Verifikasi" },
+        { value: "suspend", label: "Suspend" },
+        { value: "nonaktif", label: "Nonaktif" }
+    ]
+
+    const onlineOptions = [
+        { value: "all", label: "Semua" },
+        { value: "online", label: "Online" },
+        { value: "offline", label: "Offline" }
+    ]
+
     return (
-        <div className="flex flex-col gap-6 p-6 bg-white min-h-screen">
-            {/* Header dengan Role Selector */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-semibold text-gray-900">Manajemen Driver</h1>
-                    <p className="text-sm text-gray-500 mt-1">
-                        Kelola driver, verifikasi dokumen, dan monitor performa armada.
-                    </p>
-                </div>
-                <div className="flex gap-2">
-                    {/* Role Selector untuk simulasi */}
-                    <Select value={currentUserRole} onValueChange={(value) => setCurrentUserRole(value as UserRole)}>
-                        <SelectTrigger className="w-[180px] border-gray-300">
-                            <SelectValue placeholder="Pilih Role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Super Admin">Super Admin</SelectItem>
-                            <SelectItem value="Admin">Admin</SelectItem>
-                            <SelectItem value="Supervisor">Supervisor</SelectItem>
-                            <SelectItem value="Operator">Operator</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    
-                    {/* Tombol Audit Log */}
-                    {canViewAuditLog() && (
-                        <Button 
-                            variant="outline" 
-                            size="default" 
-                            className="border-gray-300"
-                            onClick={() => setIsAuditLogOpen(true)}
-                        >
-                            <FileClock className="mr-2 h-4 w-4" />
-                            Audit Log
+        <div className="min-h-screen p-6">
+            <div className="max-w-[1400px] mx-auto space-y-6">
+                {/* Header - Title di kiri, Controls di kanan */}
+                <div className="flex items-start justify-between">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900">Manajemen Driver</h1>
+                        <p className="text-sm text-gray-500 mt-1">
+                            Kelola driver, verifikasi dokumen, dan monitor performa armada.
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Select value={currentUserRole} onValueChange={(value) => setCurrentUserRole(value as UserRole)}>
+                            <SelectTrigger className="w-40 bg-white">
+                                <SelectValue placeholder="Role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {roleOptions.map(opt => (
+                                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        {canViewAuditLog() && (
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsAuditLogOpen(true)}
+                                className="bg-white"
+                            >
+                                <FileClock className="mr-2 h-4 w-4" />
+                                Audit Log
+                            </Button>
+                        )}
+
+                        <Button variant="outline" className="bg-white">
+                            <RefreshCw className="mr-2 h-4 w-4" />
+                            Refresh
                         </Button>
-                    )}
-                    
-                    <Button variant="outline" size="default" className="border-gray-300">
-                        <RefreshCw className="mr-2 h-4 w-4" />
-                        Refresh
-                    </Button>
-                    <Button 
-                        size="default" 
-                        style={{ backgroundColor: "#E04D04" }} 
-                        className="hover:opacity-90 text-white"
-                        onClick={() => setIsAddDriverOpen(true)}
-                    >
-                        <Plus className="mr-2 h-4 w-4" />
-                        Tambah Driver Baru
-                    </Button>
+                        <Button onClick={() => setIsAddDriverOpen(true)} className="bg-[#E04D04] hover:bg-[#c94504] text-white">
+                            <Plus className="mr-2 h-4 w-4" />
+                            Tambah Driver Baru
+                        </Button>
+                    </div>
                 </div>
-            </div>
 
-            {/* Statistik Ringkas dengan Cancel Rate */}
-          {/* Statistik Ringkas - Persis seperti gambar */}
-<div className="grid grid-cols-1 md:grid-cols-5 gap-5">
-    {/* Card 1: Total Driver */}
-    <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        <div className="text-sm text-gray-500 mb-2">Total Driver</div>
-        <div className="text-3xl font-semibold text-gray-900 mb-1">{drivers.length}</div>
-        <div className="text-xs text-gray-400">Registered drivers</div>
-    </div>
-
-    {/* Card 2: Online */}
-    <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        <div className="text-sm text-gray-500 mb-2">Online</div>
-        <div className="text-3xl font-semibold text-emerald-600 mb-1">
-            {drivers.filter(d => d.onlineStatus === "Online").length}
-        </div>
-        <div className="text-xs text-gray-400">{drivers.filter(d => d.status === "Aktif").length} total aktif</div>
-    </div>
-
-    {/* Card 3: Pending Verifikasi */}
-    <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        <div className="text-sm text-gray-500 mb-2">Pending Verifikasi</div>
-        <div className="text-3xl font-semibold text-yellow-600 mb-1">
-            {drivers.filter(d => d.status === "Pending Verifikasi").length}
-        </div>
-        <div className="text-xs text-gray-400">Menunggu verifikasi</div>
-    </div>
-
-    {/* Card 4: Rating Rata-rata */}
-    <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        <div className="text-sm text-gray-500 mb-2">Rating Rata-rata</div>
-        <div className="flex items-end gap-1 mb-1">
-            <span className="text-3xl font-semibold text-gray-900">4.5</span>
-            <Star className="h-5 w-5 fill-yellow-400 text-yellow-400 mb-1" />
-        </div>
-        <div className="text-xs text-gray-400">Dari 2.5k ulasan</div>
-    </div>
-
-    {/* Card 5: Cancel Rate */}
-    <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        <div className="text-sm text-gray-500 mb-2">Cancel Rate</div>
-        <div className="text-3xl font-semibold text-orange-600 mb-1">4.2%</div>
-        <div className="text-xs text-gray-400">Rata-rata cancel rate</div>
-    </div>
-</div>
-
-            {/* Filter dan Pencarian */}
-            <div className="flex items-center gap-3 bg-white">
-                <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                        type="search"
-                        placeholder="Cari nama, ID, NIK, atau kendaraan..."
-                        className="pl-9 border-gray-300"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                {/* Stats Cards - Mirip gambar referensi */}
+                <div className="grid grid-cols-5 gap-4">
+                    <StatCard
+                        title="Total Driver"
+                        value={driverList.length}
+                        subtitle="Registered drivers"
+                        borderColor="border-gray-200"
+                    />
+                    <StatCard
+                        title="Online"
+                        value={driverList.filter(d => d.onlineStatus === "Online").length}
+                        subtitle={`${driverList.filter(d => d.status === "Aktif").length} total aktif`}
+                        subtitleColor="text-emerald-600"
+                        borderColor="border-emerald-500"
+                    />
+                    <StatCard
+                        title="Pending Verifikasi"
+                        value={driverList.filter(d => d.status === "Pending Verifikasi").length}
+                        subtitle="Menunggu verifikasi"
+                        subtitleColor="text-amber-600"
+                        borderColor="border-amber-500"
+                    />
+                    <StatCard
+                        title="Rating Rata-rata"
+                        value={
+                            <span className="flex items-center gap-1">
+                                4.5 <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
+                            </span>
+                        }
+                        subtitle="Dari 2.5k ulasan"
+                        borderColor="border-yellow-500"
+                    />
+                    <StatCard
+                        title="Cancel Rate"
+                        value="4.2%"
+                        subtitle="batas aman: 5%"
+                        subtitleColor="text-gray-400"
+                        borderColor="border-orange-600"
+                        icon={Shield}
                     />
                 </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-[160px] border-gray-300">
-                        <SelectValue placeholder="Semua Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">Semua Status</SelectItem>
-                        <SelectItem value="aktif">Aktif</SelectItem>
-                        <SelectItem value="pending verifikasi">Pending Verifikasi</SelectItem>
-                        <SelectItem value="suspend">Suspend</SelectItem>
-                        <SelectItem value="nonaktif">Nonaktif</SelectItem>
-                    </SelectContent>
-                </Select>
-                <Select value={onlineFilter} onValueChange={setOnlineFilter}>
-                    <SelectTrigger className="w-[140px] border-gray-300">
-                        <SelectValue placeholder="Semua" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">Semua</SelectItem>
-                        <SelectItem value="online">Online</SelectItem>
-                        <SelectItem value="offline">Offline</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
 
-            {/* Tabel Driver dengan Cancel Rate */}
-            <div className="rounded-lg border border-gray-200 overflow-hidden bg-white">
-                <Table>
-                    <TableHeader className="bg-white border-b border-gray-200">
-                        <TableRow className="hover:bg-white">
-                            <TableHead className="font-semibold text-gray-600">Driver</TableHead>
-                            <TableHead className="font-semibold text-gray-600">Status Akun</TableHead>
-                            <TableHead className="font-semibold text-gray-600">Online</TableHead>
-                            <TableHead className="font-semibold text-gray-600">Trip Status</TableHead>
-                            <TableHead className="font-semibold text-gray-600">Kendaraan</TableHead>
-                            <TableHead className="font-semibold text-gray-600">Rating</TableHead>
-                            <TableHead className="font-semibold text-gray-600">Order</TableHead>
-                            <TableHead className="font-semibold text-gray-600">Cancel Rate</TableHead>
-                            <TableHead className="font-semibold text-gray-600 text-right">Aksi</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {filteredDrivers.map((driver) => (
-                            <TableRow key={driver.id} className="hover:bg-gray-50 border-b border-gray-100">
-                                <TableCell>
-                                    <div>
-                                        <div className="font-medium text-gray-900">{driver.name}</div>
-                                        <div className="text-xs text-gray-400">{driver.id}</div>
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    {getStatusBadge(driver.status)}
-                                </TableCell>
-                                <TableCell>
-                                    {getOnlineStatusBadge(driver.onlineStatus)}
-                                </TableCell>
-                                <TableCell>
-                                    {driver.currentTrip ? (
-                                        getTripStatusBadge(driver.currentTrip.status)
-                                    ) : (
-                                        <Badge variant="outline" className="border-gray-200 text-gray-400">-</Badge>
-                                    )}
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex items-center gap-2">
-                                        <Bike className="h-4 w-4 text-gray-400" />
-                                        <span className="text-sm text-gray-600">{driver.vehicle}</span>
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex items-center gap-1">
-                                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                                        <span className="text-sm font-medium text-gray-700">
-                                            {driver.rating > 0 ? driver.rating.toFixed(1) : "-"}
-                                        </span>
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <span className="text-sm text-gray-600">{driver.totalOrders}</span>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex items-center gap-1">
-                                        <span className={`text-sm font-medium ${
-                                            driver.cancelRate > 10 ? "text-red-600" : 
-                                            driver.cancelRate > 5 ? "text-orange-600" : "text-gray-600"
-                                        }`}>
-                                            {driver.cancelRate}%
-                                        </span>
-                                        {driver.cancelRate > 10 && (
-                                            <AlertCircle className="h-3 w-3 text-red-600" />
-                                        )}
-                                    </div>
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    <div className="flex justify-end gap-1">
-                                        <Button 
-                                            variant="ghost" 
-                                            size="sm"
-                                            className="h-8 px-2 text-gray-500 hover:text-gray-900"
-                                            onClick={() => {
-                                                setSelectedDriver(driver)
-                                                setIsDetailOpen(true)
-                                            }}
-                                        >
-                                            <FileText className="h-4 w-4" />
-                                        </Button>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" className="h-8 w-8 p-0 text-gray-500 hover:text-gray-900">
-                                                    <MoreVertical className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end" className="w-48">
-                                                <DropdownMenuLabel className="text-xs font-medium text-gray-400">Operasional Armada</DropdownMenuLabel>
-                                                
-                                                {/* Verifikasi - berdasarkan role */}
-                                                {canVerify() && (
-                                                    <DropdownMenuItem 
-                                                        onClick={() => handleAction(driver, "verify")} 
-                                                        className="cursor-pointer"
-                                                        disabled={driver.status !== "Pending Verifikasi"}
-                                                    >
-                                                        <Shield className="mr-2 h-4 w-4" />
-                                                        Verifikasi Driver
-                                                    </DropdownMenuItem>
-                                                )}
-                                                
-                                                <DropdownMenuSeparator />
-                                                
-                                                {/* Suspend/Reinstate - berdasarkan role */}
-                                                {driver.status === "Suspend" ? (
-                                                    canReactivate() && (
-                                                        <DropdownMenuItem 
-                                                            className="text-emerald-600 cursor-pointer"
-                                                            onClick={() => handleAction(driver, "reinstate")}
-                                                        >
-                                                            <RotateCcw className="mr-2 h-4 w-4" />
-                                                            Aktifkan Kembali
-                                                        </DropdownMenuItem>
-                                                    )
-                                                ) : (
-                                                    canSuspend() && (
-                                                        <DropdownMenuItem 
-                                                            className="text-red-600 cursor-pointer"
-                                                            onClick={() => handleAction(driver, "suspend")}
-                                                            disabled={driver.status !== "Aktif"}
-                                                        >
-                                                            <UserX className="mr-2 h-4 w-4" />
-                                                            Suspend Driver
-                                                        </DropdownMenuItem>
-                                                    )
-                                                )}
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </div>
-                                </TableCell>
+                {/* Filter Horizontal - Tanpa Card Background */}
+                <div className="flex items-center gap-3">
+                    <div className="relative flex-1 max-w-md">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input
+                            type="search"
+                            placeholder="Cari nama, ID, NIK, atau kendaraan..."
+                            className="pl-10 bg-white"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger className="w-40 bg-white">
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {statusOptions.map(opt => (
+                                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <Select value={onlineFilter} onValueChange={setOnlineFilter}>
+                        <SelectTrigger className="w-32 bg-white">
+                            <SelectValue placeholder="Online" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {onlineOptions.map(opt => (
+                                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                {/* Tabel Driver - Lebih Rapat dan Rapi */}
+                <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="bg-gray-50/50">
+                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest w-[250px]">Driver</TableHead>
+                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Status Akun</TableHead>
+                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Online</TableHead>
+                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Trip Status</TableHead>
+                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Kendaraan</TableHead>
+                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest w-[100px]">Rating</TableHead>
+                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest w-[100px]">Order</TableHead>
+                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Risiko</TableHead>
+                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest w-[120px] text-right">Aksi</TableHead>
                             </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {filteredDrivers.map((driver, index) => (
+                                <TableRow
+                                    key={driver.id}
+                                    className={`border-b border-gray-100 hover:bg-gray-50 transition-colors`}
+                                >
+                                    <TableCell className="py-3 px-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-[#E8EBEA] flex items-center justify-center text-gray-700 font-bold text-xs flex-shrink-0 shadow-inner">
+                                                {getInitials(driver.name)}
+                                            </div>
+                                            <div className="min-w-0">
+                                                <div className="font-semibold text-gray-900 text-sm truncate">{driver.name}</div>
+                                                <div className="text-xs text-gray-400 font-mono">{driver.id}</div>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-3 px-4">{getStatusBadge(driver.status)}</TableCell>
+                                    <TableCell className="py-3 px-4">{getOnlineStatusBadge(driver.onlineStatus)}</TableCell>
+                                    <TableCell className="py-3 px-4">
+                                        {driver.currentTrip ? (
+                                            getTripStatusBadge(driver.currentTrip.status)
+                                        ) : (
+                                            <span className="text-gray-400 text-sm">-</span>
+                                        )}
+                                    </TableCell>
+                                    <TableCell className="py-3 px-4">
+                                        <div className="flex items-center gap-2 text-gray-600">
+                                            <Bike className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                                            <span className="text-sm truncate">{driver.vehicle}</span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-3 px-4">
+                                        <div className="flex items-center gap-1">
+                                            <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 flex-shrink-0" />
+                                            <span className="text-sm font-semibold text-gray-900">
+                                                {driver.rating > 0 ? driver.rating.toFixed(1) : "-"}
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-4 px-6 text-sm text-gray-900 font-medium">{driver.totalOrders}</TableCell>
+                                    <TableCell className="py-4 px-6">
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden w-16">
+                                                <div
+                                                    className={`h-full rounded-full transition-all duration-500 ${driver.cancelRate > 10 ? 'bg-red-500' :
+                                                        driver.cancelRate > 5 ? 'bg-orange-400' : 'bg-emerald-500'
+                                                        }`}
+                                                    style={{ width: `${Math.min(driver.cancelRate * 4, 100)}%` }}
+                                                />
+                                            </div>
+                                            <span className={`text-[12px] font-bold ${driver.cancelRate > 10 ? "text-red-500" :
+                                                driver.cancelRate > 5 ? "text-orange-500" : "text-emerald-500"
+                                                }`}>
+                                                {driver.cancelRate > 10 ? 'Tinggi' : driver.cancelRate > 5 ? 'Sedang' : 'Rendah'}
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="py-3 px-4 text-right">
+                                        <div className="flex justify-end gap-1">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-8 w-8 p-0"
+                                                onClick={() => {
+                                                    setSelectedDriver(driver)
+                                                    setIsDetailOpen(true)
+                                                }}
+                                            >
+                                                <FileText className="h-4 w-4" />
+                                            </Button>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                                        <MoreVertical className="h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end" className="w-56">
+                                                    <DropdownMenuLabel>Operasional Armada</DropdownMenuLabel>
+                                                    <DropdownMenuSeparator />
+                                                    {canVerify() && (
+                                                        <DropdownMenuItem
+                                                            onClick={() => handleAction(driver, "verify")}
+                                                            disabled={driver.status !== "Pending Verifikasi"}
+                                                        >
+                                                            <Shield className="mr-2 h-4 w-4" />
+                                                            Verifikasi Driver
+                                                        </DropdownMenuItem>
+                                                    )}
+                                                    <DropdownMenuSeparator />
+                                                    {driver.status === "Suspend" ? (
+                                                        canReactivate() && (
+                                                            <DropdownMenuItem
+                                                                onClick={() => handleAction(driver, "reinstate")}
+                                                                className="text-emerald-600 focus:text-emerald-600 focus:bg-emerald-50"
+                                                            >
+                                                                <RotateCcw className="mr-2 h-4 w-4" />
+                                                                Aktifkan Kembali
+                                                            </DropdownMenuItem>
+                                                        )
+                                                    ) : (
+                                                        canSuspend() && (
+                                                            <DropdownMenuItem
+                                                                onClick={() => handleAction(driver, "suspend")}
+                                                                disabled={driver.status !== "Aktif"}
+                                                                className="text-red-600 focus:text-red-600 focus:bg-red-50"
+                                                            >
+                                                                <UserX className="mr-2 h-4 w-4" />
+                                                                Suspend Driver
+                                                            </DropdownMenuItem>
+                                                        )
+                                                    )}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+
+                {/* Pagination - Warna #DCDCDC untuk tidak aktif */}
+                <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-500">
+                        Menampilkan <span className="font-medium text-gray-900">{filteredDrivers.length}</span> dari{" "}
+                        <span className="font-medium text-gray-900">{driverList.length}</span> driver
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <button
+                            className="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all disabled:opacity-30 disabled:scale-100 text-gray-400 hover:bg-gray-100 hover:text-gray-900 active:scale-90 border border-transparent"
+                            disabled={currentPage === 1}
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        >
+                            <ChevronLeft className="h-4.5 w-4.5" />
+                        </button>
+                        {[1, 2, 3].map((page) => (
+                            <button
+                                key={page}
+                                className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-all active:scale-90 ${currentPage === page
+                                    ? 'bg-[#E8EBEA] text-gray-900 shadow-sm'
+                                    : 'text-gray-500 hover:bg-gray-100'
+                                    }`}
+                                onClick={() => setCurrentPage(page)}
+                            >
+                                {page}
+                            </button>
                         ))}
-                    </TableBody>
-                </Table>
+                        <span className="px-1.5 text-gray-300 font-bold tracking-widest">...</span>
+                        <button
+                            className="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold text-gray-500 hover:bg-gray-100 active:scale-90 transition-all"
+                            onClick={() => setCurrentPage(12)}
+                        >
+                            12
+                        </button>
+                        <button
+                            className="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all disabled:opacity-30 disabled:scale-100 text-gray-400 hover:bg-gray-100 hover:text-gray-900 active:scale-90 border border-transparent"
+                            disabled={currentPage === 12}
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, 12))}
+                        >
+                            <ChevronRight className="h-4.5 w-4.5" />
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            {/* Pagination */}
-          {/* Pagination - Sesuai gambar */}
-<div className="flex items-center justify-between mt-4">
-    <div className="text-sm text-gray-500">
-        Menampilkan {filteredDrivers.length} dari {drivers.length} driver
-    </div>
-    <div className="flex items-center gap-1">
-        <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 w-8 p-0 text-gray-500"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-        >
-            &lt;
-        </Button>
-        <Button 
-            variant={currentPage === 1 ? "default" : "ghost"}
-            size="sm" 
-            className={`h-8 w-8 p-0 ${currentPage === 1 ? 'bg-[#E04D04] text-white hover:bg-[#E04D04]' : 'text-gray-700'}`}
-            onClick={() => setCurrentPage(1)}
-        >
-            1
-        </Button>
-        <Button 
-            variant={currentPage === 2 ? "default" : "ghost"}
-            size="sm" 
-            className={`h-8 w-8 p-0 ${currentPage === 2 ? 'bg-[#E04D04] text-white hover:bg-[#E04D04]' : 'text-gray-700'}`}
-            onClick={() => setCurrentPage(2)}
-        >
-            2
-        </Button>
-        <Button 
-            variant={currentPage === 3 ? "default" : "ghost"}
-            size="sm" 
-            className={`h-8 w-8 p-0 ${currentPage === 3 ? 'bg-[#E04D04] text-white hover:bg-[#E04D04]' : 'text-gray-700'}`}
-            onClick={() => setCurrentPage(3)}
-        >
-            3
-        </Button>
-        <span className="px-1 text-gray-400">...</span>
-        <Button 
-            variant="ghost"
-            size="sm" 
-            className="h-8 w-8 p-0 text-gray-700"
-            onClick={() => setCurrentPage(12)}
-        >
-            12
-        </Button>
-        <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-8 w-8 p-0 text-gray-500"
-            disabled={currentPage === 12}
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, 12))}
-        >
-            &gt;
-        </Button>
-    </div>
-</div>
+            {/* Modal Tambah Driver Baru - Desain Seperti Sebelumnya */}
+            <Modal
+                isOpen={isAddDriverOpen}
+                onClose={() => setIsAddDriverOpen(false)}
+                maxWidth="max-w-4xl"
+                title="Tambah Driver Baru"
+                description="Isi lengkap data driver untuk mendaftarkan ke sistem"
+            >
+                <div className="p-6">
+                    {/* Progress Steps */}
+                    <div className="mb-12">
+                        <div className="flex items-center justify-between relative px-2">
+                            <div className="absolute top-1/2 left-8 right-8 h-[2px] bg-gray-100 -translate-y-1/2" />
+                            {[
+                                { id: "personal", label: "Pribadi", icon: User },
+                                { id: "contact", label: "Kontak", icon: Phone },
+                                { id: "documents", label: "Dokumen", icon: FileText },
+                                { id: "vehicle", label: "Unit", icon: Bike },
+                                { id: "status", label: "Status", icon: Shield }
+                            ].map((step, index) => {
+                                const Icon = step.icon
+                                const isActive = activeTab === step.id
+                                const isCompleted = ["personal", "contact", "documents", "vehicle", "status"].indexOf(step.id) <
+                                    ["personal", "contact", "documents", "vehicle", "status"].indexOf(activeTab)
 
-            {/* Modal Tambah Driver Baru - LENGKAP */}
-            <Dialog open={isAddDriverOpen} onOpenChange={setIsAddDriverOpen}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-                    <div className="px-6 py-4">
-                        <DialogHeader>
-                            <DialogTitle className="text-xl font-semibold text-gray-900">
-                                Tambah Driver Baru
-                            </DialogTitle>
-                            <DialogDescription className="text-sm text-gray-500">
-                                Isi lengkap data driver untuk mendaftarkan ke sistem
-                            </DialogDescription>
-                        </DialogHeader>
+                                return (
+                                    <div key={step.id} className="relative flex flex-col items-center z-10 transition-all">
+                                        <button
+                                            onClick={() => setActiveTab(step.id)}
+                                            className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 transform ${isActive ? "bg-gray-900 text-white shadow-xl shadow-slate-200 scale-110" :
+                                                isCompleted ? "bg-emerald-500 text-white shadow-lg shadow-emerald-100" :
+                                                    "bg-white border-2 border-gray-100 text-gray-400 hover:border-gray-200 hover:scale-105"
+                                                }`}
+                                        >
+                                            {isCompleted ? (
+                                                <CheckCircle2 className="h-7 w-7" />
+                                            ) : (
+                                                <Icon className="h-7 w-7" />
+                                            )}
+                                        </button>
+                                        <span className={`mt-3 text-[11px] font-bold uppercase tracking-widest ${isActive ? "text-gray-900" : isCompleted ? "text-emerald-600" : "text-gray-400"
+                                            }`}>
+                                            {step.label}
+                                        </span>
+                                    </div>
+                                )
+                            })}
+                        </div>
                     </div>
 
-                    <div className="px-6 py-4">
-                        {/* Progress Steps */}
-                        <div className="mb-6">
-                            <div className="flex items-center justify-between">
-                                {[
-                                    { id: "personal", label: "Informasi Pribadi", icon: User },
-                                    { id: "contact", label: "Kontak", icon: Phone },
-                                    { id: "documents", label: "Dokumen", icon: FileText },
-                                    { id: "vehicle", label: "Kendaraan", icon: Bike },
-                                    { id: "status", label: "Status Awal", icon: Shield }
-                                ].map((step, index) => {
-                                    const Icon = step.icon
-                                    const isActive = activeTab === step.id
-                                    const isCompleted = ["personal", "contact", "documents", "vehicle", "status"].indexOf(step.id) < 
-                                                      ["personal", "contact", "documents", "vehicle", "status"].indexOf(activeTab)
-                                    
-                                    return (
-                                        <div key={step.id} className="flex items-center flex-1">
-                                            <div 
-                                                className={`flex items-center gap-2 cursor-pointer ${isActive ? "text-[#E04D04]" : isCompleted ? "text-emerald-600" : "text-gray-400"}`}
-                                                onClick={() => setActiveTab(step.id)}
-                                            >
-                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 
-                                                    ${isActive ? "border-[#E04D04] bg-orange-50" : 
-                                                      isCompleted ? "border-emerald-600 bg-emerald-50" : 
-                                                      "border-gray-300 bg-white"}`}>
-                                                    {isCompleted ? (
-                                                        <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                                                    ) : (
-                                                        <Icon className={`h-4 w-4 ${isActive ? "text-[#E04D04]" : "text-gray-400"}`} />
-                                                    )}
-                                                </div>
-                                                <span className="text-sm font-medium hidden md:block">{step.label}</span>
-                                            </div>
-                                            {index < 4 && (
-                                                <div className={`flex-1 h-px mx-2 ${
-                                                    ["personal", "contact", "documents", "vehicle", "status"].indexOf(activeTab) > index 
-                                                    ? "bg-emerald-600" : "bg-gray-300"
-                                                }`} />
-                                            )}
+                    {/* Form Content */}
+                    <div className="space-y-8 px-8 pb-8 pt-0">
+                        {activeTab === "personal" && (
+                            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <div className="flex flex-col items-center justify-center p-10 bg-slate-50 rounded-3xl border border-slate-100 relative overflow-hidden group">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-[#E04D04]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="w-24 h-24 rounded-3xl bg-white flex items-center justify-center shadow-xl shadow-slate-200 mb-6 relative z-10 border border-slate-100 group-hover:scale-105 transition-transform">
+                                        <User className="h-12 w-12 text-slate-300" />
+                                        <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#E04D04] rounded-xl flex items-center justify-center text-white shadow-lg cursor-pointer hover:bg-orange-600 transition-colors">
+                                            <Camera className="h-4 w-4" />
                                         </div>
-                                    )
-                                })}
+                                    </div>
+                                    <div className="text-center relative z-10">
+                                        <h4 className="text-base font-bold text-slate-900 mb-1">Foto Profil</h4>
+                                        <p className="text-xs text-slate-400 font-medium tracking-wide">JPG, PNG. Max 2MB</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-8">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="name" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Nama Lengkap</Label>
+                                        <Input id="name" placeholder="Masukkan nama lengkap" className="rounded-xl border-slate-200 focus:border-[#E04D04] h-12" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="nik" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">NIK (Nomor Induk Kependudukan)</Label>
+                                        <Input id="nik" placeholder="16 digit NIK" className="rounded-xl border-slate-200 focus:border-[#E04D04] h-12" />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-8">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="birthdate" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Tanggal Lahir</Label>
+                                        <Input id="birthdate" type="date" className="rounded-xl border-slate-200 focus:border-[#E04D04] h-12" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Jenis Kelamin</Label>
+                                        <Select
+                                            value=""
+                                            onValueChange={() => { }}
+                                        >
+                                            <SelectTrigger className="rounded-xl h-12">
+                                                <SelectValue placeholder="Pilih Jenis Kelamin" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="male">Laki-laki</SelectItem>
+                                                <SelectItem value="female">Perempuan</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="address" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Alamat Domisili Sesuai KTP</Label>
+                                    <Input id="address" placeholder="Masukkan alamat lengkap" className="rounded-xl border-slate-200 focus:border-[#E04D04] h-12" />
+                                </div>
                             </div>
-                        </div>
+                        )}
 
-                        {/* Form Sections */}
-                        <div className="mt-6">
-                            {/* Informasi Pribadi */}
-                            {activeTab === "personal" && (
-                                <div className="space-y-4">
-                                    <h3 className="text-lg font-medium text-gray-900">Informasi Pribadi</h3>
-                                    
-                                    {/* Foto Profil */}
-                                    <div className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg">
-                                        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
-                                            <User className="h-8 w-8 text-gray-400" />
-                                        </div>
-                                        <div>
-                                            <Button variant="outline" size="sm" className="border-gray-300">
-                                                <Camera className="mr-2 h-4 w-4" />
-                                                Upload Foto Profil
-                                            </Button>
-                                            <p className="text-xs text-gray-400 mt-1">Format: JPG, PNG. Maks 2MB</p>
-                                        </div>
+                        {activeTab === "contact" && (
+                            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <div className="grid grid-cols-2 gap-8">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="phone" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Nomor HP</Label>
+                                        <Input id="phone" placeholder="081234567890" className="rounded-xl border-slate-200 focus:border-[#E04D04] h-12" />
+                                        <p className="text-[10px] text-slate-400 font-medium ml-1">Gunakan format angka saja (contoh: 081234567890)</p>
                                     </div>
-
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="name">Nama Lengkap</Label>
-                                            <Input id="name" placeholder="Masukkan nama lengkap" className="border-gray-300" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="nik">NIK</Label>
-                                            <Input id="nik" placeholder="Masukkan NIK" className="border-gray-300" />
-                                        </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="email" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Alamat Email</Label>
+                                        <Input id="email" type="email" placeholder="email@example.com" className="rounded-xl border-slate-200 focus:border-[#E04D04] h-12" />
                                     </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-8">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="emergency" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Kontak Darurat</Label>
+                                        <Input id="emergency" placeholder="Nama & Nomor HP" className="rounded-xl border-slate-200 focus:border-[#E04D04] h-12" />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="birthdate">Tanggal Lahir</Label>
-                                            <Input id="birthdate" type="date" className="border-gray-300" />
+                        {activeTab === "documents" && (
+                            <div className="grid grid-cols-1 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                {[
+                                    { id: "ktp", label: "KTP (Kartu Tanda Penduduk)", icon: IdCard, desc: "Sisi depan harus terlihat jelas. JPG, PNG. Maks 5MB" },
+                                    { id: "sim", label: "SIM (Surat Izin Mengemudi)", icon: Car, desc: "Pastikan masa berlaku aktif. JPG, PNG. Maks 5MB" },
+                                    { id: "vehicle", label: "STNK / Foto Kendaraan", icon: Bike, desc: "Plat nomor harus terbaca jelas. JPG, PNG. Maks 5MB" }
+                                ].map((doc) => (
+                                    <div key={doc.id} className="flex items-center justify-between p-5 border border-slate-200 rounded-2xl hover:border-gray-900 hover:shadow-md transition-all group bg-white">
+                                        <div className="flex items-center gap-5">
+                                            <div className="p-4 bg-slate-50 rounded-xl group-hover:bg-slate-100 transition-colors">
+                                                <doc.icon className="h-6 w-6 text-slate-500" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-slate-900 text-sm mb-0.5">{doc.label}</h4>
+                                                <p className="text-[11px] text-slate-400 font-medium">{doc.desc}</p>
+                                            </div>
                                         </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="gender">Jenis Kelamin</Label>
-                                            <Select>
-                                                <SelectTrigger className="border-gray-300">
-                                                    <SelectValue placeholder="Pilih jenis kelamin" />
+                                        <Button variant="outline" size="sm" className="rounded-xl px-5 py-2 h-auto text-xs font-bold border-slate-200">
+                                            <Upload className="mr-2 h-3.5 w-3.5" />
+                                            Upload
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {activeTab === "vehicle" && (
+                            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <div className="grid grid-cols-2 gap-8">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="vehicleNumber" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Nomor Plat Kendaraan</Label>
+                                        <Input id="vehicleNumber" placeholder="B 1234 ABC" className="rounded-xl border-slate-200 focus:border-[#E04D04] h-12" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="vehicleType" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Model / Tipe Kendaraan</Label>
+                                        <Input id="vehicleType" placeholder="Contoh: Becak Listrik G-1" className="rounded-xl border-slate-200 focus:border-[#E04D04] h-12" />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-8">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="vehicleYear" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Tahun Kendaraan</Label>
+                                        <Input id="vehicleYear" placeholder="2024" className="rounded-xl border-slate-200 focus:border-[#E04D04] h-12" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="vehicleColor" className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Warna Kendaraan</Label>
+                                        <Input id="vehicleColor" placeholder="Merah / Hitam" className="rounded-xl border-slate-200 focus:border-[#E04D04] h-12" />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === "status" && (
+                            <div className="space-y-4">
+                                <Card className="border-2 border-amber-200 bg-amber-50/50">
+                                    <CardContent className="p-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-3 bg-white rounded-xl shadow-sm">
+                                                <Clock className="h-6 w-6 text-amber-600" />
+                                            </div>
+                                            <div className="flex-1">
+                                                <h4 className="font-semibold text-gray-900">Pending Verifikasi</h4>
+                                                <p className="text-sm text-gray-600">Driver akan memerlukan verifikasi dokumen sebelum aktif</p>
+                                            </div>
+                                            <Badge variant="warning">Default</Badge>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardContent className="p-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-3 bg-emerald-50 rounded-xl">
+                                                <CheckCircle2 className="h-6 w-6 text-emerald-600" />
+                                            </div>
+                                            <div className="flex-1">
+                                                <h4 className="font-semibold text-gray-900">Aktif</h4>
+                                                <p className="text-sm text-gray-600">Driver langsung aktif (hanya untuk admin dengan kewenangan khusus)</p>
+                                            </div>
+                                            <Select
+                                                value="pending"
+                                                onValueChange={() => { }}
+                                            >
+                                                <SelectTrigger className="w-32">
+                                                    <SelectValue placeholder="Status" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="male">Laki-laki</SelectItem>
-                                                    <SelectItem value="female">Perempuan</SelectItem>
+                                                    <SelectItem value="pending">Pending</SelectItem>
+                                                    <SelectItem value="active">Aktif</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label htmlFor="address">Alamat Lengkap</Label>
-                                        <Input id="address" placeholder="Masukkan alamat lengkap" className="border-gray-300" />
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Kontak */}
-                            {activeTab === "contact" && (
-                                <div className="space-y-4">
-                                    <h3 className="text-lg font-medium text-gray-900">Informasi Kontak</h3>
-                                    
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="phone">Nomor HP</Label>
-                                            <Input id="phone" placeholder="Masukkan nomor HP" className="border-gray-300" />
-                                            <p className="text-xs text-gray-400">Contoh: 081234567890</p>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="email">Email</Label>
-                                            <Input id="email" type="email" placeholder="Masukkan email" className="border-gray-300" />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="emergency">Nomor Darurat</Label>
-                                            <Input id="emergency" placeholder="Nomor kontak darurat" className="border-gray-300" />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Dokumen */}
-                            {activeTab === "documents" && (
-                                <div className="space-y-4">
-                                    <h3 className="text-lg font-medium text-gray-900">Upload Dokumen</h3>
-                                    
-                                    <div className="space-y-3">
-                                        <div className="p-4 border border-gray-200 rounded-lg">
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="p-2 bg-orange-50 rounded">
-                                                        <IdCard className="h-5 w-5" style={{ color: "#E04D04" }} />
-                                                    </div>
-                                                    <div>
-                                                        <span className="text-sm font-medium text-gray-700">KTP</span>
-                                                        <p className="text-xs text-gray-400">Format: JPG, PNG. Maks 5MB</p>
-                                                    </div>
-                                                </div>
-                                                <Button variant="outline" size="sm" className="border-gray-300">
-                                                    <Upload className="mr-2 h-4 w-4" />
-                                                    Upload
-                                                </Button>
-                                            </div>
-                                        </div>
-
-                                        <div className="p-4 border border-gray-200 rounded-lg">
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="p-2 bg-orange-50 rounded">
-                                                        <Car className="h-5 w-5" style={{ color: "#E04D04" }} />
-                                                    </div>
-                                                    <div>
-                                                        <span className="text-sm font-medium text-gray-700">SIM</span>
-                                                        <p className="text-xs text-gray-400">Format: JPG, PNG. Maks 5MB</p>
-                                                    </div>
-                                                </div>
-                                                <Button variant="outline" size="sm" className="border-gray-300">
-                                                    <Upload className="mr-2 h-4 w-4" />
-                                                    Upload
-                                                </Button>
-                                            </div>
-                                        </div>
-
-                                        <div className="p-4 border border-gray-200 rounded-lg">
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="p-2 bg-orange-50 rounded">
-                                                        <Bike className="h-5 w-5" style={{ color: "#E04D04" }} />
-                                                    </div>
-                                                    <div>
-                                                        <span className="text-sm font-medium text-gray-700">Foto Kendaraan</span>
-                                                        <p className="text-xs text-gray-400">Format: JPG, PNG. Maks 5MB</p>
-                                                    </div>
-                                                </div>
-                                                <Button variant="outline" size="sm" className="border-gray-300">
-                                                    <Upload className="mr-2 h-4 w-4" />
-                                                    Upload
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Informasi Kendaraan */}
-                            {activeTab === "vehicle" && (
-                                <div className="space-y-4">
-                                    <h3 className="text-lg font-medium text-gray-900">Informasi Kendaraan</h3>
-                                    
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="vehicleNumber">Nomor Kendaraan</Label>
-                                            <Input id="vehicleNumber" placeholder="Contoh: B 1234 ABC" className="border-gray-300" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="vehicleType">Tipe Kendaraan</Label>
-                                            <Input id="vehicleType" placeholder="Contoh: Becak Listrik 2023" className="border-gray-300" />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="vehicleYear">Tahun</Label>
-                                            <Input id="vehicleYear" placeholder="Contoh: 2023" className="border-gray-300" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="vehicleColor">Warna</Label>
-                                            <Input id="vehicleColor" placeholder="Warna kendaraan" className="border-gray-300" />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Status Awal */}
-                            {activeTab === "status" && (
-                                <div className="space-y-4">
-                                    <h3 className="text-lg font-medium text-gray-900">Status Awal Driver</h3>
-                                    
-                                    <Card className="border border-gray-200">
-                                        <CardContent className="pt-6">
-                                            <div className="space-y-4">
-                                                <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="p-2 bg-white rounded">
-                                                            <Clock className="h-5 w-5 text-yellow-600" />
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-sm font-medium text-gray-700">Pending Verifikasi</span>
-                                                            <p className="text-xs text-gray-400">Driver akan memerlukan verifikasi dokumen sebelum aktif</p>
-                                                        </div>
-                                                    </div>
-                                                    <Badge className="bg-yellow-100 text-yellow-700">Default</Badge>
-                                                </div>
-
-                                                <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="p-2 bg-white rounded">
-                                                            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-sm font-medium text-gray-700">Aktif</span>
-                                                            <p className="text-xs text-gray-400">Driver langsung aktif (hanya untuk admin dengan kewenangan khusus)</p>
-                                                        </div>
-                                                    </div>
-                                                    <Select defaultValue="pending">
-                                                        <SelectTrigger className="w-32 border-gray-300">
-                                                            <SelectValue />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="pending">Pending</SelectItem>
-                                                            <SelectItem value="active">Aktif</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            )}
-                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
                     </div>
 
-                    {/* Footer dengan Navigasi */}
-                    <div className="px-6 py-4 flex justify-between items-center">
+                    <div className="flex justify-between items-center mt-12 pt-8 border-t border-gray-100">
                         <div>
                             {activeTab !== "personal" && (
-                                <Button variant="outline" onClick={() => {
-                                    const tabs = ["personal", "contact", "documents", "vehicle", "status"]
-                                    const currentIndex = tabs.indexOf(activeTab)
-                                    setActiveTab(tabs[currentIndex - 1])
-                                }}>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        const tabs = ["personal", "contact", "documents", "vehicle", "status"]
+                                        const currentIndex = tabs.indexOf(activeTab)
+                                        setActiveTab(tabs[currentIndex - 1])
+                                    }}
+                                    className="rounded-xl px-6"
+                                >
                                     Sebelumnya
                                 </Button>
                             )}
                         </div>
-                        <div className="flex gap-2">
-                            <Button variant="outline" onClick={() => setIsAddDriverOpen(false)}>
+                        <div className="flex gap-3">
+                            <Button variant="outline" onClick={() => setIsAddDriverOpen(false)} className="rounded-xl px-6 transition-all hover:bg-gray-50">
                                 Batal
                             </Button>
                             {activeTab !== "status" ? (
-                                <Button 
-                                    style={{ backgroundColor: "#E04D04" }}
-                                    className="text-white hover:opacity-90"
+                                <Button
                                     onClick={() => {
                                         const tabs = ["personal", "contact", "documents", "vehicle", "status"]
                                         const currentIndex = tabs.indexOf(activeTab)
                                         setActiveTab(tabs[currentIndex + 1])
                                     }}
+                                    className="rounded-xl px-8 shadow-lg shadow-orange-100"
                                 >
                                     Selanjutnya
                                 </Button>
                             ) : (
-                                <Button 
-                                    style={{ backgroundColor: "#E04D04" }}
-                                    className="text-white hover:opacity-90"
+                                <Button
                                     onClick={() => {
-                                        // Simpan data driver
                                         console.log("Menyimpan data driver...")
                                         setIsAddDriverOpen(false)
                                         setActiveTab("personal")
                                     }}
+                                    className="rounded-xl px-10 shadow-lg shadow-orange-200"
                                 >
                                     Simpan Driver
                                 </Button>
                             )}
                         </div>
                     </div>
-                </DialogContent>
-            </Dialog>
+                </div>
+            </Modal>
 
             {/* Modal Audit Log */}
-            <Dialog open={isAuditLogOpen} onOpenChange={setIsAuditLogOpen}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-                    <div className="px-6 py-4">
-                        <DialogHeader>
-                            <DialogTitle className="text-xl font-semibold text-gray-900">
-                                Audit Log - Memori Sistem
-                            </DialogTitle>
-                            <DialogDescription className="text-sm text-gray-500">
-                                Catatan semua tindakan administratif untuk akuntabilitas
-                            </DialogDescription>
-                        </DialogHeader>
-                    </div>
-
-                    <div className="px-6 py-4">
-                        <div className="space-y-4">
-                            {auditLogs.map((log) => (
-                                <div key={log.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-start gap-3">
-                                            <div className={`p-2 rounded ${
-                                                log.action.includes('Suspend') ? 'bg-red-50' :
-                                                log.action.includes('Verifikasi') ? 'bg-orange-50' :
-                                                log.action.includes('Aktivasi') ? 'bg-emerald-50' : 'bg-blue-50'
-                                            }`}>
-                                                <FileClock className={`h-5 w-5 ${
-                                                    log.action.includes('Suspend') ? 'text-red-600' :
-                                                    log.action.includes('Verifikasi') ? 'text-orange-600' :
-                                                    log.action.includes('Aktivasi') ? 'text-emerald-600' : 'text-blue-600'
-                                                }`} />
+            <Modal
+                isOpen={isAuditLogOpen}
+                onClose={() => setIsAuditLogOpen(false)}
+                maxWidth="max-w-4xl"
+                title="Audit Log - Memori Sistem"
+                description="Catatan semua tindakan administratif untuk akuntabilitas"
+            >
+                <div className="p-6 max-h-[60vh] overflow-y-auto">
+                    <div className="space-y-4">
+                        {logList.map((log) => (
+                            <div
+                                key={log.id}
+                                className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow bg-white"
+                            >
+                                <div className="flex items-start gap-4">
+                                    <div className={`p-3 rounded-xl ${log.action.includes('Suspend') ? 'bg-red-50' :
+                                        log.action.includes('Verifikasi') ? 'bg-orange-50' :
+                                            log.action.includes('Aktivasi') ? 'bg-emerald-50' : 'bg-blue-50'
+                                        }`}>
+                                        <FileClock className={`h-6 w-6 ${log.action.includes('Suspend') ? 'text-red-600' :
+                                            log.action.includes('Verifikasi') ? 'text-orange-600' :
+                                                log.action.includes('Aktivasi') ? 'text-emerald-600' : 'text-blue-600'
+                                            }`} />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-3">
+                                                <h4 className="font-semibold text-gray-900">{log.action}</h4>
+                                                <span className="text-xs text-gray-400 font-mono">{log.id}</span>
                                             </div>
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <h4 className="font-medium text-gray-900">{log.action}</h4>
-                                                    <span className="text-xs text-gray-400">{log.id}</span>
-                                                </div>
-                                                <p className="text-sm text-gray-600 mt-1">{log.details}</p>
-                                                <div className="flex items-center gap-3 mt-2">
-                                                    <Badge variant="outline" className="bg-gray-50">
-                                                        {log.admin} ({log.adminRole})
-                                                    </Badge>
-                                                    <span className="text-xs text-gray-400">{log.timestamp}</span>
-                                                </div>
-                                                <div className="mt-2 p-2 bg-gray-50 rounded text-sm">
-                                                    <span className="font-medium text-gray-700">Alasan: </span>
-                                                    <span className="text-gray-600">{log.reason}</span>
-                                                </div>
-                                            </div>
+                                            <span className="text-xs text-gray-500">{log.timestamp}</span>
+                                        </div>
+                                        <p className="text-sm text-gray-600 mb-3">{log.details}</p>
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <Badge variant="outline">
+                                                {log.admin} ({log.adminRole})
+                                            </Badge>
+                                        </div>
+                                        <div className="bg-gray-50 rounded-lg p-3 text-sm">
+                                            <span className="font-semibold text-gray-700">Alasan: </span>
+                                            <span className="text-gray-600">{log.reason}</span>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
-
-            {/* Modal Konfirmasi Tindakan dengan Alasan Wajib */}
-            <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
-                <DialogContent className="max-w-md p-0 overflow-hidden">
-                    <div className="p-8">
-                        <DialogHeader>
-                            <div className="flex justify-center mb-6">
-                                <div className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                                    actionType === "suspend" ? "bg-red-50" :
-                                    actionType === "reinstate" ? "bg-emerald-50" : "bg-orange-50"
-                                }`}>
-                                    {actionType === "suspend" && <UserX className="h-8 w-8 text-red-600" />}
-                                    {actionType === "reinstate" && <RotateCcw className="h-8 w-8 text-emerald-600" />}
-                                    {actionType === "verify" && <Shield className="h-8 w-8" style={{ color: "#E04D04" }} />}
                                 </div>
                             </div>
-                            <DialogTitle className="text-2xl font-semibold text-center text-gray-900 mb-2">
-                                {actionType === "suspend" && "Suspend Driver"}
-                                {actionType === "reinstate" && "Aktifkan Kembali Driver"}
-                                {actionType === "verify" && "Verifikasi Driver"}
-                            </DialogTitle>
-                            <DialogDescription className="text-center text-gray-500">
-                                {actionType === "suspend" && "Apakah Anda yakin ingin menonaktifkan driver ini?"}
-                                {actionType === "reinstate" && "Apakah Anda yakin ingin mengaktifkan kembali driver ini?"}
-                                {actionType === "verify" && "Apakah Anda yakin ingin memverifikasi driver ini?"}
-                            </DialogDescription>
-                        </DialogHeader>
-
-                        {/* Alasan wajib diisi - untuk akuntabilitas */}
-                        <div className="mt-6">
-                            <Label htmlFor="reason" className="text-sm font-medium text-gray-700">
-                                Alasan <span className="text-red-500">*</span>
-                            </Label>
-                            <Textarea
-                                id="reason"
-                                placeholder="Jelaskan alasan tindakan ini (wajib diisi)"
-                                value={actionReason}
-                                onChange={(e) => setActionReason(e.target.value)}
-                                className="mt-2 border-gray-300"
-                                rows={3}
-                            />
-                            <p className="text-xs text-gray-400 mt-1">
-                                Alasan akan tercatat di audit log untuk akuntabilitas
-                            </p>
-                        </div>
-
-                        <div className="flex justify-center gap-3 mt-8">
-                            <Button 
-                                variant="outline" 
-                                onClick={() => {
-                                    setIsConfirmDialogOpen(false)
-                                    setActionReason("")
-                                }}
-                                className="px-8 border-gray-300"
-                            >
-                                Batal
-                            </Button>
-                            <Button 
-                                style={actionType === "verify" ? { backgroundColor: "#E04D04" } : {}}
-                                className={actionType === "suspend" ? "bg-red-600 hover:bg-red-700 text-white px-8" :
-                                         actionType === "reinstate" ? "bg-emerald-600 hover:bg-emerald-700 text-white px-8" :
-                                         "text-white hover:opacity-90 px-8"}
-                                onClick={confirmAction}
-                                disabled={!actionReason.trim()}
-                            >
-                                {actionType === "suspend" && "Ya, Suspend"}
-                                {actionType === "reinstate" && "Ya, Aktifkan"}
-                                {actionType === "verify" && "Ya, Verifikasi"}
-                            </Button>
-                        </div>
+                        ))}
                     </div>
-                </DialogContent>
-            </Dialog>
+                </div>
+            </Modal>
 
-            {/* Modal Detail Driver dengan Riwayat Suspend/Reactivation */}
-            <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
-                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0">
-                    <div className="px-6 py-4">
-                        <DialogHeader>
-                            <DialogTitle className="text-xl font-semibold text-gray-900">
-                                Detail Driver: {selectedDriver?.name}
-                            </DialogTitle>
-                            <DialogDescription className="text-sm text-gray-500">
-                                Informasi lengkap dan riwayat driver
-                            </DialogDescription>
-                        </DialogHeader>
+            {/* Modal Konfirmasi Tindakan */}
+            <Modal
+                isOpen={isConfirmDialogOpen}
+                onClose={() => {
+                    setIsConfirmDialogOpen(false)
+                    setActionReason("")
+                }}
+                maxWidth="max-w-md"
+            >
+                <div className="p-8 text-center">
+                    <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 ${actionType === "suspend" ? "bg-red-100" :
+                        actionType === "reinstate" ? "bg-emerald-100" : "bg-orange-100"
+                        }`}>
+                        {actionType === "suspend" && <UserX className="h-10 w-10 text-red-600" />}
+                        {actionType === "reinstate" && <RotateCcw className="h-10 w-10 text-emerald-600" />}
+                        {actionType === "verify" && <Shield className="h-10 w-10 text-[#E04D04]" />}
                     </div>
 
-                    <div className="px-6 py-4">
-                        <Tabs defaultValue="info" className="mt-2">
-                            <TabsList className="grid w-full grid-cols-5 bg-transparent p-0 gap-1">
-                                <TabsTrigger 
-                                    value="info" 
-                                    className="data-[state=active]:bg-[#E04D04] data-[state=active]:text-white py-2 rounded-md border border-gray-200 data-[state=active]:border-[#E04D04]"
-                                >
-                                    Informasi Pribadi
-                                </TabsTrigger>
-                                <TabsTrigger 
-                                    value="stats" 
-                                    className="data-[state=active]:bg-[#E04D04] data-[state=active]:text-white py-2 rounded-md border border-gray-200 data-[state=active]:border-[#E04D04]"
-                                >
-                                    Statistik Performa
-                                </TabsTrigger>
-                                <TabsTrigger 
-                                    value="documents" 
-                                    className="data-[state=active]:bg-[#E04D04] data-[state=active]:text-white py-2 rounded-md border border-gray-200 data-[state=active]:border-[#E04D04]"
-                                >
-                                    Dokumen
-                                </TabsTrigger>
-                                <TabsTrigger 
-                                    value="history" 
-                                    className="data-[state=active]:bg-[#E04D04] data-[state=active]:text-white py-2 rounded-md border border-gray-200 data-[state=active]:border-[#E04D04]"
-                                >
-                                    Riwayat Aktivitas
-                                </TabsTrigger>
-                                <TabsTrigger 
-                                    value="audit" 
-                                    className="data-[state=active]:bg-[#E04D04] data-[state=active]:text-white py-2 rounded-md border border-gray-200 data-[state=active]:border-[#E04D04]"
-                                >
-                                    Audit Trail
-                                </TabsTrigger>
-                            </TabsList>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                        {actionType === "suspend" && "Suspend Driver"}
+                        {actionType === "reinstate" && "Aktifkan Kembali Driver"}
+                        {actionType === "verify" && "Verifikasi Driver"}
+                    </h3>
+                    <p className="text-gray-500 mb-8">
+                        {actionType === "suspend" && "Apakah Anda yakin ingin menonaktifkan driver ini?"}
+                        {actionType === "reinstate" && "Apakah Anda yakin ingin mengaktifkan kembali driver ini?"}
+                        {actionType === "verify" && "Apakah Anda yakin ingin memverifikasi driver ini?"}
+                    </p>
 
-                            {/* Informasi Pribadi */}
-                            <TabsContent value="info" className="space-y-4 mt-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-500 mb-2">Identitas</h4>
-                                        <div className="space-y-2">
-                                            <div>
-                                                <span className="text-xs text-gray-400">NIK</span>
-                                                <p className="text-sm text-gray-900">{selectedDriver?.nik}</p>
-                                            </div>
-                                            <div>
-                                                <span className="text-xs text-gray-400">Tanggal Daftar</span>
-                                                <p className="text-sm text-gray-900">{selectedDriver?.joinDate}</p>
-                                            </div>
-                                            <div>
-                                                <span className="text-xs text-gray-400">Alamat</span>
-                                                <p className="text-sm text-gray-900">{selectedDriver?.address}</p>
-                                            </div>
+                    <div className="text-left mb-6">
+                        <Label htmlFor="reason">
+                            Alasan <span className="text-red-500">*</span>
+                        </Label>
+                        <Textarea
+                            id="reason"
+                            placeholder="Jelaskan alasan tindakan ini (wajib diisi)"
+                            value={actionReason}
+                            onChange={(e) => setActionReason(e.target.value)}
+                            className="mt-2"
+                            rows={3}
+                        />
+                        <p className="text-xs text-gray-500 mt-2">
+                            Alasan akan tercatat di audit log untuk akuntabilitas
+                        </p>
+                    </div>
+
+                    <div className="flex justify-center gap-3">
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setIsConfirmDialogOpen(false)
+                                setActionReason("")
+                            }}
+                            className="px-8"
+                        >
+                            Batal
+                        </Button>
+                        <Button
+                            variant={actionType === "suspend" ? "danger" : "primary"}
+                            onClick={confirmAction}
+                            disabled={!actionReason.trim()}
+                            className="px-8"
+                        >
+                            {actionType === "suspend" && "Ya, Suspend"}
+                            {actionType === "reinstate" && "Ya, Aktifkan"}
+                            {actionType === "verify" && "Ya, Verifikasi"}
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal
+                isOpen={isDetailOpen}
+                onClose={() => setIsDetailOpen(false)}
+                maxWidth="max-w-4xl"
+                title={`Detail Driver: ${selectedDriver?.name}`}
+                description="Informasi lengkap, statistik performa, dan riwayat driver"
+            >
+                <div className="px-8 pb-8 pt-0 text-sm">
+                    {/* Tabs */}
+                    <div className="flex gap-1 p-3 bg-gray-50 rounded-xl mb-8 border border-gray-100 sticky top-0 z-10 bg-white/80 backdrop-blur-md mt-4">
+                        {[
+                            { id: "info", label: "Informasi Pribadi" },
+                            { id: "stats", label: "Statistik Performa" },
+                            { id: "documents", label: "Dokumen" },
+                            { id: "history", label: "Riwayat Aktivitas" },
+                            { id: "audit", label: "Audit Trail" }
+                        ].map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setDetailTab(tab.id)}
+                                className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all ${detailTab === tab.id
+                                    ? 'bg-white text-gray-900 shadow-sm border border-gray-200'
+                                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
+                                    }`}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="space-y-6">
+                        {/* Informasi Pribadi */}
+                        {detailTab === "info" && (
+                            <div className="grid grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+                                    <h4 className="text-lg font-bold text-[#0f172a] mb-4">Identitas</h4>
+                                    <div className="space-y-4">
+                                        <div className="flex flex-col gap-1.5">
+                                            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">NIK</span>
+                                            <p className="text-xl font-bold text-[#1e293b]">{selectedDriver?.nik}</p>
+                                        </div>
+                                        <div className="flex flex-col gap-1.5">
+                                            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Tanggal Daftar</span>
+                                            <p className="text-sm font-semibold text-[#1e293b]">{selectedDriver?.joinDate}</p>
+                                        </div>
+                                        <div className="flex flex-col gap-1.5">
+                                            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Alamat</span>
+                                            <p className="text-sm font-semibold text-[#1e293b] leading-relaxed">{selectedDriver?.address}</p>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-500 mb-2">Kontak</h4>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center gap-2">
-                                                <Phone className="h-4 w-4 text-gray-400" />
-                                                <span className="text-sm text-gray-900">{selectedDriver?.phone}</span>
+                                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+                                    <h4 className="text-lg font-bold text-[#0f172a] mb-4">Kontak</h4>
+                                    <div className="space-y-4 text-sm">
+                                        <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl group hover:bg-white hover:border-gray-300 border border-transparent transition-all">
+                                            <div className="p-2.5 bg-white rounded-lg shadow-sm">
+                                                <Phone className="h-5 w-5 text-gray-600" />
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <Mail className="h-4 w-4 text-gray-400" />
-                                                <span className="text-sm text-gray-900">{selectedDriver?.email}</span>
+                                            <div className="flex flex-col">
+                                                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Telepon</span>
+                                                <span className="font-bold text-[#1e293b]">{selectedDriver?.phone}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl group hover:bg-white hover:border-gray-300 border border-transparent transition-all">
+                                            <div className="p-2.5 bg-white rounded-lg shadow-sm">
+                                                <Mail className="h-5 w-5 text-gray-600" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Email</span>
+                                                <span className="font-bold text-[#1e293b]">{selectedDriver?.email}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {selectedDriver?.currentTrip && (
-                                    <div className="mt-4">
-                                        <h4 className="text-sm font-medium text-gray-500 mb-2">Trip Aktif</h4>
-                                        <div className="bg-blue-50 p-4 rounded-lg">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className="text-sm font-medium text-blue-700">Trip #{selectedDriver.currentTrip.id}</span>
-                                                {getTripStatusBadge(selectedDriver.currentTrip.status)}
+                                    <div className="col-span-2 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm border-l-4 border-l-blue-500 overflow-hidden relative">
+                                        <div className="absolute top-0 right-0 p-8 opacity-5">
+                                            <Activity className="w-32 h-32" />
+                                        </div>
+                                        <div className="flex items-center justify-between mb-6 relative">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" />
+                                                <h4 className="text-lg font-bold text-[#0f172a]">Trip Aktif Saat Ini</h4>
                                             </div>
-                                            <div className="space-y-2 text-sm">
-                                                <div className="flex items-start gap-2">
-                                                    <MapPin className="h-3 w-3 text-blue-500 mt-1" />
-                                                    <span className="text-blue-700">Pickup: {selectedDriver.currentTrip.pickup}</span>
+                                            <div className="flex gap-2">
+                                                <Badge variant="blue" className="px-4 py-1.5 font-bold shadow-sm">#{selectedDriver.currentTrip.id}</Badge>
+                                                <Badge variant="blue" className="px-4 py-1.5 font-bold shadow-sm">{selectedDriver.currentTrip.status}</Badge>
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-8 relative">
+                                            <div className="flex items-start gap-4">
+                                                <div className="p-3 bg-blue-50 rounded-2xl shadow-inner mt-1">
+                                                    <MapPin className="h-6 w-6 text-blue-500" />
                                                 </div>
-                                                <div className="flex items-start gap-2">
-                                                    <MapPin className="h-3 w-3 text-blue-500 mt-1" />
-                                                    <span className="text-blue-700">Destination: {selectedDriver.currentTrip.destination}</span>
+                                                <div className="flex flex-col gap-1.5">
+                                                    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Lokasi Penjemputan</span>
+                                                    <p className="text-base font-bold text-[#1e293b] leading-tight">{selectedDriver.currentTrip.pickup}</p>
                                                 </div>
-                                                <div className="text-xs text-blue-600 mt-1">
-                                                    Customer: {selectedDriver.currentTrip.customer}
+                                            </div>
+                                            <div className="flex items-start gap-4">
+                                                <div className="p-3 bg-red-50 rounded-2xl shadow-inner mt-1">
+                                                    <MapPin className="h-6 w-6 text-red-500" />
+                                                </div>
+                                                <div className="flex flex-col gap-1.5">
+                                                    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Tujuan</span>
+                                                    <p className="text-base font-bold text-[#1e293b] leading-tight">{selectedDriver.currentTrip.destination}</p>
+                                                </div>
+                                            </div>
+                                            <div className="col-span-2 pt-4 border-t border-gray-100 mt-2 flex items-center justify-between text-sm">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-gray-400 font-medium">Customer:</span>
+                                                    <span className="font-bold text-[#0f172a]">{selectedDriver.currentTrip.customer}</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 )}
-                            </TabsContent>
+                            </div>
+                        )}
 
-                            {/* Statistik Performa dengan Cancel Rate */}
-                            <TabsContent value="stats" className="space-y-4 mt-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-500 mb-2">Metrik Utama</h4>
-                                        <div className="space-y-3">
+                        {detailTab === "stats" && (
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-2 gap-6">
+                                    <Card>
+                                        <CardHeader className="pb-3">
+                                            <CardTitle className="text-base">Metrik Utama</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="space-y-5">
                                             <div>
-                                                <div className="flex justify-between text-sm mb-1">
-                                                    <span className="text-gray-500">Rating</span>
-                                                    <span className="font-medium text-gray-900">{selectedDriver?.rating} / 5.0</span>
+                                                <div className="flex justify-between text-sm mb-2">
+                                                    <span className="text-gray-600">Rating Keseluruhan</span>
+                                                    <span className="font-bold text-gray-900">{selectedDriver?.rating} / 5.0</span>
                                                 </div>
-                                                <Progress value={selectedDriver?.rating ? selectedDriver.rating * 20 : 0} className="h-1.5" />
+                                                <Progress value={selectedDriver?.rating ? selectedDriver.rating * 20 : 0} />
                                             </div>
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-gray-500">Total Order</span>
-                                                <span className="font-medium text-gray-900">{selectedDriver?.totalOrders}</span>
+                                            <div className="flex justify-between items-center py-3 border-t border-gray-100">
+                                                <span className="text-gray-600">Total Order</span>
+                                                <span className="font-bold text-2xl text-gray-900">{selectedDriver?.totalOrders}</span>
                                             </div>
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-gray-500">Order 30 Hari Terakhir</span>
-                                                <span className="font-medium text-gray-900">45</span>
-                                            </div>
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-gray-500">Cancel Rate</span>
-                                                <span className={`font-medium ${
-                                                    selectedDriver && selectedDriver.cancelRate > 10 ? "text-red-600" : 
+                                            <div className="flex justify-between items-center py-3 border-t border-gray-100">
+                                                <span className="text-gray-600">Cancel Rate</span>
+                                                <span className={`font-bold text-lg ${selectedDriver && selectedDriver.cancelRate > 10 ? "text-red-600" :
                                                     selectedDriver && selectedDriver.cancelRate > 5 ? "text-orange-600" : "text-gray-900"
-                                                }`}>
+                                                    }`}>
                                                     {selectedDriver?.cancelRate}%
                                                 </span>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </CardContent>
+                                    </Card>
 
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-500 mb-2">Pelanggaran & Laporan</h4>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-500">Jumlah Pelanggaran</span>
-                                                <Badge variant="outline" className={selectedDriver && selectedDriver.violations > 0 ? "bg-red-50 text-red-700 border-red-200" : "bg-gray-50"}>
+                                    <Card>
+                                        <CardHeader className="pb-3">
+                                            <CardTitle className="text-base">Pelanggaran & Laporan</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            <div className="flex justify-between items-center py-2">
+                                                <span className="text-gray-600">Jumlah Pelanggaran</span>
+                                                <Badge variant={selectedDriver && selectedDriver.violations > 0 ? "danger" : "neutral"} className="text-sm px-3 py-1">
                                                     {selectedDriver?.violations || 0}
                                                 </Badge>
                                             </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-500">Laporan/ Komplain</span>
-                                                <Badge variant="outline" className={selectedDriver && selectedDriver.reports > 0 ? "bg-orange-50 text-orange-700 border-orange-200" : "bg-gray-50"}>
+                                            <div className="flex justify-between items-center py-2 border-t border-gray-100">
+                                                <span className="text-gray-600">Laporan/ Komplain</span>
+                                                <Badge variant={selectedDriver && selectedDriver.reports > 0 ? "warning" : "neutral"} className="text-sm px-3 py-1">
                                                     {selectedDriver?.reports || 0}
                                                 </Badge>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </CardContent>
+                                    </Card>
                                 </div>
 
-                                {/* Riwayat Pelanggaran */}
                                 {selectedDriver && selectedDriver.violations > 0 && (
-                                    <div className="mt-4">
-                                        <h4 className="text-sm font-medium text-gray-500 mb-2">Riwayat Pelanggaran</h4>
-                                        <div className="space-y-2">
-                                            <div className="p-3 bg-red-50 rounded-lg text-sm">
-                                                <div className="font-medium text-red-700">Penolakan Order</div>
-                                                <div className="text-xs text-red-600">2024-02-20 - Peringatan 1</div>
+                                    <Card className="border-red-200">
+                                        <CardHeader className="pb-3">
+                                            <CardTitle className="text-base text-red-600 flex items-center gap-2">
+                                                <AlertTriangle className="h-5 w-5" />
+                                                Riwayat Pelanggaran
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="space-y-3">
+                                            <div className="p-4 bg-red-50 rounded-lg border border-red-100">
+                                                <div className="flex justify-between items-start mb-1">
+                                                    <span className="font-bold text-red-700 text-base">Penolakan Order Beruntun</span>
+                                                    <Badge variant="danger" className="font-bold px-3">Peringatan 1</Badge>
+                                                </div>
+                                                <p className="text-sm font-medium text-red-600">20 Februari 2024 • 14:30 WIB</p>
                                             </div>
-                                            <div className="p-3 bg-red-50 rounded-lg text-sm">
-                                                <div className="font-medium text-red-700">Telat Menjemput</div>
-                                                <div className="text-xs text-red-600">2024-02-15 - Peringatan 2</div>
+                                            <div className="p-5 bg-red-50 rounded-2xl border border-red-100 shadow-sm">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <span className="font-bold text-red-700 text-base">Terlambat Menjemput</span>
+                                                    <Badge variant="danger" className="font-bold px-3">Peringatan 2</Badge>
+                                                </div>
+                                                <p className="text-sm font-medium text-red-600">15 Februari 2024 • 09:15 WIB</p>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </CardContent>
+                                    </Card>
                                 )}
-                            </TabsContent>
+                            </div>
+                        )}
 
-                            {/* Dokumen */}
-                            <TabsContent value="documents" className="space-y-4 mt-4">
-                                <div>
-                                    <h4 className="text-sm font-medium text-gray-500 mb-3">Verifikasi Dokumen</h4>
-                                    <div className="space-y-3">
-                                        <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-orange-50 rounded">
-                                                    <FileText className="h-4 w-4" style={{ color: "#E04D04" }} />
-                                                </div>
-                                                <div>
-                                                    <span className="text-sm font-medium text-gray-700">KTP</span>
-                                                    <p className="text-xs text-gray-400">Nomor: {selectedDriver?.nik}</p>
-                                                </div>
+                        {detailTab === "documents" && (
+                            <div className="space-y-4">
+                                {[
+                                    { key: "ktp", label: "KTP", icon: FileText, value: selectedDriver?.nik },
+                                    { key: "sim", label: "SIM", icon: Car, value: "SIM A - 123456789" },
+                                    { key: "vehicle", label: "Dokumen Kendaraan", icon: Bike, value: selectedDriver?.vehicle }
+                                ].map((doc) => (
+                                    <div key={doc.key} className="flex items-center justify-between p-5 border border-gray-200 rounded-xl hover:border-[#E04D04] transition-colors">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-3 bg-orange-50 rounded-lg">
+                                                <doc.icon className="h-6 w-6 text-[#E04D04]" />
                                             </div>
-                                            {selectedDriver?.documents.ktp ? (
-                                                <Badge className="bg-emerald-100 text-emerald-700">Terverifikasi</Badge>
-                                            ) : (
-                                                <Badge variant="outline" className="border-red-200 text-red-600">Belum</Badge>
-                                            )}
-                                        </div>
-                                        <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-orange-50 rounded">
-                                                    <Car className="h-4 w-4" style={{ color: "#E04D04" }} />
-                                                </div>
-                                                <div>
-                                                    <span className="text-sm font-medium text-gray-700">SIM</span>
-                                                    <p className="text-xs text-gray-400">SIM A - 123456789</p>
-                                                </div>
+                                            <div>
+                                                <h4 className="font-semibold text-gray-900">{doc.label}</h4>
+                                                <p className="text-sm text-gray-500">{doc.value}</p>
                                             </div>
-                                            {selectedDriver?.documents.sim ? (
-                                                <Badge className="bg-emerald-100 text-emerald-700">Terverifikasi</Badge>
-                                            ) : (
-                                                <Badge variant="outline" className="border-red-200 text-red-600">Belum</Badge>
-                                            )}
                                         </div>
-                                        <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-orange-50 rounded">
-                                                    <Bike className="h-4 w-4" style={{ color: "#E04D04" }} />
-                                                </div>
-                                                <div>
-                                                    <span className="text-sm font-medium text-gray-700">Dokumen Kendaraan</span>
-                                                    <p className="text-xs text-gray-400">{selectedDriver?.vehicle}</p>
-                                                </div>
-                                            </div>
-                                            {selectedDriver?.documents.vehicle ? (
-                                                <Badge className="bg-emerald-100 text-emerald-700">Terverifikasi</Badge>
-                                            ) : (
-                                                <Badge variant="outline" className="border-red-200 text-red-600">Belum</Badge>
-                                            )}
-                                        </div>
+                                        {selectedDriver?.documents[doc.key as keyof typeof selectedDriver.documents] ? (
+                                            <Badge variant="success" className="px-3 py-1">Terverifikasi</Badge>
+                                        ) : (
+                                            <Badge variant="danger" className="px-3 py-1">Belum Verifikasi</Badge>
+                                        )}
                                     </div>
-                                </div>
+                                ))}
 
                                 {selectedDriver?.status === "Pending Verifikasi" && canVerify() && (
-                                    <Button 
-                                        className="w-full mt-4"
-                                        style={{ backgroundColor: "#E04D04" }}
+                                    <Button
+                                        className="w-full mt-6"
                                         onClick={() => {
                                             setIsDetailOpen(false)
                                             handleAction(selectedDriver, "verify")
@@ -1518,155 +1533,120 @@ export default function DriversPage() {
                                         Proses Verifikasi Sekarang
                                     </Button>
                                 )}
-                            </TabsContent>
+                            </div>
+                        )}
 
-                            {/* Riwayat Aktivitas */}
-                            <TabsContent value="history" className="space-y-4 mt-4">
-                                <div>
-                                    <h4 className="text-sm font-medium text-gray-500 mb-3">Log Aktivitas</h4>
-                                    <div className="space-y-3">
-                                        <div className="flex items-start gap-3 pb-3 border-b border-gray-100">
-                                            <div className="p-1 bg-blue-50 rounded">
-                                                <Calendar className="h-3 w-3 text-blue-500" />
+                        {detailTab === "history" && (
+                            <div className="space-y-6">
+                                <Card>
+                                    <CardHeader className="pb-3">
+                                        <CardTitle className="text-base">Log Aktivitas</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-5">
+                                        <div className="flex items-start gap-4">
+                                            <div className="p-3 bg-blue-50 rounded-lg">
+                                                <Calendar className="h-5 w-5 text-blue-600" />
                                             </div>
-                                            <div className="flex-1">
-                                                <p className="text-sm font-medium text-gray-700">Login Terakhir</p>
-                                                <p className="text-xs text-gray-400">{selectedDriver?.lastActive || "Tidak ada data"}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-start gap-3 pb-3 border-b border-gray-100">
-                                            <div className="p-1 bg-purple-50 rounded">
-                                                <History className="h-3 w-3 text-purple-500" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <p className="text-sm font-medium text-gray-700">Perubahan Status Akun</p>
-                                                <p className="text-xs text-gray-400">
-                                                    {selectedDriver?.status === "Suspend" 
-                                                        ? `Disuspend pada ${selectedDriver?.suspendHistory?.[0]?.date || "2024-01-15"} oleh ${selectedDriver?.suspendHistory?.[0]?.admin || "Admin"}` 
-                                                        : `Aktif sejak ${selectedDriver?.joinDate}`}
-                                                </p>
+                                            <div>
+                                                <p className="font-semibold text-gray-900">Login Terakhir</p>
+                                                <p className="text-sm text-gray-500 mt-1">{selectedDriver?.lastActive || "Tidak ada data"}</p>
                                             </div>
                                         </div>
 
-                                        {/* Riwayat Suspend */}
                                         {selectedDriver?.suspendHistory && selectedDriver.suspendHistory.length > 0 && (
-                                            <div className="mt-2">
-                                                <h5 className="text-xs font-medium text-gray-500 mb-2">Riwayat Suspend</h5>
+                                            <div className="space-y-3 pt-4 border-t border-gray-100">
+                                                <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                                                    <UserX className="h-4 w-4 text-red-600" />
+                                                    Riwayat Suspend
+                                                </h4>
                                                 {selectedDriver.suspendHistory.map((item, idx) => (
-                                                    <div key={idx} className="flex items-start gap-3 p-2 bg-red-50 rounded-lg mb-2">
-                                                        <div className="p-1 bg-red-100 rounded">
-                                                            <UserX className="h-3 w-3 text-red-600" />
+                                                    <div key={idx} className="p-4 bg-red-50 rounded-xl border border-red-100">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <span className="font-semibold text-red-700">Suspend</span>
+                                                            <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded-full">{item.date}</span>
                                                         </div>
-                                                        <div className="flex-1">
-                                                            <p className="text-xs font-medium text-red-700">Suspend</p>
-                                                            <p className="text-xs text-red-600">{item.date} - {item.reason}</p>
-                                                            <p className="text-xs text-gray-500">Oleh: {item.admin}</p>
-                                                        </div>
+                                                        <p className="text-sm text-red-600 mb-2">{item.reason}</p>
+                                                        <p className="text-xs text-gray-500">Oleh: {item.admin}</p>
                                                     </div>
                                                 ))}
                                             </div>
                                         )}
 
-                                        {/* Riwayat Reaktivasi */}
                                         {selectedDriver?.reactivationHistory && selectedDriver.reactivationHistory.length > 0 && (
-                                            <div className="mt-2">
-                                                <h5 className="text-xs font-medium text-gray-500 mb-2">Riwayat Reaktivasi</h5>
+                                            <div className="space-y-3 pt-4 border-t border-gray-100">
+                                                <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                                                    <RotateCcw className="h-4 w-4 text-emerald-600" />
+                                                    Riwayat Reaktivasi
+                                                </h4>
                                                 {selectedDriver.reactivationHistory.map((item, idx) => (
-                                                    <div key={idx} className="flex items-start gap-3 p-2 bg-emerald-50 rounded-lg">
-                                                        <div className="p-1 bg-emerald-100 rounded">
-                                                            <RotateCcw className="h-3 w-3 text-emerald-600" />
+                                                    <div key={idx} className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <span className="font-semibold text-emerald-700">Aktivasi Kembali</span>
+                                                            <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded-full">{item.date}</span>
                                                         </div>
-                                                        <div className="flex-1">
-                                                            <p className="text-xs font-medium text-emerald-700">Aktivasi Kembali</p>
-                                                            <p className="text-xs text-emerald-600">{item.date} - {item.reason}</p>
-                                                            <p className="text-xs text-gray-500">Oleh: {item.admin}</p>
-                                                        </div>
+                                                        <p className="text-sm text-emerald-600 mb-2">{item.reason}</p>
+                                                        <p className="text-xs text-gray-500">Oleh: {item.admin}</p>
                                                     </div>
                                                 ))}
                                             </div>
                                         )}
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
 
-                                        {selectedDriver && selectedDriver.violations > 0 && (
-                                            <div className="flex items-start gap-3">
-                                                <div className="p-1 bg-red-50 rounded">
-                                                    <FileWarning className="h-3 w-3 text-red-500" />
+                        {detailTab === "audit" && (
+                            <div className="space-y-4">
+                                {logList
+                                    .filter(log => log.details.includes(selectedDriver?.id || ''))
+                                    .map((log) => (
+                                        <div key={log.id} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow bg-white">
+                                            <div className="flex items-start gap-4">
+                                                <div className={`p-3 rounded-xl ${log.action.includes('Suspend') ? 'bg-red-50' :
+                                                    log.action.includes('Verifikasi') ? 'bg-orange-50' :
+                                                        log.action.includes('Aktivasi') ? 'bg-emerald-50' : 'bg-blue-50'
+                                                    }`}>
+                                                    <FileClock className={`h-6 w-6 ${log.action.includes('Suspend') ? 'text-red-600' :
+                                                        log.action.includes('Verifikasi') ? 'text-orange-600' :
+                                                            log.action.includes('Aktivasi') ? 'text-emerald-600' : 'text-blue-600'
+                                                        }`} />
                                                 </div>
                                                 <div className="flex-1">
-                                                    <p className="text-sm font-medium text-gray-700">Riwayat Pelanggaran</p>
-                                                    <p className="text-xs text-gray-400">
-                                                        {selectedDriver.violations} pelanggaran tercatat
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </TabsContent>
-
-                            {/* Audit Trail - Riwayat Tindakan */}
-                            <TabsContent value="audit" className="space-y-4 mt-4">
-                                <div>
-                                    <h4 className="text-sm font-medium text-gray-500 mb-3">Audit Trail Driver</h4>
-                                    <div className="space-y-3">
-                                        {auditLogs
-                                            .filter(log => log.details.includes(selectedDriver?.id || ''))
-                                            .map((log) => (
-                                                <div key={log.id} className="border border-gray-200 rounded-lg p-3">
-                                                    <div className="flex items-start gap-3">
-                                                        <div className={`p-1 rounded ${
-                                                            log.action.includes('Suspend') ? 'bg-red-50' :
-                                                            log.action.includes('Verifikasi') ? 'bg-orange-50' :
-                                                            log.action.includes('Aktivasi') ? 'bg-emerald-50' : 'bg-blue-50'
-                                                        }`}>
-                                                            <FileClock className={`h-4 w-4 ${
-                                                                log.action.includes('Suspend') ? 'text-red-600' :
-                                                                log.action.includes('Verifikasi') ? 'text-orange-600' :
-                                                                log.action.includes('Aktivasi') ? 'text-emerald-600' : 'text-blue-600'
-                                                            }`} />
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <div className="flex items-center justify-between">
-                                                                <span className="text-sm font-medium text-gray-700">{log.action}</span>
-                                                                <span className="text-xs text-gray-400">{log.timestamp}</span>
-                                                            </div>
-                                                            <p className="text-xs text-gray-600 mt-1">{log.details}</p>
-                                                            <div className="flex items-center gap-2 mt-1">
-                                                                <Badge variant="outline" className="bg-gray-50 text-xs">
-                                                                    {log.admin} ({log.adminRole})
-                                                                </Badge>
-                                                            </div>
-                                                            <div className="mt-2 text-xs bg-gray-50 p-2 rounded">
-                                                                <span className="font-medium text-gray-700">Alasan: </span>
-                                                                <span className="text-gray-600">{log.reason}</span>
-                                                            </div>
-                                                        </div>
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <span className="font-semibold text-gray-900">{log.action}</span>
+                                                        <span className="text-xs text-gray-500">{log.timestamp}</span>
+                                                    </div>
+                                                    <p className="text-sm text-gray-600 mb-3">{log.details}</p>
+                                                    <Badge variant="outline" className="mb-3">
+                                                        {log.admin} ({log.adminRole})
+                                                    </Badge>
+                                                    <div className="bg-gray-50 rounded-lg p-3 text-sm">
+                                                        <span className="font-semibold text-gray-700">Alasan: </span>
+                                                        <span className="text-gray-600">{log.reason}</span>
                                                     </div>
                                                 </div>
-                                            ))}
-                                        
-                                        {auditLogs.filter(log => log.details.includes(selectedDriver?.id || '')).length === 0 && (
-                                            <div className="text-center py-8 text-gray-400">
-                                                <FileClock className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                                                <p>Belum ada catatan audit untuk driver ini</p>
                                             </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </TabsContent>
-                        </Tabs>
-                    </div>
+                                        </div>
+                                    ))}
 
-                    {/* Footer */}
-                    <div className="px-6 py-4 flex justify-end gap-2">
-                        <Button variant="outline" onClick={() => setIsDetailOpen(false)}>
-                            Tutup
-                        </Button>
-                        <Button style={{ backgroundColor: "#E04D04" }} className="text-white hover:opacity-90">
-                            Edit Driver
-                        </Button>
+                                {logList.filter(log => log.details.includes(selectedDriver?.id || '')).length === 0 && (
+                                    <div className="text-center py-12 text-gray-400">
+                                        <FileClock className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                                        <p>Belum ada catatan audit untuk driver ini</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
-                </DialogContent>
-            </Dialog>
+                </div>
+
+                <div className="p-6 border-t border-gray-100 flex justify-end gap-3 flex-shrink-0 bg-gray-50/50">
+                    <Button variant="outline" onClick={() => setIsDetailOpen(false)}>
+                        Tutup
+                    </Button>
+                    <Button onClick={() => alert("Fitur edit driver akan segera hadir!")}>Edit Driver</Button>
+                </div>
+            </Modal>
         </div>
     )
 }
