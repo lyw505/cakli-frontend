@@ -70,7 +70,7 @@ const adminNavigation = {
   },
 }
 
-// ── CakLi Mascot Logo ────────────────────────────────────────────────────────
+// ── CakLi Mascot Logo ───────────────────────-----------------------------------------
 function CakLiLogo() {
   return (
     <svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -134,7 +134,7 @@ export function AppSidebar() {
               <a
                 key={item.title}
                 href={item.url}
-                className="flex items-center gap-3.5 ml-4 pl-4 pr-5 py-3 bg-white text-[#E65100] rounded-l-full font-semibold text-sm whitespace-nowrap transition-all"
+                className="flex items-center gap-3.5 ml-4 pl-4 pr-5 py-3 bg-[#FDFAF8] text-[#E65100] rounded-l-full font-semibold text-sm whitespace-nowrap transition-all"
               >
                 <item.icon className="shrink-0 text-[#E65100]" style={{ width: 18, height: 18 }} strokeWidth={2.5} />
                 <span>{item.title}</span>
