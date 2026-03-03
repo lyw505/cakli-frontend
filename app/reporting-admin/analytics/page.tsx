@@ -40,8 +40,11 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-
-import { cn } from "@/lib/utils"
+import {
+    Tabs,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs"
 
 const comparisonData = [
     { city: "Malang", orders: 15230, revenue: 18500, cancelRate: 4.2 },
@@ -59,32 +62,23 @@ const growthTrend = [
 ]
 
 export default function CrossAreaAnalytics() {
-    const [timeFilter, setTimeFilter] = React.useState("harian")
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 p-6">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Analitik Lintas Area</h1>
                     <p className="text-muted-foreground">Metrik performa komparatif di seluruh wilayah operasional.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <div className="inline-flex items-center p-1 bg-secondary/50 rounded-xl border border-border/50">
-                        {['harian', 'mingguan', 'bulanan', 'tahunan'].map((item) => (
-                            <button
-                                key={item}
-                                onClick={() => setTimeFilter(item)}
-                                className={cn(
-                                    "px-4 py-1.5 text-sm font-medium rounded-lg transition-all duration-200",
-                                    timeFilter === item
-                                        ? "bg-white text-[#E65100] shadow-sm"
-                                        : "text-muted-foreground hover:text-foreground hover:bg-white/50"
-                                )}
-                            >
-                                {item.charAt(0).toUpperCase() + item.slice(1)}
-                            </button>
-                        ))}
-                    </div>
+                    <Tabs defaultValue="harian">
+                        <TabsList>
+                            <TabsTrigger value="harian">Harian</TabsTrigger>
+                            <TabsTrigger value="mingguan">Mingguan</TabsTrigger>
+                            <TabsTrigger value="bulanan">Bulanan</TabsTrigger>
+                            <TabsTrigger value="tahunan">Tahunan</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
                     <Select defaultValue="all">
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Filter Wilayah" />

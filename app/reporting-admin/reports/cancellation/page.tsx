@@ -8,6 +8,8 @@ import {
     FileJson,
     Search,
     AlertCircle,
+    ChevronLeft,
+    ChevronRight,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -189,6 +191,22 @@ export default function CancellationReportPage() {
                     </Table>
                 </CardContent>
             </Card>
+
+            <div className="flex items-center justify-center gap-2 mt-4">
+                <Button variant="outline" size="sm" className="h-8 w-auto px-4" disabled>
+                    <ChevronLeft className="mr-2 h-4 w-4" />
+                    Back
+                </Button>
+                <Button variant="outline" size="sm" className="h-8 w-8 p-0">1</Button>
+                <Button variant="default" size="sm" className="h-8 w-8 p-0 bg-[#E04D04] hover:bg-[#c94504]">2</Button>
+                <Button variant="outline" size="sm" className="h-8 w-8 p-0">3</Button>
+                <Button variant="outline" size="sm" className="h-8 w-8 p-0">4</Button>
+                <Button variant="outline" size="sm" className="h-8 w-8 p-0">5</Button>
+                <Button variant="outline" size="sm" className="h-8 w-auto px-4">
+                    Next
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+            </div>
         </div>
     )
 }
