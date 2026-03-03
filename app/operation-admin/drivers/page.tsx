@@ -86,6 +86,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { Users, Wifi, ShieldCheck, ActivitySquare } from "lucide-react"
 
 // Tipe data untuk Audit Log
 interface AuditLog {
@@ -350,7 +351,7 @@ const StatCard = ({
     title,
     value,
     subtitle,
-    subtitleColor = "text-gray-400",
+    subtitleColor = "text-gray-500",
     borderColor = "border-[#E04D04]",
     icon: Icon
 }: {
@@ -361,22 +362,22 @@ const StatCard = ({
     borderColor?: string;
     icon?: any;
 }) => (
-    <div className={`bg-white rounded-lg border-l-4 ${borderColor} shadow-sm p-4 relative hover:shadow-md transition-all duration-300`}>
+    <div className={`bg-[#E8EBEA]/50 rounded-xl border-l-[3px] ${borderColor} border-t border-r border-b border-gray-100 p-4 relative`}>
         {/* Icon di pojok kanan atas - lebih soft */}
         {Icon && (
-            <div className="absolute top-4 right-4 text-gray-200">
-                <Icon className="h-5 w-5" />
+            <div className="absolute top-4 right-4 text-slate-400">
+                <Icon className="h-4 w-4" />
             </div>
         )}
 
         <div className="space-y-1">
-            <h3 className="text-sm font-medium text-gray-500">{title}</h3>
+            <h3 className="text-xs font-semibold text-slate-600 mb-2 mr-6">{title}</h3>
 
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="text-2xl font-bold text-slate-800">
                 {value}
             </div>
 
-            <div className={`text-xs ${subtitleColor}`}>
+            <div className={`text-[10px] sm:text-xs font-medium ${subtitleColor}`}>
                 {subtitle}
             </div>
         </div>
@@ -640,44 +641,49 @@ export default function DriversPage() {
                 </div>
 
                 {/* Stats Cards - Mirip gambar referensi */}
-                <div className="grid grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                     <StatCard
                         title="Total Driver"
                         value={driverList.length}
                         subtitle="Registered drivers"
-                        borderColor="border-gray-200"
+                        borderColor="border-[#E04D04]"
+                        icon={Users}
                     />
                     <StatCard
                         title="Online"
                         value={driverList.filter(d => d.onlineStatus === "Online").length}
                         subtitle={`${driverList.filter(d => d.status === "Aktif").length} total aktif`}
-                        subtitleColor="text-emerald-600"
-                        borderColor="border-emerald-500"
+                        subtitleColor="text-gray-500"
+                        borderColor="border-[#E04D04]"
+                        icon={Wifi}
                     />
                     <StatCard
                         title="Pending Verifikasi"
                         value={driverList.filter(d => d.status === "Pending Verifikasi").length}
                         subtitle="Menunggu verifikasi"
-                        subtitleColor="text-amber-600"
-                        borderColor="border-amber-500"
+                        subtitleColor="text-gray-500"
+                        borderColor="border-[#E04D04]"
+                        icon={Clock}
                     />
                     <StatCard
                         title="Rating Rata-rata"
                         value={
                             <span className="flex items-center gap-1">
-                                4.5 <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
+                                4.5
                             </span>
                         }
                         subtitle="Dari 2.5k ulasan"
-                        borderColor="border-yellow-500"
+                        subtitleColor="text-gray-500"
+                        borderColor="border-[#E04D04]"
+                        icon={ShieldCheck}
                     />
                     <StatCard
                         title="Cancel Rate"
                         value="4.2%"
                         subtitle="batas aman: 5%"
-                        subtitleColor="text-gray-400"
-                        borderColor="border-orange-600"
-                        icon={Shield}
+                        subtitleColor="text-gray-500"
+                        borderColor="border-[#E04D04]"
+                        icon={ActivitySquare}
                     />
                 </div>
 
@@ -1281,7 +1287,7 @@ export default function DriversPage() {
                             Batal
                         </Button>
                         <Button
-                            variant={actionType === "suspend" ? "danger" : "primary"}
+                            variant={actionType === "suspend" ? "destructive" : "default"}
                             onClick={confirmAction}
                             disabled={!actionReason.trim()}
                             className="px-8"
