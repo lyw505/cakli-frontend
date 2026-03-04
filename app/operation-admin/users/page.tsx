@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useState, useMemo, useEffect } from "react"
+import React, { useState, useMemo, useEffect, useRef } from "react"
+import { cn } from "@/lib/utils"
 
 // ─── Types ─────────────────────────────────────────────────────────────
 
@@ -192,112 +193,112 @@ const time = new Date().toLocaleTimeString("id-ID", { hour: '2-digit', minute: '
 const Icons = {
     Search: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
         </svg>
     ),
     MoreHorizontal: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+            <circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" />
         </svg>
     ),
     UserCheck: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/>
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><polyline points="16 11 18 13 22 9" />
         </svg>
     ),
     Ban: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>
+            <circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" />
         </svg>
     ),
     Eye: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" />
         </svg>
     ),
     Calendar: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" />
         </svg>
     ),
     Mail: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            <rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
         </svg>
     ),
     History: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/>
+            <path d="M3 3v5h5" /><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8" /><path d="M12 7v5l4 2" />
         </svg>
     ),
     AlertCircle: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>
+            <circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" />
         </svg>
     ),
     ShieldCheck: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/>
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" />
         </svg>
     ),
     Check: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12"/>
+            <polyline points="20 6 9 17 4 12" />
         </svg>
     ),
     ArrowRight: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+            <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
         </svg>
     ),
     Lock: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
         </svg>
     ),
     Activity: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
         </svg>
     ),
     X: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+            <path d="M18 6 6 18" /><path d="m6 6 12 12" />
         </svg>
     ),
     ChevronLeft: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m15 18-6-6 6-6"/>
+            <path d="m15 18-6-6 6-6" />
         </svg>
     ),
     ChevronRight: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m9 18 6-6-6-6"/>
+            <path d="m9 18 6-6-6-6" />
         </svg>
     ),
     ShieldAlert: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M12 8v4"/><path d="M12 16h.01"/>
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="M12 8v4" /><path d="M12 16h.01" />
         </svg>
     ),
     ChevronDown: () => (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m6 9 6 6 6-6"/>
+            <path d="m6 9 6 6 6-6" />
         </svg>
     )
 }
 
 // ─── Native UI Components ───────────────────────────────────────────────
 
-function Button({ 
-    children, 
-    onClick, 
-    disabled = false, 
-    variant = "default", 
-    className = "", 
+function Button({
+    children,
+    onClick,
+    disabled = false,
+    variant = "default",
+    className = "",
     style = {},
     type = "button"
-}: { 
+}: {
     children: React.ReactNode
     onClick?: () => void
     disabled?: boolean
@@ -307,7 +308,7 @@ function Button({
     type?: "button" | "submit"
 }) {
     const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed"
-    
+
     const variants = {
         default: "bg-slate-900 text-white hover:bg-slate-800 border border-transparent",
         outline: "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300",
@@ -327,13 +328,13 @@ function Button({
     )
 }
 
-function Input({ 
-    value, 
-    onChange, 
-    placeholder, 
+function Input({
+    value,
+    onChange,
+    placeholder,
     className = "",
     type = "text"
-}: { 
+}: {
     value: string
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     placeholder?: string
@@ -351,13 +352,13 @@ function Input({
     )
 }
 
-function Textarea({ 
-    value, 
-    onChange, 
-    placeholder, 
+function Textarea({
+    value,
+    onChange,
+    placeholder,
     className = "",
     rows = 3
-}: { 
+}: {
     value: string
     onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
     placeholder?: string
@@ -375,13 +376,13 @@ function Textarea({
     )
 }
 
-function Select({ 
-    value, 
-    onChange, 
-    options, 
+function Select({
+    value,
+    onChange,
+    options,
     placeholder,
     className = ""
-}: { 
+}: {
     value: string
     onChange: (value: string) => void
     options: { value: string; label: string }[]
@@ -436,7 +437,7 @@ function Select({
 
 function Badge({ children, className = "", style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
     return (
-        <span 
+        <span
             className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${className}`}
             style={style}
         >
@@ -445,12 +446,12 @@ function Badge({ children, className = "", style = {} }: { children: React.React
     )
 }
 
-function Modal({ 
-    isOpen, 
-    onClose, 
-    children, 
+function Modal({
+    isOpen,
+    onClose,
+    children,
     maxWidth = "md"
-}: { 
+}: {
     isOpen: boolean
     onClose: () => void
     children: React.ReactNode
@@ -468,8 +469,8 @@ function Modal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div 
-                className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+            <div
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={onClose}
             />
             <div className={`relative w-full ${maxWidths[maxWidth]} bg-white rounded-xl shadow-xl overflow-hidden max-h-[90vh] flex flex-col`}>
@@ -479,10 +480,10 @@ function Modal({
     )
 }
 
-function DropdownMenu({ 
-    trigger, 
-    children 
-}: { 
+function DropdownMenu({
+    trigger,
+    children
+}: {
     trigger: React.ReactNode
     children: React.ReactNode
 }) {
@@ -513,12 +514,12 @@ function DropdownMenu({
     )
 }
 
-function DropdownItem({ 
-    children, 
-    onClick, 
+function DropdownItem({
+    children,
+    onClick,
     className = "",
     danger = false
-}: { 
+}: {
     children: React.ReactNode
     onClick?: () => void
     className?: string
@@ -562,9 +563,9 @@ function StatusBadge({ status }: { status: AccountStatus }) {
     }
     const cfg = configs[status] || configs.Active
     return (
-        <span 
+        <span
             className="inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium rounded-md"
-            style={{ 
+            style={{
                 backgroundColor: cfg.bgColor,
                 color: cfg.textColor
             }}
@@ -604,9 +605,9 @@ function OrderStatusBadge({ status }: { status: string }) {
     }
     const cfg = configs[status] || configs["selesai"]
     return (
-        <span 
+        <span
             className="inline-flex px-2 py-0.5 rounded text-xs font-medium"
-            style={{ 
+            style={{
                 backgroundColor: cfg.bgColor,
                 color: cfg.textColor
             }}
@@ -670,7 +671,7 @@ export default function UserManagementPage() {
             const matchesSearch = u.name.toLowerCase().includes(q) ||
                 u.email.toLowerCase().includes(q) ||
                 u.phone.includes(q)
-            
+
             const matchesStatus = filterStatus === "all" || u.status === filterStatus
 
             let matchesRisk = true
@@ -787,14 +788,14 @@ export default function UserManagementPage() {
                     </p>
                 </div>
                 <div className="flex gap-2.5">
-                    <Button 
-                        variant="outline" 
-                        onClick={() => setShowGlobalLogs(true)} 
+                    <Button
+                        variant="outline"
+                        onClick={() => setShowGlobalLogs(true)}
                         className="h-10 px-4 text-sm"
                     >
                         <span className="mr-2"><Icons.History /></span> Audit Logs
                     </Button>
-                    <Button 
+                    <Button
                         className="h-10 px-5 text-sm"
                         style={{ backgroundColor: '#E04D04', color: 'white' }}
                     >
@@ -804,34 +805,32 @@ export default function UserManagementPage() {
             </div>
 
             {/* ── Search & Filter Panel ── */}
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                <div className="flex flex-wrap gap-4">
-                    <div className="relative flex-1 min-w-[280px]">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                            <Icons.Search />
-                        </div>
-                        <Input
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search by name, email, or phone number..."
-                            className="pl-9 h-10"
-                        />
+            <div className="flex flex-wrap gap-4 mb-2">
+                <div className="relative flex-1 min-w-[280px]">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                        <Icons.Search />
                     </div>
+                    <Input
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Search by name, email, or phone number..."
+                        className="pl-9 h-11 bg-white"
+                    />
+                </div>
 
-                    <div className="flex gap-3">
-                        <Select 
-                            value={filterStatus} 
-                            onChange={setFilterStatus} 
-                            options={statusOptions}
-                            className="w-[150px]"
-                        />
-                        <Select 
-                            value={filterRisk} 
-                            onChange={setFilterRisk} 
-                            options={riskOptions}
-                            className="w-[180px]"
-                        />
-                    </div>
+                <div className="flex gap-3">
+                    <Select
+                        value={filterStatus}
+                        onChange={setFilterStatus}
+                        options={statusOptions}
+                        className="w-[150px] h-11"
+                    />
+                    <Select
+                        value={filterRisk}
+                        onChange={setFilterRisk}
+                        options={riskOptions}
+                        className="w-[180px] h-11"
+                    />
                 </div>
             </div>
 
@@ -917,59 +916,44 @@ export default function UserManagementPage() {
                 </div>
 
                 {/* ── Pagination Section ── */}
-                <div className="flex flex-col sm:flex-row items-start justify-between gap-4 px-2 py-4">
-                    <div>
-                        <p className="text-sm text-slate-500">
-                            Menampilkan <span className="font-medium text-slate-700">{filteredUsers.length}</span> dari <span className="font-medium text-slate-700">{filteredUsers.length}</span> order
-                        </p>
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 border-t border-slate-100">
+                    <div className="text-sm text-slate-400">
+                        Menampilkan <span className="font-bold text-slate-900">{filteredUsers.length}</span> dari <span className="font-bold text-slate-900">{users.length}</span> user
                     </div>
 
-                    <div className="flex items-center justify-center flex-1 gap-2">
+                    <div className="flex items-center gap-1.5">
                         <Button
-                            variant="outline"
+                            variant="ghost"
                             disabled={page === 1}
-                            onClick={() => setPage(p => p - 1)}
-                            className="h-8 w-8 p-0"
-                            style={{ color: page !== 1 ? '#E04D04' : '#94A3B8' }}
+                            onClick={() => setPage(p => Math.max(1, p - 1))}
+                            className="h-8 w-8 p-0 text-slate-500 hover:text-slate-700 disabled:opacity-30"
                         >
                             <Icons.ChevronLeft />
                         </Button>
-                        
-                        <div className="flex gap-1">
+
+                        <div className="flex items-center gap-1">
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                                <Button
+                                <button
                                     key={p}
-                                    variant="outline"
                                     onClick={() => setPage(p)}
-                                    className="h-8 w-8 p-0 text-sm font-medium"
-                                    style={page === p ? { 
-                                        backgroundColor: '#E04D04', 
-                                        color: 'white',
-                                        borderColor: '#E04D04'
-                                    } : { 
-                                        color: '#64748B'
-                                    }}
+                                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${page === p
+                                        ? "bg-slate-100 text-slate-900"
+                                        : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+                                        }`}
                                 >
                                     {p}
-                                </Button>
+                                </button>
                             ))}
                         </div>
 
                         <Button
-                            variant="outline"
+                            variant="ghost"
                             disabled={page >= totalPages}
-                            onClick={() => setPage(p => p + 1)}
-                            className="h-8 w-8 p-0"
-                            style={{ color: page < totalPages ? '#E04D04' : '#94A3B8' }}
+                            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                            className="h-8 w-8 p-0 text-slate-500 hover:text-slate-700 disabled:opacity-30"
                         >
                             <Icons.ChevronRight />
                         </Button>
-                    </div>
-
-                    <div>
-                        <p className="text-sm text-slate-500">
-                            Halaman <span className="text-slate-500">{page}</span> dari <span className="text-slate-500">{totalPages}</span>
-                        </p>
                     </div>
                 </div>
             </div>
@@ -996,7 +980,7 @@ export default function UserManagementPage() {
                                 variant={suspendType === "Temporary" ? "default" : "outline"}
                                 onClick={() => setSuspendType("Temporary")}
                                 className={`h-10 text-sm font-medium ${suspendType === "Temporary" ? "bg-slate-900 text-white border-transparent" : "border-slate-200 text-slate-600"}`}
-                                  style={suspendType === "Temporary" ? { backgroundColor: '#E04D04' } : {}}
+                                style={suspendType === "Temporary" ? { backgroundColor: '#E04D04' } : {}}
                             >
                                 Temporary
                             </Button>
@@ -1014,9 +998,9 @@ export default function UserManagementPage() {
                     {suspendType === "Temporary" && (
                         <div className="space-y-2">
                             <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">Lock Duration</label>
-                            <Select 
-                                value={suspendDuration} 
-                                onChange={setSuspendDuration} 
+                            <Select
+                                value={suspendDuration}
+                                onChange={setSuspendDuration}
                                 options={durationOptions}
                             />
                         </div>
@@ -1080,7 +1064,7 @@ export default function UserManagementPage() {
                             <p className="text-2xl font-semibold text-slate-900">{detailUser?.totalOrders}</p>
                             <p className="text-xs text-slate-400 mt-1">All time</p>
                         </div>
-                        
+
                         <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
                             <p className="text-xs uppercase font-medium text-slate-400 mb-1">Cancel Rate</p>
                             <p className={`text-2xl font-semibold ${detailUser && detailUser.cancelRate > 30 ? "text-[#E04D04]" : "text-slate-900"}`}>
@@ -1088,7 +1072,7 @@ export default function UserManagementPage() {
                             </p>
                             <p className="text-xs text-slate-400 mt-1">Of total orders</p>
                         </div>
-                        
+
                         <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
                             <p className="text-xs uppercase font-medium text-slate-400 mb-1">Risk Reports</p>
                             <p className={`text-2xl font-semibold ${detailUser && detailUser.totalReports > 0 ? "text-[#E04D04]" : "text-slate-900"}`}>
@@ -1096,7 +1080,7 @@ export default function UserManagementPage() {
                             </p>
                             <p className="text-xs text-slate-400 mt-1">Total reports</p>
                         </div>
-                        
+
                         <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
                             <p className="text-xs uppercase font-medium text-slate-400 mb-1">Avg Rating</p>
                             <p className="text-2xl font-semibold text-slate-900">{detailUser?.rating}</p>
@@ -1126,7 +1110,7 @@ export default function UserManagementPage() {
                                         Verified
                                     </Badge>
                                 </div>
-                                
+
                                 <div className="flex items-center justify-between p-4 rounded-lg border border-slate-100 bg-white hover:border-slate-200 transition-all">
                                     <div className="flex items-center gap-3">
                                         <div className="h-9 w-9 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500">
@@ -1228,139 +1212,148 @@ export default function UserManagementPage() {
 
             {/* ── Global Audit Log Modal ── */}
             <Modal isOpen={showGlobalLogs} onClose={() => setShowGlobalLogs(false)} maxWidth="4xl">
-                <div className="p-5 flex items-center justify-between border-b border-slate-100" style={{ backgroundColor: '#E04D04' }}>
+                <div className="px-6 py-6 flex items-start justify-between bg-white border-b border-slate-100">
                     <div>
-                        <h3 className="text-base font-medium flex items-center gap-2 text-white">
-                            <Icons.History /> System Audit Trail
-                        </h3>
-                        <p className="text-xs text-white/70 mt-0.5">Complete immutable record of administrative actions</p>
+                        <h3 className="text-xl font-bold text-slate-900">Audit Log</h3>
+                        <p className="text-sm text-slate-500 mt-1">Catatan semua tindakan administratif</p>
                     </div>
-                    <Button variant="ghost" onClick={() => setShowGlobalLogs(false)} className="text-white hover:bg-white/10 h-8 w-8 rounded-full p-0">
+                    <button
+                        onClick={() => setShowGlobalLogs(false)}
+                        className="text-slate-400 hover:text-slate-600 transition-colors p-1"
+                    >
                         <Icons.X />
-                    </Button>
+                    </button>
                 </div>
 
-                <div className="max-h-[60vh] overflow-y-auto">
-                    <table className="w-full">
-                        <thead className="bg-slate-50 sticky top-0 z-10">
-                            <tr>
-                                <th className="h-10 text-left text-xs font-medium text-slate-400 pl-5">Timestamp</th>
-                                <th className="h-10 text-left text-xs font-medium text-slate-400">Target User</th>
-                                <th className="h-10 text-left text-xs font-medium text-slate-400">Action Type</th>
-                                <th className="h-10 text-left text-xs font-medium text-slate-400">Resolution / Reason</th>
-                                <th className="h-10 text-right text-xs font-medium text-slate-400 pr-5">Executor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginatedAuditLogs.map((log) => (
-                                <tr key={log.id} className="hover:bg-slate-50/50 border-b border-slate-50">
-                                    <td className="pl-5 text-sm text-slate-500 py-3">{log.timestamp}</td>
-                                    <td>
-                                        <p className="text-sm font-medium text-slate-800">{log.userName}</p>
-                                        <p className="text-xs text-slate-400">{log.userId}</p>
-                                    </td>
-                                    <td>
-                                        <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600">
-                                            {log.action}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div className="flex items-center gap-1 mb-0.5">
-                                            <span className="text-xs text-slate-400 line-through">{log.before}</span>
-                                            <Icons.ArrowRight />
-                                            <span className="text-xs font-medium text-emerald-600">{log.after}</span>
+                <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/30">
+                    {paginatedAuditLogs.map((log) => {
+                        // Determine icon and colors based on action
+                        let icon = <Icons.Activity />
+                        let bgColor = "bg-slate-100"
+                        let iconColor = "text-slate-600"
+
+                        if (log.action.toLowerCase().includes("suspend")) {
+                            icon = <Icons.Ban />
+                            bgColor = "bg-rose-50"
+                            iconColor = "text-rose-600"
+                        } else if (log.action.toLowerCase().includes("reactivation") || log.action.toLowerCase().includes("active")) {
+                            icon = <Icons.UserCheck />
+                            bgColor = "bg-emerald-50"
+                            iconColor = "text-emerald-600"
+                        } else if (log.action.toLowerCase().includes("review") || log.action.toLowerCase().includes("verification")) {
+                            icon = <Icons.ShieldCheck />
+                            bgColor = "bg-amber-50"
+                            iconColor = "text-amber-600"
+                        }
+
+                        return (
+                            <div key={log.id} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div className="flex gap-4">
+                                    <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center shrink-0 border border-transparent transition-all group-hover:scale-105", bgColor, iconColor)}>
+                                        {icon}
+                                    </div>
+                                    <div className="flex-1 min-w-0 pr-24">
+                                        <div className="flex flex-col gap-0.5">
+                                            <h4 className="font-bold text-slate-900 text-[15px]">{log.action}</h4>
+                                            <p className="text-sm text-slate-500 line-clamp-1">
+                                                {log.action} user: <span className="font-medium text-slate-700">{log.userName} ({log.userId})</span>
+                                            </p>
                                         </div>
-                                        <p className="text-xs text-slate-500 italic truncate max-w-[200px]">"{log.reason || "-"}"</p>
-                                    </td>
-                                    <td className="text-right pr-5">
-                                        <span className="text-sm font-medium text-slate-700">{log.admin}</span>
-                                    </td>
-                                </tr>
-                            ))}
-                            {globalLogs.length === 0 && (
-                                <tr>
-                                    <td colSpan={5} className="text-center py-12 text-slate-400 text-sm">
-                                        No activity logs found
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+
+                                        {log.reason && (
+                                            <div className="mt-4 p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-2.5">
+                                                <span className="text-[13px] font-bold text-slate-900 whitespace-nowrap pt-0.5">Alasan:</span>
+                                                <span className="text-[13px] text-slate-600 leading-relaxed font-medium">
+                                                    {log.reason}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        <div className="mt-3 flex items-center gap-2">
+                                            <span className="text-[10px] font-black uppercase tracking-wider text-slate-300">Executor: {log.admin}</span>
+                                        </div>
+                                    </div>
+                                    <div className="absolute top-5 right-5 text-right">
+                                        <p className="text-[11px] font-medium text-slate-400">{log.timestamp}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+
+                    {globalLogs.length === 0 && (
+                        <div className="text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl">
+                            <div className="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-3 text-slate-400">
+                                <Icons.History />
+                            </div>
+                            <p className="text-sm font-medium text-slate-900">No activity logs found</p>
+                            <p className="text-xs text-slate-400 mt-1">Updates to user accounts will appear here.</p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Pagination Footer */}
-                <div className="bg-slate-50 p-4 px-5 border-t border-slate-100">
+                <div className="bg-white p-4 px-6 border-t border-slate-100 shrink-0">
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                            <Icons.ShieldCheck />
-                            <p className="text-xs font-medium text-slate-400">
-                                Verified System Activity • Total: <span className="text-slate-700">{globalLogs.length}</span> entries
+                        <div className="flex items-center gap-2">
+                            <div className="h-2 w-2 rounded-full bg-emerald-500"></div>
+                            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                                {globalLogs.length} Entri Tercatat
                             </p>
                         </div>
 
                         {totalAuditLogPages > 1 && (
-                            <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-1">
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => setAuditLogPage(p => Math.max(1, p - 1))}
-                                        disabled={auditLogPage === 1}
-                                        className="h-7 w-7 p-0 text-xs"
-                                    >
-                                        <Icons.ChevronLeft />
-                                    </Button>
-                                    
-                                    <div className="flex gap-1">
-                                        {Array.from({ length: totalAuditLogPages }, (_, i) => i + 1)
-                                            .filter(p => {
-                                                // Show first page, last page, current page, and neighbors
-                                                if (p === 1 || p === totalAuditLogPages) return true
-                                                if (Math.abs(p - auditLogPage) <= 1) return true
-                                                return false
-                                            })
-                                            .map((p, idx, arr) => {
-                                                const prev = arr[idx - 1]
-                                                const showEllipsis = prev && p - prev > 1
-                                                
-                                                return (
-                                                    <React.Fragment key={p}>
-                                                        {showEllipsis && (
-                                                            <span className="h-7 w-7 flex items-center justify-center text-xs text-slate-400">...</span>
-                                                        )}
-                                                        <Button
-                                                            variant="outline"
-                                                            onClick={() => setAuditLogPage(p)}
-                                                            className="h-7 w-7 p-0 text-xs font-medium"
-                                                            style={auditLogPage === p ? { 
-                                                                backgroundColor: '#E04D04', 
-                                                                color: 'white',
-                                                                borderColor: '#E04D04'
-                                                            } : {}}
-                                                        >
-                                                            {p}
-                                                        </Button>
-                                                    </React.Fragment>
-                                                )
-                                            })}
-                                    </div>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => setAuditLogPage(p => Math.max(1, p - 1))}
+                                    disabled={auditLogPage === 1}
+                                    className="h-8 w-8 p-0 text-slate-400 hover:text-slate-600 disabled:opacity-30"
+                                >
+                                    <Icons.ChevronLeft />
+                                </Button>
 
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => setAuditLogPage(p => Math.min(totalAuditLogPages, p + 1))}
-                                        disabled={auditLogPage === totalAuditLogPages}
-                                        className="h-7 w-7 p-0 text-xs"
-                                    >
-                                        <Icons.ChevronRight />
-                                    </Button>
+                                <div className="flex gap-1">
+                                    {Array.from({ length: totalAuditLogPages }, (_, i) => i + 1)
+                                        .filter(p => {
+                                            if (p === 1 || p === totalAuditLogPages) return true
+                                            if (Math.abs(p - auditLogPage) <= 1) return true
+                                            return false
+                                        })
+                                        .map((p, idx, arr) => {
+                                            const prev = arr[idx - 1]
+                                            const showEllipsis = prev && p - prev > 1
+
+                                            return (
+                                                <React.Fragment key={p}>
+                                                    {showEllipsis && (
+                                                        <span className="h-8 w-8 flex items-center justify-center text-xs text-slate-300">...</span>
+                                                    )}
+                                                    <button
+                                                        onClick={() => setAuditLogPage(p)}
+                                                        className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all ${auditLogPage === p
+                                                            ? "bg-slate-100 text-slate-900"
+                                                            : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+                                                            }`}
+                                                    >
+                                                        {p}
+                                                    </button>
+                                                </React.Fragment>
+                                            )
+                                        })}
                                 </div>
-                                
-                                <span className="text-xs text-slate-500 ml-2">
-                                    Page {auditLogPage} of {totalAuditLogPages}
-                                </span>
+
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => setAuditLogPage(p => Math.min(totalAuditLogPages, p + 1))}
+                                    disabled={auditLogPage === totalAuditLogPages}
+                                    className="h-8 w-8 p-0 text-slate-400 hover:text-slate-600 disabled:opacity-30"
+                                >
+                                    <Icons.ChevronRight />
+                                </Button>
                             </div>
                         )}
-
-                        <p className="text-[10px] text-slate-300">Immutable Ledger Protocol v4.0</p>
+                        <p className="text-[10px] text-slate-300 font-medium">Audit Trail v4.0</p>
                     </div>
                 </div>
             </Modal>

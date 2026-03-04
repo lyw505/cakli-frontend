@@ -562,7 +562,7 @@ export default function DriversPage() {
 
     return (
         <div className="min-h-screen p-4 md:p-6 bg-white">
-            <div className="max-w-[1400px] mx-auto space-y-6">
+            <div className="max-w-[1400px] mx-auto space-y-4">
                 {/* Header - Title di kiri, Controls di kanan */}
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div>
@@ -781,40 +781,41 @@ export default function DriversPage() {
                 </div>
 
                 {/* Pagination */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="text-sm text-gray-500 order-2 sm:order-1">
-                        Menampilkan <span className="font-medium text-gray-900">{filteredDrivers.length}</span> dari{" "}
-                        <span className="font-medium text-gray-900">{driverList.length}</span> driver
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 border-t border-slate-100">
+                    <div className="text-sm text-slate-400">
+                        Menampilkan <span className="font-bold text-slate-900">{filteredDrivers.length}</span> dari <span className="font-bold text-slate-900">{driverList.length}</span> driver
                     </div>
-                    <div className="flex items-center gap-1.5 order-1 sm:order-2">
+                    <div className="flex items-center gap-1.5">
                         <button
-                            className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all disabled:opacity-30 text-slate-600 hover:bg-gray-100 hover:text-gray-900 border border-transparent"
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all disabled:opacity-30 text-slate-500 hover:text-slate-700 hover:bg-gray-50"
                             disabled={currentPage === 1}
                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                         >
                             <ChevronLeft className="h-4 w-4" />
                         </button>
-                        {[1, 2, 3].map((page) => (
+                        <div className="flex items-center gap-1">
+                            {[1, 2, 3].map((page) => (
+                                <button
+                                    key={page}
+                                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${currentPage === page
+                                        ? 'bg-slate-100 text-slate-900'
+                                        : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
+                                        }`}
+                                    onClick={() => setCurrentPage(page)}
+                                >
+                                    {page}
+                                </button>
+                            ))}
+                            <span className="px-1 text-slate-200 font-bold">...</span>
                             <button
-                                key={page}
-                                className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${currentPage === page
-                                    ? 'bg-[#E8EBEA] text-gray-900'
-                                    : 'text-gray-500 hover:bg-gray-100'
-                                    }`}
-                                onClick={() => setCurrentPage(page)}
+                                className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+                                onClick={() => setCurrentPage(12)}
                             >
-                                {page}
+                                12
                             </button>
-                        ))}
-                        <span className="px-1 text-gray-300 font-bold">...</span>
+                        </div>
                         <button
-                            className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold text-gray-500 hover:bg-gray-100"
-                            onClick={() => setCurrentPage(12)}
-                        >
-                            12
-                        </button>
-                        <button
-                            className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all disabled:opacity-30 text-slate-600 hover:bg-gray-100 hover:text-gray-900 border border-transparent"
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all disabled:opacity-30 text-slate-500 hover:text-slate-700 hover:bg-gray-50"
                             disabled={currentPage === 12}
                             onClick={() => setCurrentPage(prev => Math.min(prev + 1, 12))}
                         >
@@ -1104,41 +1105,74 @@ export default function DriversPage() {
                 isOpen={isAuditLogOpen}
                 onClose={() => setIsAuditLogOpen(false)}
                 maxWidth="max-w-4xl"
-                title="Audit Log"
-                description="Catatan semua tindakan administratif"
             >
-                <div className="p-6 max-h-[60vh] overflow-y-auto">
-                    <div className="space-y-3">
-                        {logList.map((log) => (
-                            <div
-                                key={log.id}
-                                className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow bg-white"
-                            >
-                                <div className="flex items-start gap-3">
-                                    <div className={`p-2 rounded-lg ${log.action.includes('Suspend') ? 'bg-red-50' :
-                                        log.action.includes('Verifikasi') ? 'bg-orange-50' :
-                                            log.action.includes('Aktivasi') ? 'bg-emerald-50' : 'bg-blue-50'
-                                        }`}>
-                                        <FileClock className={`h-4 w-4 ${log.action.includes('Suspend') ? 'text-red-600' :
-                                            log.action.includes('Verifikasi') ? 'text-orange-600' :
-                                                log.action.includes('Aktivasi') ? 'text-emerald-600' : 'text-blue-600'
-                                            }`} />
+                <div className="px-6 py-6 flex items-start justify-between bg-white border-b border-slate-100">
+                    <div>
+                        <h3 className="text-xl font-bold text-slate-900">Audit Log</h3>
+                        <p className="text-sm text-slate-500 mt-1">Catatan semua tindakan administratif</p>
+                    </div>
+                    <button
+                        onClick={() => setIsAuditLogOpen(false)}
+                        className="text-slate-400 hover:text-slate-600 transition-colors p-1"
+                    >
+                        <X className="h-5 w-5" />
+                    </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/30 max-h-[60vh]">
+                    {logList.map((log) => {
+                        let icon = <FileClock className="h-5 w-5" />
+                        let bgColor = "bg-slate-100"
+                        let iconColor = "text-slate-600"
+
+                        if (log.action.includes('Suspend')) {
+                            icon = <UserX className="h-5 w-5" />
+                            bgColor = "bg-rose-50"
+                            iconColor = "text-rose-600"
+                        } else if (log.action.includes('Verifikasi')) {
+                            icon = <Shield className="h-5 w-5" />
+                            bgColor = "bg-orange-50"
+                            iconColor = "text-[#E04D04]"
+                        } else if (log.action.includes('Aktivasi')) {
+                            icon = <RotateCcw className="h-5 w-5" />
+                            bgColor = "bg-emerald-50"
+                            iconColor = "text-emerald-600"
+                        }
+
+                        return (
+                            <div key={log.id} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div className="flex gap-4">
+                                    <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center shrink-0 border border-transparent transition-all group-hover:scale-105 shadow-sm", bgColor, iconColor)}>
+                                        {icon}
                                     </div>
-                                    <div className="flex-1">
-                                        <div className="flex items-center justify-between mb-1">
-                                            <h4 className="font-semibold text-sm text-gray-900">{log.action}</h4>
-                                            <span className="text-[10px] text-gray-500">{log.timestamp}</span>
+                                    <div className="flex-1 min-w-0 pr-24">
+                                        <div className="flex flex-col gap-0.5">
+                                            <h4 className="font-bold text-slate-900 text-[15px]">{log.action}</h4>
+                                            <p className="text-sm text-slate-500 line-clamp-1">
+                                                {log.details}
+                                            </p>
                                         </div>
-                                        <p className="text-xs text-gray-600 mb-2">{log.details}</p>
-                                        <div className="bg-gray-50 rounded-lg p-2 text-xs">
-                                            <span className="font-semibold text-gray-700">Alasan: </span>
-                                            <span className="text-gray-600">{log.reason}</span>
+
+                                        {log.reason && (
+                                            <div className="mt-4 p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-2.5">
+                                                <span className="text-[13px] font-bold text-slate-900 whitespace-nowrap pt-0.5">Alasan:</span>
+                                                <span className="text-[13px] text-slate-600 leading-relaxed font-semibold">
+                                                    {log.reason}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        <div className="mt-3 flex items-center gap-2">
+                                            <span className="text-[10px] font-black uppercase tracking-wider text-slate-300">Executor: {log.admin} ({log.adminRole})</span>
                                         </div>
+                                    </div>
+                                    <div className="absolute top-5 right-5 text-right">
+                                        <p className="text-[11px] font-medium text-slate-400">{log.timestamp}</p>
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        )
+                    })}
                 </div>
             </Modal>
 
@@ -1505,43 +1539,70 @@ export default function DriversPage() {
                         )}
 
                         {detailTab === "audit" && (
-                            <div className="space-y-4">
+                            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 {logList
                                     .filter(log => log.details.includes(selectedDriver?.id || ''))
-                                    .map((log) => (
-                                        <div key={log.id} className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow bg-white">
-                                            <div className="flex items-start gap-4">
-                                                <div className={`p-3 rounded-xl ${log.action.includes('Suspend') ? 'bg-red-50' :
-                                                    log.action.includes('Verifikasi') ? 'bg-orange-50' :
-                                                        log.action.includes('Aktivasi') ? 'bg-emerald-50' : 'bg-blue-50'
-                                                    }`}>
-                                                    <FileClock className={`h-6 w-6 ${log.action.includes('Suspend') ? 'text-red-600' :
-                                                        log.action.includes('Verifikasi') ? 'text-orange-600' :
-                                                            log.action.includes('Aktivasi') ? 'text-emerald-600' : 'text-blue-600'
-                                                        }`} />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <span className="font-semibold text-gray-900">{log.action}</span>
-                                                        <span className="text-xs text-gray-500">{log.timestamp}</span>
+                                    .map((log) => {
+                                        let icon = <FileClock className="h-5 w-5" />
+                                        let bgColor = "bg-slate-100"
+                                        let iconColor = "text-slate-600"
+
+                                        if (log.action.includes('Suspend')) {
+                                            icon = <UserX className="h-5 w-5" />
+                                            bgColor = "bg-rose-50"
+                                            iconColor = "text-rose-600"
+                                        } else if (log.action.includes('Verifikasi')) {
+                                            icon = <Shield className="h-5 w-5" />
+                                            bgColor = "bg-orange-50"
+                                            iconColor = "text-[#E04D04]"
+                                        } else if (log.action.includes('Aktivasi')) {
+                                            icon = <RotateCcw className="h-5 w-5" />
+                                            bgColor = "bg-emerald-50"
+                                            iconColor = "text-emerald-600"
+                                        }
+
+                                        return (
+                                            <div key={log.id} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                                                <div className="flex gap-4">
+                                                    <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center shrink-0 border border-transparent transition-all group-hover:scale-105 shadow-sm", bgColor, iconColor)}>
+                                                        {icon}
                                                     </div>
-                                                    <p className="text-sm text-gray-600 mb-3">{log.details}</p>
-                                                    <Badge variant="outline" className="mb-3">
-                                                        {log.admin} ({log.adminRole})
-                                                    </Badge>
-                                                    <div className="bg-gray-50 rounded-lg p-3 text-sm">
-                                                        <span className="font-semibold text-gray-700">Alasan: </span>
-                                                        <span className="text-gray-600">{log.reason}</span>
+                                                    <div className="flex-1 min-w-0 pr-20">
+                                                        <div className="flex flex-col gap-0.5">
+                                                            <h4 className="font-bold text-slate-900 text-[15px]">{log.action}</h4>
+                                                            <p className="text-sm text-slate-500">
+                                                                {log.details}
+                                                            </p>
+                                                        </div>
+
+                                                        {log.reason && (
+                                                            <div className="mt-4 p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-2.5">
+                                                                <span className="text-[13px] font-bold text-slate-900 whitespace-nowrap pt-0.5">Alasan:</span>
+                                                                <span className="text-[13px] text-slate-600 leading-relaxed font-semibold">
+                                                                    {log.reason}
+                                                                </span>
+                                                            </div>
+                                                        )}
+
+                                                        <div className="mt-3 flex items-center gap-2">
+                                                            <span className="text-[10px] font-black uppercase tracking-wider text-slate-300 ml-1">Executor: {log.admin}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="absolute top-5 right-5 text-right">
+                                                        <p className="text-[11px] font-medium text-slate-400">{log.timestamp}</p>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        )
+                                    })}
 
                                 {logList.filter(log => log.details.includes(selectedDriver?.id || '')).length === 0 && (
-                                    <div className="text-center py-12 text-gray-400">
-                                        <FileClock className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                                        <p>Belum ada catatan audit untuk driver ini</p>
+                                    <div className="text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl">
+                                        <div className="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-3 text-slate-400">
+                                            <FileClock className="h-6 w-6" />
+                                        </div>
+                                        <p className="text-sm font-medium text-slate-900">Belum ada catatan audit</p>
+                                        <p className="text-xs text-slate-400 mt-1">Tindakan administratif akan tercatat secara otomatis.</p>
                                     </div>
                                 )}
                             </div>
