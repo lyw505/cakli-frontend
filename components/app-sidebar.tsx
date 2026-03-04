@@ -26,16 +26,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 const adminNavigation = {
   "reporting-admin": {
     user: {
-      name: "Reporting Admin",
+      name: "Admin Pelaporan",
       email: "finance@cakli.com",
       avatar: "/avatars/reporting.jpg",
     },
     items: [
       { title: "Dashboard", url: "/reporting-admin", icon: Home, exact: true },
+      { title: "Analitik", url: "/reporting-admin/analytics", icon: TrendingUp },
       { title: "Pendapatan", url: "/reporting-admin/reports/revenue", icon: Zap },
-      { title: "Order History", url: "/reporting-admin/history", icon: History },
-      { title: "Driver Performance", url: "/reporting-admin/reports/driver-performance", icon: FileText },
-      { title: "Cancellation Report", url: "/reporting-admin/reports/cancellation", icon: TrendingDown },
+      { title: "Riwayat Pesanan", url: "/reporting-admin/history", icon: History },
+      { title: "Performa Pengemudi", url: "/reporting-admin/reports/driver-performance", icon: FileText },
+      { title: "Laporan Pembatalan", url: "/reporting-admin/reports/cancellation", icon: TrendingDown },
     ],
   },
   "master-admin": {
