@@ -51,14 +51,6 @@ const driverStats = [
     { name: "Suprapto", orders: 72, rating: 4.2, cancelRate: "12.0%", status: "Warning", avatar: "U" },
 ]
 
-function translateStatus(status: string) {
-    if (status === "Top Performer") return "Performa Terbaik"
-    if (status === "Stable") return "Stabil"
-    if (status === "Needs Review") return "Butuh Tinjauan"
-    if (status === "Warning") return "Peringatan"
-    return status
-}
-
 const performanceData = [
     { name: "Ahmad", orders: 154 },
     { name: "Slamet", orders: 132 },
@@ -72,40 +64,40 @@ export default function DriverPerformancePage() {
         <div className="flex flex-col gap-6 p-6 pb-20">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Wawasan Performa Driver</h1>
-                    <p className="text-muted-foreground">Analisis komprehensif efisiensi armada dan kualitas layanan.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Driver Performance Insight</h1>
+                    <p className="text-muted-foreground">Comprehensive analysis of fleet efficiency and service quality.</p>
                 </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Rating Rata-rata Driver</CardTitle>
+                        <CardTitle className="text-sm font-medium">Avg. Driver Rating</CardTitle>
                         <Star className="h-4 w-4 text-orange-500 fill-orange-500" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">4.72 / 5.0</div>
-                        <p className="text-xs text-muted-foreground">+0.2 dari bulan lalu</p>
+                        <p className="text-xs text-muted-foreground">+0.2 from last month</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Tingkat Batal Global</CardTitle>
+                        <CardTitle className="text-sm font-medium">Global Cancel Rate</CardTitle>
                         <TrendingDown className="h-4 w-4 text-red-500" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">4.2%</div>
-                        <p className="text-xs text-green-600 font-medium">Menurun vs minggu lalu</p>
+                        <p className="text-xs text-green-600 font-medium">Decreasing vs last week</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Ukuran Armada Aktif</CardTitle>
+                        <CardTitle className="text-sm font-medium">Active Fleet Size</CardTitle>
                         <Truck className="h-4 w-4 text-blue-500" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">285</div>
-                        <p className="text-xs text-muted-foreground">12 driver baru bergabung</p>
+                        <p className="text-xs text-muted-foreground">12 new drivers onboarded</p>
                     </CardContent>
                 </Card>
             </div>
@@ -113,8 +105,8 @@ export default function DriverPerformancePage() {
             <div className="grid gap-6 lg:grid-cols-7">
                 <Card className="lg:col-span-4">
                     <CardHeader>
-                        <CardTitle>Driver Terbaik berdasarkan Pemenuhan Pesanan</CardTitle>
-                        <CardDescription>Perbandingan visual total pesanan yang diselesaikan oleh performa terbaik.</CardDescription>
+                        <CardTitle>Top Drivers by Order Fulfillment</CardTitle>
+                        <CardDescription>Visual comparison of total orders completed by top performers.</CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
                         <div className="h-[300px]">
@@ -143,8 +135,8 @@ export default function DriverPerformancePage() {
 
                 <Card className="lg:col-span-3">
                     <CardHeader>
-                        <CardTitle>Peringkat Driver</CardTitle>
-                        <CardDescription>Tampilan cepat driver berdampak tinggi.</CardDescription>
+                        <CardTitle>Driver Rankings</CardTitle>
+                        <CardDescription>Quick view of the high-impact drivers.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {driverStats.slice(0, 3).map((driver, i) => (
@@ -160,13 +152,13 @@ export default function DriverPerformancePage() {
                                         <p className="text-sm font-bold">{driver.name}</p>
                                         <div className="flex items-center gap-1">
                                             <Star className="size-3 text-yellow-500 fill-yellow-500" />
-                                            <span className="text-[10px] text-muted-foreground">Rating {driver.rating}</span>
+                                            <span className="text-[10px] text-muted-foreground">{driver.rating} Rating</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-sm font-bold text-orange-600">{driver.orders}</p>
-                                    <p className="text-[10px] text-muted-foreground uppercase">Pesanan</p>
+                                    <p className="text-[10px] text-muted-foreground uppercase">Orders</p>
                                 </div>
                             </div>
                         ))}
@@ -177,24 +169,24 @@ export default function DriverPerformancePage() {
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle>Tabel Performa Komprehensif</CardTitle>
-                        <CardDescription>KPI mendetail untuk seluruh audit armada administratif.</CardDescription>
+                        <CardTitle>Comprehensive Performance Table</CardTitle>
+                        <CardDescription>Detailed KPIs for the entire administrative fleet audit.</CardDescription>
                     </div>
                     <div className="relative">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="Filter driver..." className="pl-8 w-[250px]" />
+                        <Input placeholder="Filter drivers..." className="pl-8 w-[250px]" />
                     </div>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Nama Driver</TableHead>
-                                <TableHead>Total Pesanan</TableHead>
+                                <TableHead>Driver Name</TableHead>
+                                <TableHead>Total Orders</TableHead>
                                 <TableHead>Rating</TableHead>
-                                <TableHead>Tingkat Batal</TableHead>
-                                <TableHead>Label Status</TableHead>
-                                <TableHead className="text-right">Efisiensi</TableHead>
+                                <TableHead>Cancel Rate</TableHead>
+                                <TableHead>Status Label</TableHead>
+                                <TableHead className="text-right">Efficiency</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -220,7 +212,7 @@ export default function DriverPerformancePage() {
                                                 driver.status === "Stable" ? "secondary" :
                                                     driver.status === "Warning" ? "destructive" : "outline"
                                         }>
-                                            {translateStatus(driver.status)}
+                                            {driver.status}
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-right">

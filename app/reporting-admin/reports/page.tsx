@@ -11,8 +11,12 @@ import {
     Search,
     ChevronDown
 } from "lucide-react"
+<<<<<<< HEAD
 import { addDays, format } from "date-fns"
 import { DateRange } from "react-day-picker"
+=======
+import Link from "next/link"
+>>>>>>> reporting-admin
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -54,18 +58,14 @@ import {
 } from "@/components/ui/tabs"
 
 const reportData = [
-    { id: "RPT-001", type: "Laporan Perjalanan", date: "2024-02-12", area: "Kota Malang", items: 450, status: "Ready" },
-    { id: "RPT-002", type: "Laporan Pendapatan", date: "2024-02-12", area: "Semua Area", items: 1200, status: "Ready" },
-    { id: "RPT-003", type: "Performa Driver", date: "2024-02-11", area: "Surabaya", items: 85, status: "Ready" },
-    { id: "RPT-004", type: "Laporan Pembatalan", date: "2024-02-11", area: "Kota Batu", items: 32, status: "Ready" },
-    { id: "RPT-005", type: "Laporan Perjalanan", date: "2024-02-10", area: "Sidoarjo", items: 210, status: "Processing" },
+    { id: "RPT-001", type: "Travel Report", date: "2024-02-12", area: "Malang Kota", items: 450, status: "Ready" },
+    { id: "RPT-002", type: "Revenue Report", date: "2024-02-12", area: "All Areas", items: 1200, status: "Ready" },
+    { id: "RPT-003", type: "Driver Performance", date: "2024-02-11", area: "Surabaya", items: 85, status: "Ready" },
+    { id: "RPT-004", type: "Cancellation Report", date: "2024-02-11", area: "Batu City", items: 32, status: "Ready" },
+    { id: "RPT-005", type: "Travel Report", date: "2024-02-10", area: "Sidoarjo", items: 210, status: "Processing" },
 ]
 
-function translateStatus(status: string) {
-    if (status === "Ready") return "Tersedia"
-    if (status === "Processing") return "Memproses"
-    return status
-}
+
 
 export default function ReportsPage() {
     const [date, setDate] = React.useState<DateRange | undefined>({
@@ -75,30 +75,31 @@ export default function ReportsPage() {
 
     return (
         <div className="flex flex-col gap-6 p-6">
+<<<<<<< HEAD
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Laporan Sistem</h1>
-                    <p className="text-muted-foreground">Buat dan ekspor data terperinci untuk analisis manajemen.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">System Reports</h1>
+                    <p className="text-muted-foreground">Generate and export detailed data for management analysis.</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" className="gap-2">
-                        <FileSpreadsheet className="h-4 w-4" /> Ekspor Excel
+                        <FileSpreadsheet className="h-4 w-4" /> Export Excel
                     </Button>
                     <Button variant="outline" className="gap-2">
-                        <FileText className="h-4 w-4" /> Ekspor PDF
+                        <FileText className="h-4 w-4" /> Export PDF
                     </Button>
                 </div>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-lg">Filter Laporan</CardTitle>
-                    <CardDescription>Persempit data berdasarkan tanggal, kategori, dan area operasional.</CardDescription>
+                    <CardTitle className="text-lg">Report Filters</CardTitle>
+                    <CardDescription>Narrow down data by date, category, and operational area.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="grid gap-4 md:grid-cols-4">
                         <div className="space-y-2">
-                            <label className="text-xs font-medium text-muted-foreground uppercase">Rentang Tanggal</label>
+                            <label className="text-xs font-medium text-muted-foreground uppercase">Date Range</label>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
@@ -116,7 +117,7 @@ export default function ReportsPage() {
                                                 format(date.from, "LLL dd, y")
                                             )
                                         ) : (
-                                            <span>Pilih rentang tanggal</span>
+                                            <span>Pick a date range</span>
                                         )}
                                     </Button>
                                 </PopoverTrigger>
@@ -139,10 +140,10 @@ export default function ReportsPage() {
                                     <SelectValue placeholder="Select Area" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">Semua Area</SelectItem>
-                                    <SelectItem value="malang">Kota Malang</SelectItem>
-                                    <SelectItem value="surabaya">Pusat Surabaya</SelectItem>
-                                    <SelectItem value="batu">Kota Batu</SelectItem>
+                                    <SelectItem value="all">All Areas</SelectItem>
+                                    <SelectItem value="malang">Malang Kota</SelectItem>
+                                    <SelectItem value="surabaya">Surabaya Pusat</SelectItem>
+                                    <SelectItem value="batu">Batu City</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -153,16 +154,16 @@ export default function ReportsPage() {
                                     <SelectValue placeholder="Select Category" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="travel">Laporan Perjalanan</SelectItem>
-                                    <SelectItem value="revenue">Laporan Pendapatan</SelectItem>
-                                    <SelectItem value="driver">Performa Driver</SelectItem>
-                                    <SelectItem value="cancellation">Pembatalan</SelectItem>
+                                    <SelectItem value="travel">Travel Reports</SelectItem>
+                                    <SelectItem value="revenue">Revenue Reports</SelectItem>
+                                    <SelectItem value="driver">Driver Performance</SelectItem>
+                                    <SelectItem value="cancellation">Cancellations</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                         <div className="flex items-end">
                             <Button className="w-full bg-orange-600 hover:bg-orange-700 gap-2">
-                                <Filter className="h-4 w-4" /> Terapkan Filter
+                                <Filter className="h-4 w-4" /> Apply Filters
                             </Button>
                         </div>
                     </div>
@@ -171,34 +172,34 @@ export default function ReportsPage() {
 
             <Tabs defaultValue="all" className="space-y-4">
                 <TabsList>
-                    <TabsTrigger value="all">Semua Laporan</TabsTrigger>
-                    <TabsTrigger value="financial">Keuangan</TabsTrigger>
-                    <TabsTrigger value="operational">Operasional</TabsTrigger>
+                    <TabsTrigger value="all">All Reports</TabsTrigger>
+                    <TabsTrigger value="financial">Financial</TabsTrigger>
+                    <TabsTrigger value="operational">Operational</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="all" className="space-y-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <div>
-                                <CardTitle>Antrean Laporan yang Dibuat</CardTitle>
-                                <CardDescription>Lihat status dan unduh batch data yang dibuat sebelumnya.</CardDescription>
+                                <CardTitle>Generated Reports Queue</CardTitle>
+                                <CardDescription>View status and download previously generated data batches.</CardDescription>
                             </div>
                             <div className="relative">
                                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input placeholder="Cari laporan..." className="pl-8 w-[250px]" />
+                                <Input placeholder="Search reports..." className="pl-8 w-[250px]" />
                             </div>
                         </CardHeader>
                         <CardContent>
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>ID Laporan</TableHead>
-                                        <TableHead>Kategori</TableHead>
-                                        <TableHead>Area Target</TableHead>
-                                        <TableHead>Tanggal Dibuat</TableHead>
-                                        <TableHead>Jumlah Rekaman</TableHead>
+                                        <TableHead>Report ID</TableHead>
+                                        <TableHead>Category</TableHead>
+                                        <TableHead>Target Area</TableHead>
+                                        <TableHead>Date Created</TableHead>
+                                        <TableHead>Record Count</TableHead>
                                         <TableHead>Status</TableHead>
-                                        <TableHead className="text-right">Aksi</TableHead>
+                                        <TableHead className="text-right">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -211,12 +212,12 @@ export default function ReportsPage() {
                                             <TableCell>{report.items.toLocaleString()}</TableCell>
                                             <TableCell>
                                                 <Badge variant={report.status === "Ready" ? "default" : "secondary"}>
-                                                    {translateStatus(report.status)}
+                                                    {report.status}
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <Button variant="ghost" size="sm" className="h-8 gap-1" disabled={report.status !== "Ready"}>
-                                                    <Download className="h-3 w-3" /> Unduh
+                                                    <Download className="h-3 w-3" /> Download
                                                 </Button>
                                             </TableCell>
                                         </TableRow>
@@ -227,6 +228,70 @@ export default function ReportsPage() {
                     </Card>
                 </TabsContent>
             </Tabs>
+=======
+            <div>
+                <h1 className="text-3xl font-bold tracking-tight">Reports Dashboard</h1>
+                <p className="text-muted-foreground">Select a specific report category to view detailed analytics.</p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <Link href="/reporting-admin/history" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-primary" />
+                                Order History
+                            </CardTitle>
+                            <CardDescription>
+                                Complete audit log of all orders with status and details.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+
+                <Link href="/reporting-admin/reports/revenue" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-green-600" />
+                                Revenue Report
+                            </CardTitle>
+                            <CardDescription>
+                                Financial breakdown, income sources, and transaction logs.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+
+                <Link href="/reporting-admin/reports/driver-performance" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-blue-600" />
+                                Driver Performance
+                            </CardTitle>
+                            <CardDescription>
+                                Driver metrics, ratings, completion rates, and earnings.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+
+                <Link href="/reporting-admin/reports/cancellation" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-red-600" />
+                                Cancellation Analysis
+                            </CardTitle>
+                            <CardDescription>
+                                Analysis of cancelled orders, reasons, and penalties.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+            </div>
+>>>>>>> reporting-admin
         </div>
     )
 }
