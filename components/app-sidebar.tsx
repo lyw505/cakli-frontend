@@ -61,9 +61,11 @@ const adminNavigation = {
     },
     items: [
       { title: "Dashboard", url: "/operation-admin", icon: LayoutDashboard, exact: true },
+      { title: "Live Map", url: "/operation-admin/map", icon: Map },
       { title: "Order Management", url: "/operation-admin/orders", icon: ShoppingCart },
-      { title: "User Management", url: "/operation-admin/users", icon: Users },
       { title: "Driver Management", url: "/operation-admin/drivers", icon: Car },
+      { title: "User Management", url: "/operation-admin/users", icon: Users },
+      { title: "Activity Monitoring", url: "/operation-admin/activity", icon: Zap },
       { title: "Complaints & Disputes", url: "/operation-admin/complaints", icon: MessageSquareWarning },
     ],
   },
