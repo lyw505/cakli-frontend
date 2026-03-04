@@ -55,21 +55,21 @@ function DialogContent({
   return (
     <DialogPortal>
       <DialogOverlay />
-     <DialogPrimitive.Content
-  data-slot="dialog-content"
-  className={cn(
-    "bg-background data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/10 fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 rounded-xl p-0 ring-1 duration-100 flex flex-col overflow-hidden outline-none",
-    // Default size - lebih kecil dari sebelumnya
-    "w-[50vw] h-auto max-w-[600px] max-h-[80vh]",
-    className
-  )}
-  {...props}
->
+      <DialogPrimitive.Content
+        data-slot="dialog-content"
+        className={cn(
+          "bg-background data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/10 fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 rounded-xl p-0 ring-1 duration-100 flex flex-col overflow-hidden outline-none",
+          // Default size - lebih kecil dari sebelumnya
+          "w-[50vw] h-auto max-w-[600px] max-h-[80vh]",
+          className
+        )}
+        {...props}
+      >
         {children}
         {showCloseButton && (
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
-            <Button variant="ghost" className="absolute top-2 right-2" size="icon-sm">
-              <XIcon />
+            <Button variant="ghost" className="absolute top-4 right-4 z-50 text-slate-400 hover:bg-slate-100 h-8 w-8 rounded-full p-0" size="icon">
+              <XIcon className="h-4 w-4" />
               <span className="sr-only">Close</span>
             </Button>
           </DialogPrimitive.Close>
