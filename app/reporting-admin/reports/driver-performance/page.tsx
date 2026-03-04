@@ -12,6 +12,8 @@ import {
     XCircle,
     TrendingUp,
     Trophy,
+    ChevronLeft,
+    ChevronRight,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -51,11 +53,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const driverData = [
-    { id: "DRV-1024", name: "Agus Santoso", area: "Malang Kota", orders: 124, completion: "98%", rating: 4.8, status: "Active", cancelRate: "2%" },
-    { id: "DRV-1025", name: "Siti Aminah", area: "Lowokwaru", orders: 98, completion: "92%", rating: 4.6, status: "Active", cancelRate: "8%" },
-    { id: "DRV-1026", name: "Joko Wow", area: "Sukun", orders: 145, completion: "99%", rating: 4.9, status: "Active", cancelRate: "1%" },
-    { id: "DRV-1027", name: "Rudi Hartono", area: "Blimbing", orders: 82, completion: "88%", rating: 4.2, status: "Warning", cancelRate: "12%" },
-    { id: "DRV-1028", name: "Hendra P.", area: "Malang Kota", orders: 56, completion: "94%", rating: 4.7, status: "Active", cancelRate: "6%" },
+    { id: "DRV-1024", name: "Agus Santoso", area: "Malang Kota", orders: 124, completion: "98%", rating: 4.8, status: "Aktif", cancelRate: "2%" },
+    { id: "DRV-1025", name: "Siti Aminah", area: "Lowokwaru", orders: 98, completion: "92%", rating: 4.6, status: "Aktif", cancelRate: "8%" },
+    { id: "DRV-1026", name: "Joko Wow", area: "Sukun", orders: 145, completion: "99%", rating: 4.9, status: "Aktif", cancelRate: "1%" },
+    { id: "DRV-1027", name: "Rudi Hartono", area: "Blimbing", orders: 82, completion: "88%", rating: 4.2, status: "Peringatan", cancelRate: "12%" },
+    { id: "DRV-1028", name: "Hendra P.", area: "Malang Kota", orders: 56, completion: "94%", rating: 4.7, status: "Aktif", cancelRate: "6%" },
 ]
 
 export default function DriverPerformanceReportPage() {
@@ -63,15 +65,15 @@ export default function DriverPerformanceReportPage() {
         <div className="flex flex-col gap-6 p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Driver Performance Insight</h1>
-                    <p className="text-muted-foreground">Analyze driver metrics, ratings, cancellations, and activity levels.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Wawasan Kinerja Pengemudi</h1>
+                    <p className="text-muted-foreground">Analisis metrik pengemudi, penilaian, pembatalan, dan tingkat aktivitas.</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button>
                                 <Download className="mr-2 h-4 w-4" />
-                                Export Report
+                                Ekspor Laporan
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -79,11 +81,11 @@ export default function DriverPerformanceReportPage() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
                                 <FileSpreadsheet className="mr-2 h-4 w-4" />
-                                Details (.xlsx)
+                                Rincian (.xlsx)
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <FileJson className="mr-2 h-4 w-4" />
-                                Summary (.pdf)
+                                Ringkasan (.pdf)
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -94,42 +96,42 @@ export default function DriverPerformanceReportPage() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Top Performer</CardTitle>
+                        <CardTitle className="text-sm font-medium">Performa Terbaik</CardTitle>
                         <Trophy className="h-4 w-4 text-yellow-500" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">Joko Wow</div>
-                        <p className="text-xs text-muted-foreground">145 Orders this month</p>
+                        <p className="text-xs text-muted-foreground">145 Pesanan bulan ini</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Avg. Rating</CardTitle>
+                        <CardTitle className="text-sm font-medium">Rata-rata Penilaian</CardTitle>
                         <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">4.72</div>
-                        <p className="text-xs text-muted-foreground">Based on 500+ reviews</p>
+                        <p className="text-xs text-muted-foreground">Berdasarkan 500+ ulasan</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Avg. Completion</CardTitle>
+                        <CardTitle className="text-sm font-medium">Rata-rata Penyelesaian</CardTitle>
                         <CheckCircle2 className="h-4 w-4 text-green-500" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">94.5%</div>
-                        <p className="text-xs text-muted-foreground">Operational Target: 95%</p>
+                        <p className="text-xs text-muted-foreground">Target Operasional: 95%</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">High Cancel Rate</CardTitle>
+                        <CardTitle className="text-sm font-medium">Tingkat Pembatalan Tinggi</CardTitle>
                         <XCircle className="h-4 w-4 text-red-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">12 Drivers</div>
-                        <p className="text-xs text-muted-foreground">{">"} 10% Cancel Rate</p>
+                        <div className="text-2xl font-bold">12 Pengemudi</div>
+                        <p className="text-xs text-muted-foreground">{">"} 10% Tingkat Pembatalan</p>
                     </CardContent>
                 </Card>
             </div>
@@ -141,7 +143,7 @@ export default function DriverPerformanceReportPage() {
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input
                             type="search"
-                            placeholder="Search Driver Name or ID..."
+                            placeholder="Cari Nama atau ID Pengemudi..."
                             className="pl-8"
                         />
                     </div>
@@ -155,7 +157,7 @@ export default function DriverPerformanceReportPage() {
                             <SelectValue placeholder="Area" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Areas</SelectItem>
+                            <SelectItem value="all">Semua Area</SelectItem>
                             <SelectItem value="malang-kota">Malang Kota</SelectItem>
                             <SelectItem value="lowokwaru">Lowokwaru</SelectItem>
                             <SelectItem value="sukun">Sukun</SelectItem>
@@ -172,19 +174,19 @@ export default function DriverPerformanceReportPage() {
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Driver Metrics</CardTitle>
-                    <CardDescription>Performance data for the selected period.</CardDescription>
+                    <CardTitle>Metrik Pengemudi</CardTitle>
+                    <CardDescription>Data kinerja untuk periode yang dipilih.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Driver</TableHead>
+                                <TableHead>Pengemudi</TableHead>
                                 <TableHead>Area</TableHead>
-                                <TableHead>Orders</TableHead>
-                                <TableHead>Completion</TableHead>
-                                <TableHead>Cancel Rate</TableHead>
-                                <TableHead>Rating</TableHead>
+                                <TableHead>Pesanan</TableHead>
+                                <TableHead>Penyelesaian</TableHead>
+                                <TableHead>Tingkat Pembatalan</TableHead>
+                                <TableHead>Penilaian</TableHead>
                                 <TableHead>Status</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -225,7 +227,7 @@ export default function DriverPerformanceReportPage() {
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant={driver.status === "Active" ? "default" : "destructive"}>
+                                        <Badge variant={driver.status === "Aktif" ? "default" : "destructive"}>
                                             {driver.status}
                                         </Badge>
                                     </TableCell>
@@ -235,6 +237,22 @@ export default function DriverPerformanceReportPage() {
                     </Table>
                 </CardContent>
             </Card>
+
+            <div className="flex items-center justify-center gap-2 mt-4">
+                <Button variant="outline" size="sm" className="h-8 w-auto px-4" disabled>
+                    <ChevronLeft className="mr-2 h-4 w-4" />
+                    Back
+                </Button>
+                <Button variant="outline" size="sm" className="h-8 w-8 p-0">1</Button>
+                <Button variant="default" size="sm" className="h-8 w-8 p-0 bg-[#E04D04] hover:bg-[#c94504]">2</Button>
+                <Button variant="outline" size="sm" className="h-8 w-8 p-0">3</Button>
+                <Button variant="outline" size="sm" className="h-8 w-8 p-0">4</Button>
+                <Button variant="outline" size="sm" className="h-8 w-8 p-0">5</Button>
+                <Button variant="outline" size="sm" className="h-8 w-auto px-4">
+                    Next
+                    <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+            </div>
         </div>
     )
 }

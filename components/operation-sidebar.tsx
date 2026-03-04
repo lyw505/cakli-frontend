@@ -42,37 +42,37 @@ const data = {
             items: [],
         },
         {
-            title: "Order Management",
+            title: "Manajemen Pesanan",
             url: "/operation-admin/orders",
             icon: <ShoppingCart className="size-4" />,
             items: [],
         },
         {
-            title: "User Management",
+            title: "Manajemen Pengguna",
             url: "/operation-admin/users",
             icon: <Users className="size-4" />,
             items: [],
         },
         {
-            title: "Driver Management",
+            title: "Manajemen Driver",
             url: "/operation-admin/drivers",
             icon: <Car className="size-4" />,
             items: [],
         },
         {
-            title: "Complaints & Disputes",
+            title: "Keluhan & Perselisihan",
             url: "/operation-admin/complaints",
             icon: <MessageSquareWarning className="size-4" />,
             items: [],
         },
         {
-            title: "Activity Monitoring",
+            title: "Pemantauan Aktivitas",
             url: "/operation-admin/activity",
             icon: <Activity className="size-4" />,
             items: [],
         },
         {
-            title: "Real-time Map",
+            title: "Peta Real-time",
             url: "/operation-admin/map",
             icon: <Map className="size-4" />,
             items: [],
@@ -93,7 +93,7 @@ export function OperationSidebar({ ...props }: React.ComponentProps<typeof Sideb
                                 </div>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">Cakli Admin</span>
-                                    <span className="truncate text-xs">Operation Panel</span>
+                                    <span className="truncate text-xs">Panel Operasional</span>
                                 </div>
                             </a>
                         </SidebarMenuButton>

@@ -11,6 +11,7 @@ import {
     TrendingDown,
     TrendingUp,
     BarChart3,
+    UserCheck,
 } from "lucide-react"
 
 import {
@@ -34,34 +35,34 @@ const data = {
     },
     navMain: [
         {
-            title: "Global Dashboard",
+            title: "Dasbor Global",
             url: "/master-admin",
             icon: <LayoutDashboard className="size-4" />,
         },
         {
-            title: "Tariff Management",
+            title: "Manajemen Tarif",
             url: "/master-admin/tariffs",
             icon: <TrendingUp className="size-4" />,
         },
         {
-            title: "Area & Zone",
+            title: "Area & Zona",
             url: "/master-admin/areas",
             icon: <Map className="size-4" />,
         },
         {
-            title: "Admin Roles",
+            title: "Akses Admin",
             url: "/master-admin/roles",
             icon: <ShieldCheck className="size-4" />,
         },
         {
-            title: "Audit Log",
+            title: "Log Audit",
             url: "/master-admin/audit",
             icon: <ClipboardList className="size-4" />,
         },
         {
-            title: "Cross-Area Analytics",
-            url: "/master-admin/analytics",
-            icon: <BarChart3 className="size-4" />,
+            title: "Kebijakan Mitra",
+            url: "/master-admin/partners",
+            icon: <UserCheck className="size-4" />,
         },
     ],
 }
@@ -79,7 +80,7 @@ export function MasterSidebar({ ...props }: React.ComponentProps<typeof Sidebar>
                                 </div>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">Cakli Master</span>
-                                    <span className="truncate text-xs">Policy & Policy Control</span>
+                                    <span className="truncate text-xs">Kebijakan & Kontrol</span>
                                 </div>
                             </a>
                         </SidebarMenuButton>

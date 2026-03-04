@@ -13,10 +13,15 @@ import {
     ChevronLeft,
     ChevronRight,
 } from "lucide-react"
-import { format } from "date-fns"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import {
     Table,
     TableBody,
@@ -25,14 +30,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import {
     Select,
@@ -41,7 +39,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import {
     DropdownMenu,
@@ -61,8 +66,8 @@ const historyData = [
     { id: "ORD-8917", customer: "Fahmi R.", driver: "Hendra P.", date: "2024-02-08 22:30", amount: "Rp 45.000", status: "Completed", pickup: "Batu Night Spectacular", dropoff: "Hotel Santika", area: "Batu", distance: "8.5 km", duration: "25 mins" },
 ]
 
-export default function OrderHistoryPage() {
-    const [selectedOrder, setSelectedOrder] = React.useState<typeof orderHistory[0] | null>(null)
+export default function HistoryPage() {
+    const [selectedOrder, setSelectedOrder] = React.useState<typeof historyData[0] | null>(null)
 
     return (
         <div className="flex flex-col gap-6 p-6">
@@ -140,74 +145,87 @@ export default function OrderHistoryPage() {
                 </div>
             </div>
 
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Order ID</TableHead>
-                        <TableHead>Date & Time</TableHead>
-                        <TableHead>Customer</TableHead>
-                        <TableHead>Driver</TableHead>
-                        <TableHead>Trip</TableHead>
-                        <TableHead>Tariff</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Action</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {orderHistory.map((order) => (
-                        <TableRow key={order.id}>
-                            <TableCell className="font-mono text-xs">{order.id}</TableCell>
-                            <TableCell className="text-sm">{order.date}</TableCell>
-                            <TableCell className="font-medium">{order.customer}</TableCell>
-                            <TableCell className="text-muted-foreground">{order.driver}</TableCell>
-                            <TableCell className="text-xs">
-                                <div className="flex flex-col">
-                                    <span className="truncate max-w-[150px]">{order.origin} → {order.dest}</span>
-                                    <span className="text-[10px] text-muted-foreground">{order.dist}</span>
-                                </div>
-                            </TableCell>
-                            <TableCell className="font-semibold text-sm">Rp {order.price.toLocaleString()}</TableCell>
-                            <TableCell>
-                                <Badge variant={order.status === "Completed" ? "default" : "destructive"}>
-                                    {order.status}
-                                </Badge>
-                            </TableCell>
-                            <TableCell className="text-right">
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <Button variant="ghost" size="sm" onClick={() => setSelectedOrder(order)}>
-                                            <Eye className="h-4 w-4 mr-2" /> Detail
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="max-w-md">
-                                        <DialogHeader>
-                                            <DialogTitle>Order Detail Audit</DialogTitle>
-                                            <DialogDescription>Full record for {order.id}</DialogDescription>
-                                        </DialogHeader>
-                                        <div className="space-y-4 py-4">
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="space-y-1">
-                                                    <p className="text-[10px] uppercase text-muted-foreground font-bold italic">Entity: Customer</p>
-                                                    <div className="flex items-center gap-2">
-                                                        <User className="size-3 text-orange-500" />
-                                                        <p className="text-sm font-semibold">{order.customer}</p>
+            <Card>
+                <CardContent className="p-0">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[120px]">Order ID</TableHead>
+                                <TableHead>Date & Time</TableHead>
+                                <TableHead>Customer</TableHead>
+                                <TableHead>Driver</TableHead>
+                                <TableHead>Amount</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead className="text-right">View</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {historyData.map((order) => (
+                                <TableRow key={order.id}>
+                                    <TableCell className="font-mono text-sm">{order.id}</TableCell>
+                                    <TableCell className="text-sm">{order.date}</TableCell>
+                                    <TableCell className="font-medium">{order.customer}</TableCell>
+                                    <TableCell>{order.driver}</TableCell>
+                                    <TableCell className="font-semibold">{order.amount}</TableCell>
+                                    <TableCell>
+                                        <Badge variant={order.status === "Completed" ? "default" : "destructive"}>
+                                            {order.status}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button variant="ghost" size="icon" onClick={() => setSelectedOrder(order)}>
+                                                    <Eye className="size-4" />
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="sm:max-w-[500px]">
+                                                <DialogHeader>
+                                                    <DialogTitle>Order Details - {selectedOrder?.id}</DialogTitle>
+                                                    <DialogDescription>
+                                                        Full transactional audit for this order instance.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <div className="grid gap-4 py-4">
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div className="space-y-1">
+                                                            <p className="text-xs text-muted-foreground uppercase font-semibold">User Details</p>
+                                                            <p className="text-sm">{selectedOrder?.customer}</p>
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                            <p className="text-xs text-muted-foreground uppercase font-semibold">Driver Details</p>
+                                                            <p className="text-sm">{selectedOrder?.driver}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <p className="text-[10px] uppercase text-muted-foreground font-bold italic">Entity: Driver</p>
-                                                    <div className="flex items-center gap-2">
-                                                        <Truck className="size-3 text-orange-500" />
-                                                        <p className="text-sm font-semibold">{order.driver}</p>
+                                                    <Separator />
+                                                    <div className="space-y-2">
+                                                        <div className="flex items-start gap-2">
+                                                            <div className="size-2 bg-primary rounded-full mt-1.5" />
+                                                            <div className="space-y-0.5">
+                                                                <p className="text-xs text-muted-foreground">Pickup Location</p>
+                                                                <p className="text-sm font-medium">{selectedOrder?.pickup}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-start gap-2">
+                                                            <div className="size-2 bg-destructive rounded-full mt-1.5" />
+                                                            <div className="space-y-0.5">
+                                                                <p className="text-xs text-muted-foreground">Drop-off Location</p>
+                                                                <p className="text-sm font-medium">{selectedOrder?.dropoff}</p>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <Separator />
-                                            <div className="space-y-2">
-                                                <p className="text-[10px] uppercase text-muted-foreground font-bold italic">Trip Path</p>
-                                                <div className="space-y-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <MapPin className="size-3 text-red-500" />
-                                                        <p className="text-xs font-medium">{order.origin}</p>
+                                                    <Separator />
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div className="space-y-1">
+                                                            <p className="text-xs text-muted-foreground uppercase font-semibold">Total Fare</p>
+                                                            <p className="text-lg font-bold text-primary">{selectedOrder?.amount}</p>
+                                                        </div>
+                                                        <div className="space-y-1 text-right">
+                                                            <p className="text-xs text-muted-foreground uppercase font-semibold">Status</p>
+                                                            <Badge variant={selectedOrder?.status === "Completed" ? "default" : "destructive"}>
+                                                                {selectedOrder?.status}
+                                                            </Badge>
+                                                        </div>
                                                     </div>
                                                     <div className="bg-muted p-3 rounded-lg text-xs space-y-1">
                                                         <p><span className="font-semibold">Distance:</span> {selectedOrder?.distance}</p>

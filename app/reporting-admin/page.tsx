@@ -26,7 +26,7 @@ import {
     MapPin,
     Clock,
 } from "lucide-react"
-import { addDays, format, startOfWeek, endOfWeek, isSameDay } from "date-fns"
+import { addDays, format } from "date-fns"
 import { DateRange } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
@@ -61,7 +61,7 @@ const hourlyData = [
     { name: "12:00", orders: 55, revenue: 720000 },
     { name: "14:00", orders: 40, revenue: 510000 },
     { name: "16:00", orders: 65, revenue: 950000 },
-    { name: "18:00", orders: 85, revenue: 1200000 },
+    { name: "18:00", orders: 80, revenue: 1200000 },
     { name: "20:00", orders: 42, revenue: 620000 },
     { name: "22:00", orders: 15, revenue: 210000 },
 ]
@@ -76,16 +76,16 @@ const recentOrders = [
 
 export default function ReportingDashboard() {
     const [date, setDate] = React.useState<DateRange | undefined>({
-        from: new Date(),
-        to: addDays(new Date(), 7),
+        from: new Date(2024, 0, 20),
+        to: addDays(new Date(2024, 0, 20), 20),
     })
 
     return (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6 p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Business Overview</h1>
-                    <p className="text-muted-foreground">Real-time performance metrics and business health check.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Ikhtisar Bisnis</h1>
+                    <p className="text-muted-foreground">Metrik performa waktu-nyata dan pemeriksaan kesehatan bisnis.</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className={cn("grid gap-2")}>
@@ -110,7 +110,7 @@ export default function ReportingDashboard() {
                                             format(date.from, "LLL dd, y")
                                         )
                                     ) : (
-                                        <span>Pick a date range</span>
+                                        <span>Pilih rentang tanggal</span>
                                     )}
                                 </Button>
                             </PopoverTrigger>
@@ -126,7 +126,7 @@ export default function ReportingDashboard() {
                             </PopoverContent>
                         </Popover>
                     </div>
-                    <Button variant="outline" size="icon" title="Export CSV/PDF">
+                    <Button variant="outline" size="icon">
                         <Download className="h-4 w-4" />
                     </Button>
                 </div>
@@ -134,44 +134,44 @@ export default function ReportingDashboard() {
 
             {/* KPI Cards */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card className="border-l-4 border-l-orange-500">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+                        <CardTitle className="text-sm font-medium">Total Pesanan</CardTitle>
                         <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">2,350</div>
-                        <p className="text-xs text-muted-foreground">+12% from last week</p>
+                        <p className="text-xs text-muted-foreground">+12% dari minggu lalu</p>
                     </CardContent>
                 </Card>
-                <Card className="border-l-4 border-l-orange-500">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                        <CardTitle className="text-sm font-medium">Total Pendapatan</CardTitle>
                         <Wallet className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">Rp 45.2M</div>
-                        <p className="text-xs text-muted-foreground">+8% from last week</p>
+                        <p className="text-xs text-muted-foreground">+8% dari minggu lalu</p>
                     </CardContent>
                 </Card>
-                <Card className="border-l-4 border-l-orange-500">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Active Drivers</CardTitle>
-                        <Users className="h-4 w-4 text-orange-500" />
+                        <CardTitle className="text-sm font-medium">Pengemudi Aktif</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">145</div>
-                        <p className="text-xs text-muted-foreground">Currently online</p>
+                        <p className="text-xs text-muted-foreground">Sedang online</p>
                     </CardContent>
                 </Card>
-                <Card className="border-l-4 border-l-orange-500">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
+                        <CardTitle className="text-sm font-medium">Tingkat Penyelesaian</CardTitle>
                         <TrendingUp className="h-4 w-4 text-green-500" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">94.2%</div>
-                        <p className="text-xs text-muted-foreground">5.8% Cancelled</p>
+                        <p className="text-xs text-muted-foreground">5.8% Dibatalkan</p>
                     </CardContent>
                 </Card>
             </div>
@@ -180,8 +180,8 @@ export default function ReportingDashboard() {
                 {/* Visualizations */}
                 <Card className="col-span-4">
                     <CardHeader>
-                        <CardTitle>Order Trend</CardTitle>
-                        <CardDescription>Daily order volume over the selected period.</CardDescription>
+                        <CardTitle>Tren Pesanan</CardTitle>
+                        <CardDescription>Volume pesanan harian selama periode yang dipilih.</CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
                         <div className="h-[300px]">
@@ -196,13 +196,13 @@ export default function ReportingDashboard() {
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <XAxis
                                         dataKey="name"
-                                        stroke="#6B7280"
+                                        stroke="#888888"
                                         fontSize={12}
                                         tickLine={false}
                                         axisLine={false}
                                     />
                                     <YAxis
-                                        stroke="#6B7280"
+                                        stroke="#888888"
                                         fontSize={12}
                                         tickLine={false}
                                         axisLine={false}
@@ -224,8 +224,8 @@ export default function ReportingDashboard() {
                 <div className="col-span-3 space-y-4">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Peak Hours</CardTitle>
-                            <CardDescription>Busiest times of the day.</CardDescription>
+                            <CardTitle>Jam Sibuk</CardTitle>
+                            <CardDescription>Waktu tersibuk dalam sehari.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
@@ -234,21 +234,21 @@ export default function ReportingDashboard() {
                                         <Clock className="h-4 w-4 text-orange-500" />
                                         <span className="text-sm font-medium">17:00 - 19:00</span>
                                     </div>
-                                    <Badge variant="secondary">Highest</Badge>
+                                    <Badge variant="secondary">Tertinggi</Badge>
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <Clock className="h-4 w-4 text-orange-500" />
                                         <span className="text-sm font-medium">11:00 - 13:00</span>
                                     </div>
-                                    <Badge variant="outline">High</Badge>
+                                    <Badge variant="outline">Tinggi</Badge>
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <Clock className="h-4 w-4 text-blue-500" />
                                         <span className="text-sm font-medium">07:00 - 09:00</span>
                                     </div>
-                                    <Badge variant="outline">Moderate</Badge>
+                                    <Badge variant="outline">Sedang</Badge>
                                 </div>
                             </div>
                         </CardContent>
@@ -256,8 +256,8 @@ export default function ReportingDashboard() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Top Areas</CardTitle>
-                            <CardDescription>Regions with highest demand.</CardDescription>
+                            <CardTitle>Area Teratas</CardTitle>
+                            <CardDescription>Wilayah dengan permintaan tertinggi.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
@@ -290,11 +290,11 @@ export default function ReportingDashboard() {
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle>Recent Activity</CardTitle>
-                            <CardDescription>Latest transactions and order updates.</CardDescription>
+                            <CardTitle>Aktivitas Terbaru</CardTitle>
+                            <CardDescription>Transaksi dan pembaruan pesanan terbaru.</CardDescription>
                         </div>
                         <Button variant="outline" size="sm" asChild>
-                            <a href="/reporting-admin/history">View All History <ArrowUpRight className="ml-2 h-4 w-4" /></a>
+                            <a href="/reporting-admin/history">Lihat Semua Riwayat <ArrowUpRight className="ml-2 h-4 w-4" /></a>
                         </Button>
                     </div>
                 </CardHeader>
@@ -302,10 +302,10 @@ export default function ReportingDashboard() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Order ID</TableHead>
-                                <TableHead>Time</TableHead>
+                                <TableHead>ID Pesanan</TableHead>
+                                <TableHead>Waktu</TableHead>
                                 <TableHead>Area</TableHead>
-                                <TableHead>Amount</TableHead>
+                                <TableHead>Jumlah</TableHead>
                                 <TableHead>Status</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -330,4 +330,3 @@ export default function ReportingDashboard() {
         </div>
     )
 }
-

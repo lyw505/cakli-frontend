@@ -36,7 +36,12 @@ const data = {
             icon: <BarChart3 className="size-4" />,
         },
         {
-            title: "Order History",
+            title: "Laporan",
+            url: "/reporting-admin/reports",
+            icon: <FileText className="size-4" />,
+        },
+        {
+            title: "Riwayat Pesanan",
             url: "/reporting-admin/history",
             icon: <History className="size-4" />,
         },
@@ -47,13 +52,8 @@ const data = {
         },
         {
             title: "Driver Performance",
-            url: "/reporting-admin/reports/driver-performance",
-            icon: <FileText className="size-4" />,
-        },
-        {
-            title: "Cancellation Report",
-            url: "/reporting-admin/reports/cancellation",
-            icon: <FileText className="size-4" />,
+            url: "/reporting-admin/drivers",
+            icon: <Users className="size-4" />,
         },
     ],
 }
@@ -71,7 +71,7 @@ export function ReportingSidebar({ ...props }: React.ComponentProps<typeof Sideb
                                 </div>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">Cakli Reporting</span>
-                                    <span className="truncate text-xs">Analysis Panel</span>
+                                    <span className="truncate text-xs">Panel Analisis</span>
                                 </div>
                             </a>
                         </SidebarMenuButton>
