@@ -99,7 +99,7 @@ export default function RealTimeMapPage() {
 
                     {/* Floating Layer Controls */}
                     <div className="absolute bottom-6 left-6 z-[1000] flex flex-col gap-2">
-                        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200 p-2 flex flex-col gap-1">
+                        <div className="bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-2 flex flex-col gap-1">
                             <LayerToggle
                                 active={layers.drivers}
                                 onClick={() => toggleLayer('drivers')}
@@ -125,7 +125,7 @@ export default function RealTimeMapPage() {
 
                     {/* Alert Panel */}
                     <div className="absolute bottom-28 right-6 z-[1000] max-w-xs w-full transition-all">
-                        <Card className="shadow-2xl border-orange-100 bg-white/95 backdrop-blur shadow-orange-500/10">
+                        <Card className="border border-orange-100 bg-white/95 backdrop-blur">
                             <CardHeader className="p-3 pb-1 flex flex-row items-center justify-between pointer-events-none">
                                 <div className="flex items-center gap-2">
                                     <AlertCircle className="w-4 h-4 text-[#E04D04]" />
@@ -152,7 +152,7 @@ export default function RealTimeMapPage() {
                 </div>
 
                 {/* Sidebar Filter */}
-                <aside className="w-80 bg-white border-l shadow-2xl p-4 flex flex-col gap-6 z-10 transition-transform duration-300">
+                <aside className="w-80 bg-white border-l p-4 flex flex-col gap-6 z-10 transition-transform duration-300">
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <h2 className="font-bold text-lg">Control Panel</h2>
@@ -200,7 +200,7 @@ export default function RealTimeMapPage() {
                         </div>
                     </div>
 
-                    <Button className="w-full bg-[#E04D04] hover:bg-[#E04D04]/90 text-white rounded-xl shadow-lg shadow-[#E04D04]/10 py-6 font-bold">
+                    <Button className="w-full bg-[#E04D04] hover:bg-[#E04D04]/90 text-white rounded-xl py-6 font-bold">
                         Export Snapshot Report
                     </Button>
                 </aside>
@@ -211,7 +211,7 @@ export default function RealTimeMapPage() {
 
 function MetricCard({ icon, label, value, sublabel, trendColor = "text-slate-400" }: { icon: React.ReactNode, label: string, value: string, sublabel?: string, trendColor?: string }) {
     return (
-        <Card className="relative group bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between h-36 border-none ring-1 ring-slate-200 transition-all hover:shadow-md">
+        <Card className="relative group bg-white p-5 rounded-2xl ring-1 ring-slate-200 flex flex-col justify-between h-36 border-none transition-all">
             <div className="absolute left-4 top-5 bottom-5 w-[6px] bg-[#E04D04] rounded-full" />
             <div className="absolute top-5 right-5 text-slate-300 group-hover:text-[#E04D04]/30 transition-colors">
                 {icon}
@@ -241,7 +241,7 @@ function LayerToggle({ active, onClick, icon, label, count }: { active: boolean,
     return (
         <button
             onClick={onClick}
-            className={`flex items-center gap-3 w-full p-2.5 rounded-xl transition-all ${active ? 'bg-[#E04D04] text-white shadow-lg' : 'hover:bg-slate-100 text-slate-600'
+            className={`flex items-center gap-3 w-full p-2.5 rounded-xl transition-all ${active ? 'bg-[#E04D04] text-white border border-[#E04D04]' : 'hover:bg-slate-100 text-slate-600'
                 }`}
         >
             <div className={`p-1.5 rounded-lg ${active ? 'bg-white/10' : 'bg-slate-100'}`}>

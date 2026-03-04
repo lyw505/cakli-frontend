@@ -63,12 +63,12 @@ export default function AuditLog() {
                 <div className="flex flex-1 items-center gap-2 max-w-md">
                     <div className="relative w-full">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="Search by actor, action, or target..." className="pl-8 bg-background border-none shadow-sm" />
+                        <Input placeholder="Search by actor, action, or target..." className="pl-8 bg-background border border-slate-200" />
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <Select defaultValue="all">
-                        <SelectTrigger className="w-[180px] bg-background border-none shadow-sm">
+                        <SelectTrigger className="w-[180px] bg-background border border-slate-200">
                             <SelectValue placeholder="Severity" />
                         </SelectTrigger>
                         <SelectContent>
@@ -79,13 +79,13 @@ export default function AuditLog() {
                             <SelectItem value="critical">Critical</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="ghost" size="icon" className="bg-background shadow-sm hover:shadow-md transition-shadow">
+                    <Button variant="ghost" size="icon" className="bg-background border border-slate-200 hover:bg-slate-50 transition-colors">
                         <Filter className="h-4 w-4" />
                     </Button>
                 </div>
             </div>
 
-            <Card>
+            <Card className="border border-slate-200">
                 <CardContent className="p-0">
                     <Table>
                         <TableHeader className="bg-muted/50">

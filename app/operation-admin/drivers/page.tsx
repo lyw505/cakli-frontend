@@ -357,7 +357,7 @@ const StatCard = ({
     iconColor?: string;
     className?: string;
 }) => (
-    <Card className={`border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden ${className}`}>
+    <Card className={`border-slate-200 transition-all relative overflow-hidden ${className}`}>
         <div className="absolute left-3 top-3 bottom-3 w-1 bg-orange-700 rounded-l-full"></div>
         <CardHeader className="flex flex-row items-center justify-between pb-2 pl-8">
             <CardTitle className="text-sm font-medium text-slate-600">{title}</CardTitle>
@@ -575,12 +575,12 @@ export default function DriversPage() {
                         <Button
                             variant="outline"
                             onClick={() => setIsAuditLogOpen(true)}
-                            className="bg-white relative"
+                            className="bg-white px-4 text-sm gap-2 border-slate-200 rounded-xl h-10"
                         >
-                            <FileClock className="mr-2 h-4 w-4" />
-                            Audit Log
+                            <RotateCcw className="h-4 w-4" />
+                            <span className="font-semibold text-slate-700">Audit Log</span>
                             {newLogCount > 0 && (
-                                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#E04D04] text-[10px] font-bold text-white">
+                                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#E04D04] text-[10px] font-bold text-white ml-0.5">
                                     {newLogCount}
                                 </span>
                             )}
@@ -691,7 +691,7 @@ export default function DriversPage() {
                                 >
                                     <TableCell className="py-4 px-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 font-black text-xs flex-shrink-0 border border-slate-200 shadow-sm">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 font-black text-xs flex-shrink-0 border border-slate-200">
                                                 {getInitials(driver.name)}
                                             </div>
                                             <div className="min-w-0">
@@ -740,7 +740,7 @@ export default function DriversPage() {
                                                         <MoreVertical className="h-4 w-4 text-slate-600" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="w-56 rounded-xl shadow-xl border-slate-200">
+                                                <DropdownMenuContent align="end" className="w-56 rounded-xl border-slate-200">
                                                     <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-3 py-2">Operasional</DropdownMenuLabel>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
@@ -854,8 +854,8 @@ export default function DriversPage() {
                                     <div key={step.id} className="relative flex flex-col items-center z-10 transition-all">
                                         <button
                                             onClick={() => setActiveTab(step.id)}
-                                            className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 transform ${isActive ? "bg-gray-900 text-white shadow-xl shadow-slate-200 scale-110" :
-                                                isCompleted ? "bg-emerald-500 text-white shadow-lg shadow-emerald-100" :
+                                            className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 transform ${isActive ? "bg-gray-900 text-white scale-110" :
+                                                isCompleted ? "bg-emerald-500 text-white" :
                                                     "bg-white border-2 border-gray-100 text-gray-400 hover:border-gray-200 hover:scale-105"
                                                 }`}
                                         >
@@ -1108,7 +1108,7 @@ export default function DriversPage() {
             >
                 <div className="px-6 py-6 flex items-start justify-between bg-white border-b border-slate-100">
                     <div>
-                        <h3 className="text-xl font-bold text-slate-900">Audit Log</h3>
+                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Audit Log</h2>
                         <p className="text-sm text-slate-500 mt-1">Catatan semua tindakan administratif</p>
                     </div>
                     <button
@@ -1140,34 +1140,34 @@ export default function DriversPage() {
                         }
 
                         return (
-                            <div key={log.id} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-                                <div className="flex gap-4">
-                                    <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center shrink-0 border border-transparent transition-all group-hover:scale-105 shadow-sm", bgColor, iconColor)}>
+                            <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:bg-slate-50 transition-all relative overflow-hidden group">
+                                <div className="flex gap-5">
+                                    <div className={cn("h-11 w-11 rounded-xl flex items-center justify-center shrink-0 transition-all group-hover:scale-105", bgColor, iconColor)}>
                                         {icon}
                                     </div>
                                     <div className="flex-1 min-w-0 pr-24">
                                         <div className="flex flex-col gap-0.5">
-                                            <h4 className="font-bold text-slate-900 text-[15px]">{log.action}</h4>
-                                            <p className="text-sm text-slate-500 line-clamp-1">
-                                                {log.details}
+                                            <h4 className="font-bold text-slate-900 text-base tracking-tight leading-none">{log.action}</h4>
+                                            <p className="text-sm text-slate-400 font-medium mt-1 uppercase text-[10px] tracking-wider">
+                                                Detail: <span className="text-slate-700 font-bold">{log.details}</span>
                                             </p>
                                         </div>
 
-                                        {log.reason && (
-                                            <div className="mt-4 p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-2.5">
-                                                <span className="text-[13px] font-bold text-slate-900 whitespace-nowrap pt-0.5">Alasan:</span>
-                                                <span className="text-[13px] text-slate-600 leading-relaxed font-semibold">
-                                                    {log.reason}
+                                        <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 group">
+                                            <div className="flex gap-2">
+                                                <span className="text-xs font-black text-slate-900 uppercase tracking-widest leading-relaxed">Alasan:</span>
+                                                <span className="text-xs text-slate-500 leading-relaxed font-semibold">
+                                                    Reviewed by system automation
                                                 </span>
                                             </div>
-                                        )}
+                                        </div>
 
-                                        <div className="mt-3 flex items-center gap-2">
-                                            <span className="text-[10px] font-black uppercase tracking-wider text-slate-300">Executor: {log.admin} ({log.adminRole})</span>
+                                        <div className="mt-4 flex items-center gap-2">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Executor: {log.admin}</span>
                                         </div>
                                     </div>
-                                    <div className="absolute top-5 right-5 text-right">
-                                        <p className="text-[11px] font-medium text-slate-400">{log.timestamp}</p>
+                                    <div className="absolute top-6 right-6 text-right">
+                                        <p className="text-[11px] font-bold text-slate-300 font-mono whitespace-nowrap">{log.timestamp}</p>
                                     </div>
                                 </div>
                             </div>
@@ -1258,7 +1258,7 @@ export default function DriversPage() {
                                 key={tab.id}
                                 onClick={() => setDetailTab(tab.id)}
                                 className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all ${detailTab === tab.id
-                                    ? 'bg-white text-gray-900 shadow-sm border border-gray-200'
+                                    ? 'bg-white text-gray-900 border border-gray-200'
                                     : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200/50'
                                     }`}
                             >
@@ -1271,7 +1271,7 @@ export default function DriversPage() {
                         {/* Informasi Pribadi */}
                         {detailTab === "info" && (
                             <div className="grid grid-cols-2 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+                                <div className="bg-white p-6 rounded-2xl border border-gray-100 space-y-6">
                                     <h4 className="text-lg font-bold text-[#0f172a] mb-4">Identitas</h4>
                                     <div className="space-y-4">
                                         <div className="flex flex-col gap-1.5">
@@ -1289,11 +1289,11 @@ export default function DriversPage() {
                                     </div>
                                 </div>
 
-                                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+                                <div className="bg-white p-6 rounded-2xl border border-gray-100 space-y-6">
                                     <h4 className="text-lg font-bold text-[#0f172a] mb-4">Kontak</h4>
                                     <div className="space-y-4 text-sm">
                                         <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl group hover:bg-white hover:border-gray-300 border border-transparent transition-all">
-                                            <div className="p-2.5 bg-white rounded-lg shadow-sm">
+                                            <div className="p-2.5 bg-white rounded-lg">
                                                 <Phone className="h-5 w-5 text-gray-600" />
                                             </div>
                                             <div className="flex flex-col">
@@ -1302,7 +1302,7 @@ export default function DriversPage() {
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl group hover:bg-white hover:border-gray-300 border border-transparent transition-all">
-                                            <div className="p-2.5 bg-white rounded-lg shadow-sm">
+                                            <div className="p-2.5 bg-white rounded-lg">
                                                 <Mail className="h-5 w-5 text-gray-600" />
                                             </div>
                                             <div className="flex flex-col">
@@ -1314,7 +1314,7 @@ export default function DriversPage() {
                                 </div>
 
                                 {selectedDriver?.currentTrip && (
-                                    <div className="col-span-2 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm border-l-4 border-l-blue-500 overflow-hidden relative">
+                                    <div className="col-span-2 bg-white p-6 rounded-2xl border border-gray-100 border-l-4 border-l-blue-500 overflow-hidden relative">
                                         <div className="absolute top-0 right-0 p-8 opacity-5">
                                             <Activity className="w-32 h-32" />
                                         </div>
@@ -1324,13 +1324,13 @@ export default function DriversPage() {
                                                 <h4 className="text-lg font-bold text-[#0f172a]">Trip Aktif Saat Ini</h4>
                                             </div>
                                             <div className="flex gap-2">
-                                                <Badge variant="blue" className="px-4 py-1.5 font-bold shadow-sm">#{selectedDriver.currentTrip.id}</Badge>
-                                                <Badge variant="blue" className="px-4 py-1.5 font-bold shadow-sm">{selectedDriver.currentTrip.status}</Badge>
+                                                <Badge variant="blue" className="px-4 py-1.5 font-bold">#{selectedDriver.currentTrip.id}</Badge>
+                                                <Badge variant="blue" className="px-4 py-1.5 font-bold">{selectedDriver.currentTrip.status}</Badge>
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-2 gap-8 relative">
                                             <div className="flex items-start gap-4">
-                                                <div className="p-3 bg-blue-50 rounded-2xl shadow-inner mt-1">
+                                                <div className="p-3 bg-blue-50 rounded-2xl mt-1">
                                                     <MapPin className="h-6 w-6 text-blue-500" />
                                                 </div>
                                                 <div className="flex flex-col gap-1.5">
@@ -1339,7 +1339,7 @@ export default function DriversPage() {
                                                 </div>
                                             </div>
                                             <div className="flex items-start gap-4">
-                                                <div className="p-3 bg-red-50 rounded-2xl shadow-inner mt-1">
+                                                <div className="p-3 bg-red-50 rounded-2xl mt-1">
                                                     <MapPin className="h-6 w-6 text-red-500" />
                                                 </div>
                                                 <div className="flex flex-col gap-1.5">
@@ -1426,7 +1426,7 @@ export default function DriversPage() {
                                                 </div>
                                                 <p className="text-sm font-medium text-red-600">20 Februari 2024 • 14:30 WIB</p>
                                             </div>
-                                            <div className="p-5 bg-red-50 rounded-2xl border border-red-100 shadow-sm">
+                                            <div className="p-5 bg-red-50 rounded-2xl border border-red-100">
                                                 <div className="flex justify-between items-start mb-2">
                                                     <span className="font-bold text-red-700 text-base">Terlambat Menjemput</span>
                                                     <Badge variant="danger" className="font-bold px-3">Peringatan 2</Badge>

@@ -70,7 +70,7 @@ export default function RoleManagement() {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-3">
-                <Card className="col-span-2">
+                <Card className="col-span-2 border border-slate-200">
                     <CardHeader>
                         <CardTitle>Team Hierarchy</CardTitle>
                         <CardDescription>Current administrative staff and assigned roles.</CardDescription>
@@ -123,7 +123,7 @@ export default function RoleManagement() {
                                                             View
                                                         </Button>
                                                     </DialogTrigger>
-                                                    <DialogContent>
+                                                    <DialogContent className="border border-slate-200 shadow-none">
                                                         <DialogHeader>
                                                             <DialogTitle>Admin Profile: {staff.name}</DialogTitle>
                                                             <DialogDescription>Detailed access log and configuration.</DialogDescription>
@@ -201,7 +201,7 @@ export default function RoleManagement() {
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    <Card className="border border-slate-200">
                         <CardHeader>
                             <CardTitle className="text-sm">Quick Permissions Matrix</CardTitle>
                         </CardHeader>

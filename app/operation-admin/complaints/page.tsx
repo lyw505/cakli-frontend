@@ -84,6 +84,7 @@ import {
     Car,
     Map,
     AlertTriangle as AlertTriangleIcon,
+    RotateCcw
 } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
@@ -792,20 +793,20 @@ export default function ComplaintsPage() {
                 <div className="flex items-center gap-3">
                     <Button
                         variant="outline"
-                        className="h-10 gap-2 border-slate-200"
+                        className="h-10 px-4 text-sm gap-2 border-slate-200 rounded-xl"
                         onClick={() => setIsAuditLogOpen(true)}
                     >
-                        <History className="h-4 w-4" />
-                        Audit Log
+                        <RotateCcw className="h-4 w-4" />
+                        <span className="font-semibold text-slate-700">Audit Log</span>
                         {auditLogs.length > 0 && (
-                            <Badge className="ml-1 bg-[#E65100] text-white text-xs rounded-full h-5 w-5 p-0 flex items-center justify-center">
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#E04D04] text-[10px] font-bold text-white ml-0.5">
                                 {auditLogs.length}
-                            </Badge>
+                            </span>
                         )}
                     </Button>
                     <Button
                         variant="outline"
-                        className="h-10 gap-2 border-slate-200"
+                        className="h-10 gap-2 border-slate-200 rounded-xl px-5"
                         onClick={() => toast.info("Fitur ekspor akan segera tersedia")}
                     >
                         <Download className="h-4 w-4" />
@@ -877,7 +878,7 @@ export default function ComplaintsPage() {
                 </Card>
 
                 {/* Selesai - Garis Orange */}
-                <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden pl-5">
+                <Card className="border border-slate-200 transition-all relative overflow-hidden pl-5">
                     <div className="absolute left-3 top-3 bottom-3 pl-1 w-1 bg-orange-600 rounded-full"></div>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle className="text-sm font-medium text-slate-600">Selesai</CardTitle>
@@ -892,7 +893,7 @@ export default function ComplaintsPage() {
                 </Card>
 
                 {/* Prioritas Tinggi - Garis Orange */}
-                <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden pl-5">
+                <Card className="border-slate-200 transition-all relative overflow-hidden pl-5">
                     <div className="absolute left-3 top-3 bottom-3 pl-1 w-1 bg-orange-600 rounded-full"></div>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle className="text-sm font-medium text-slate-600">Prioritas Tinggi</CardTitle>
@@ -908,62 +909,66 @@ export default function ComplaintsPage() {
             </div>
 
             {/* Filters */}
-            <div className="flex flex-wrap items-center gap-3 pb-5">
-                <div className="relative w-[180px]">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
-                    <Input
-                        type="search"
-                        placeholder="Cari tiket..."
-                        className="pl-8 h-9 text-sm border-slate-200 focus-visible:ring-[#E65100]/20"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
+            <div className="space-y-4 mt-2">
+                <div className="flex items-center justify-between">
+                    <p className="text-sm font-semibold text-slate-900">Filter Tiket</p>
                 </div>
-                <div className="flex items-center gap-2 flex-wrap">
-                    {/* Status Filter */}
-                    <Select value={statusFilter} onValueChange={setStatusFilter}>
-                        <SelectTrigger className="w-[160px] h-10 bg-white border border-slate-200 rounded-lg shadow-sm hover:bg-slate-50 focus:ring-1 focus:ring-[#E65100]/20 px-3 text-slate-700">
-                            <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">Semua Status</SelectItem>
-                            <SelectItem value="Baru">Baru</SelectItem>
-                            <SelectItem value="Sedang Diinvestigasi">Investigasi</SelectItem>
-                            <SelectItem value="Menunggu Konfirmasi">Menunggu</SelectItem>
-                            <SelectItem value="Selesai">Selesai</SelectItem>
-                            <SelectItem value="Dieskalasi">Dieskalasi</SelectItem>
-                        </SelectContent>
-                    </Select>
+                <div className="flex flex-wrap items-center gap-3 pb-5">
+                    <div className="relative w-[180px]">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
+                        <Input
+                            type="search"
+                            placeholder="Cari tiket..."
+                            className="pl-8 h-9 text-sm border-slate-200 focus-visible:ring-[#E65100]/20"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        {/* Status Filter */}
+                        <Select value={statusFilter} onValueChange={setStatusFilter}>
+                            <SelectTrigger className="w-[160px] h-10 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 focus:ring-1 focus:ring-[#E65100]/20 px-3 text-slate-700">
+                                <SelectValue placeholder="Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Semua Status</SelectItem>
+                                <SelectItem value="Baru">Baru</SelectItem>
+                                <SelectItem value="Sedang Diinvestigasi">Investigasi</SelectItem>
+                                <SelectItem value="Menunggu Konfirmasi">Menunggu</SelectItem>
+                                <SelectItem value="Selesai">Selesai</SelectItem>
+                                <SelectItem value="Dieskalasi">Dieskalasi</SelectItem>
+                            </SelectContent>
+                        </Select>
 
-                    {/* Priority Filter */}
-                    <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-                        <SelectTrigger className="w-[160px] h-10 bg-white border border-slate-200 rounded-lg shadow-sm hover:bg-slate-50 focus:ring-1 focus:ring-[#E65100]/20 px-3 text-slate-700">
-                            <SelectValue placeholder="Prioritas" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">Semua Prioritas</SelectItem>
-                            <SelectItem value="high">Tinggi</SelectItem>
-                            <SelectItem value="medium">Sedang</SelectItem>
-                            <SelectItem value="low">Rendah</SelectItem>
-                        </SelectContent>
-                    </Select>
+                        {/* Priority Filter */}
+                        <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+                            <SelectTrigger className="w-[160px] h-10 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 focus:ring-1 focus:ring-[#E65100]/20 px-3 text-slate-700">
+                                <SelectValue placeholder="Prioritas" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Semua Prioritas</SelectItem>
+                                <SelectItem value="high">Tinggi</SelectItem>
+                                <SelectItem value="medium">Sedang</SelectItem>
+                                <SelectItem value="low">Rendah</SelectItem>
+                            </SelectContent>
+                        </Select>
 
-                    {/* Type Filter */}
-                    <Select value={typeFilter} onValueChange={setTypeFilter}>
-                        <SelectTrigger className="w-[180px] h-10 bg-white border border-slate-200 rounded-lg shadow-sm hover:bg-slate-50 focus:ring-1 focus:ring-[#E65100]/20 px-3 text-slate-700">
-                            <SelectValue placeholder="Jenis Laporan" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">Semua Jenis</SelectItem>
-                            <SelectItem value="p2d">Penumpang → Pengemudi</SelectItem>
-                            <SelectItem value="d2p">Pengemudi → Penumpang</SelectItem>
-                            <SelectItem value="system">Sistem / Aplikasi</SelectItem>
-                        </SelectContent>
-                    </Select>
+                        {/* Type Filter */}
+                        <Select value={typeFilter} onValueChange={setTypeFilter}>
+                            <SelectTrigger className="w-[180px] h-10 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 focus:ring-1 focus:ring-[#E65100]/20 px-3 text-slate-700">
+                                <SelectValue placeholder="Jenis Laporan" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Semua Jenis</SelectItem>
+                                <SelectItem value="p2d">Penumpang → Pengemudi</SelectItem>
+                                <SelectItem value="d2p">Pengemudi → Penumpang</SelectItem>
+                                <SelectItem value="system">Sistem / Aplikasi</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
             </div>
 
-            {/* Table */}
             {/* Table */}
             <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
                 <Table>
@@ -1074,86 +1079,88 @@ export default function ComplaintsPage() {
                             </TableRow>
                         )}
                     </TableBody>
-                </Table>
-            </div>
+                </Table >
+            </div >
 
             {/* Pagination */}
-            {filteredComplaints.length > 0 && (
-                <div className="flex items-center justify-between px-2">
-                    <div className="text-sm text-slate-500">
-                        Menampilkan <span className="font-semibold text-slate-700">{(currentPage - 1) * itemsPerPage + 1}</span> -{' '}
-                        <span className="font-semibold text-slate-700">{Math.min(currentPage * itemsPerPage, filteredComplaints.length)}</span>{' '}
-                        dari <span className="font-semibold text-slate-700">{filteredComplaints.length}</span> entri
+            {
+                filteredComplaints.length > 0 && (
+                    <div className="flex items-center justify-between px-2">
+                        <div className="text-sm text-slate-500">
+                            Menampilkan <span className="font-semibold text-slate-700">{(currentPage - 1) * itemsPerPage + 1}</span> -{' '}
+                            <span className="font-semibold text-slate-700">{Math.min(currentPage * itemsPerPage, filteredComplaints.length)}</span>{' '}
+                            dari <span className="font-semibold text-slate-700">{filteredComplaints.length}</span> entri
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-8 w-8 bg-white border-slate-300 hover:bg-slate-50 text-slate-600"
+                                onClick={() => goToPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                            >
+                                <ChevronLeft className="h-4 w-4" />
+                            </Button>
+
+                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                let pageNum;
+                                if (totalPages <= 5) {
+                                    pageNum = i + 1;
+                                } else if (currentPage <= 3) {
+                                    pageNum = i + 1;
+                                } else if (currentPage >= totalPages - 2) {
+                                    pageNum = totalPages - 4 + i;
+                                } else {
+                                    pageNum = currentPage - 2 + i;
+                                }
+
+                                return (
+                                    <Button
+                                        key={pageNum}
+                                        variant="outline"
+                                        className={`h-8 w-8 border-0 font-medium ${currentPage === pageNum
+                                            ? "bg-slate-200 text-slate-800"
+                                            : "bg-white text-slate-600 hover:bg-slate-50"
+                                            }`}
+                                        onClick={() => goToPage(pageNum)}
+                                    >
+                                        {pageNum}
+                                    </Button>
+                                );
+                            })}
+
+                            {totalPages > 5 && currentPage < totalPages - 2 && (
+                                <>
+                                    <span className="px-1 text-slate-400">...</span>
+                                    <Button
+                                        variant="outline"
+                                        className="h-8 w-8 border-0 bg-white text-slate-600 hover:bg-slate-50"
+                                        onClick={() => goToPage(totalPages)}
+                                    >
+                                        {totalPages}
+                                    </Button>
+                                </>
+                            )}
+
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-8 w-8 bg-white border-slate-300 hover:bg-slate-50 text-slate-600"
+                                onClick={() => goToPage(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                            >
+                                <ChevronRight className="h-4 w-4" />
+                            </Button>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8 bg-white border-slate-300 hover:bg-slate-50 text-slate-600"
-                            onClick={() => goToPage(currentPage - 1)}
-                            disabled={currentPage === 1}
-                        >
-                            <ChevronLeft className="h-4 w-4" />
-                        </Button>
-
-                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                            let pageNum;
-                            if (totalPages <= 5) {
-                                pageNum = i + 1;
-                            } else if (currentPage <= 3) {
-                                pageNum = i + 1;
-                            } else if (currentPage >= totalPages - 2) {
-                                pageNum = totalPages - 4 + i;
-                            } else {
-                                pageNum = currentPage - 2 + i;
-                            }
-
-                            return (
-                                <Button
-                                    key={pageNum}
-                                    variant="outline"
-                                    className={`h-8 w-8 border-0 font-medium ${currentPage === pageNum
-                                        ? "bg-slate-200 text-slate-800"
-                                        : "bg-white text-slate-600 hover:bg-slate-50"
-                                        }`}
-                                    onClick={() => goToPage(pageNum)}
-                                >
-                                    {pageNum}
-                                </Button>
-                            );
-                        })}
-
-                        {totalPages > 5 && currentPage < totalPages - 2 && (
-                            <>
-                                <span className="px-1 text-slate-400">...</span>
-                                <Button
-                                    variant="outline"
-                                    className="h-8 w-8 border-0 bg-white text-slate-600 hover:bg-slate-50"
-                                    onClick={() => goToPage(totalPages)}
-                                >
-                                    {totalPages}
-                                </Button>
-                            </>
-                        )}
-
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8 bg-white border-slate-300 hover:bg-slate-50 text-slate-600"
-                            onClick={() => goToPage(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                        >
-                            <ChevronRight className="h-4 w-4" />
-                        </Button>
-                    </div>
-                </div>
-            )}
+                )
+            }
 
             {/* ==================== MODALS ==================== */}
 
             {/* Detail Modal */}
             <Dialog open={isReviewOpen} onOpenChange={setIsReviewOpen}>
-                <DialogContent className="max-w-5xl p-0 overflow-hidden border-none shadow-2xl flex flex-col max-h-[90vh]">
+                <DialogContent className="max-w-5xl p-0 overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
                     {selectedComplaint && (
                         <>
                             {/* Header - tidak ikut scroll */}
@@ -1201,7 +1208,7 @@ export default function ComplaintsPage() {
                                         {/* Parties Involved */}
                                         <div className="grid grid-cols-2 gap-4">
                                             {/* Pelapor */}
-                                            <div className="p-8 rounded-2xl border border-slate-200 bg-white shadow-sm">
+                                            <div className="p-8 rounded-2xl border border-slate-200 bg-white">
                                                 <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">PELAPOR</div>
                                                 <div className="flex items-start gap-4">
                                                     <Avatar className="h-12 w-12 bg-[#E65100]/10">
@@ -1729,20 +1736,18 @@ export default function ComplaintsPage() {
 
             {/* Audit Log Modal - dengan grouping dan pemisah */}
             <Dialog open={isAuditLogOpen} onOpenChange={setIsAuditLogOpen}>
-                <DialogContent className="max-w-3xl p-0 overflow-hidden border-none shadow-2xl max-h-[80vh] flex flex-col">
-                    <DialogHeader className="p-6 pb-4 bg-white border-b border-slate-100 flex-shrink-0">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-slate-100 flex items-center justify-center rounded-xl border border-slate-200">
-                                <History className="h-6 w-6 text-slate-600" />
-                            </div>
-                            <div>
-                                <DialogTitle className="text-xl font-bold text-slate-900">Audit Log</DialogTitle>
-                                <DialogDescription className="text-sm text-slate-500 mt-1">
-                                    Semua aktivitas dan perubahan pada tiket keluhan
-                                </DialogDescription>
-                            </div>
+                <DialogContent className="max-w-4xl p-0 overflow-hidden border border-slate-200 max-h-[90vh] flex flex-col">
+                    <div className="px-7 py-6 flex items-start justify-between bg-white shrink-0 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Audit Log</h2>
+                            <p className="text-sm text-slate-500 font-medium">
+                                Semua aktivitas dan perubahan pada tiket keluhan
+                            </p>
                         </div>
-                    </DialogHeader>
+                        <Button variant="ghost" onClick={() => setIsAuditLogOpen(false)} className="h-10 w-10 p-0 rounded-full hover:bg-slate-100">
+                            <span className="h-5 w-5 text-slate-400"><X /></span>
+                        </Button>
+                    </div>
 
                     <div className="flex-1 overflow-y-auto p-6">
                         {groupedAuditLogs.length > 0 ? (
@@ -1762,21 +1767,34 @@ export default function ComplaintsPage() {
                                         {/* Logs dalam group */}
                                         <div className="space-y-3 pl-2">
                                             {group.logs.map((log, idx) => (
-                                                <div key={log.id} className="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors">
-                                                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-slate-200 shadow-sm">
-                                                        <Activity className="h-4 w-4 text-slate-500" />
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center justify-between">
-                                                            <span className="font-semibold text-slate-900">{log.action}</span>
-                                                            <span className="text-xs text-slate-400">{log.timestamp}</span>
+                                                <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:bg-slate-50 transition-all relative overflow-hidden group">
+                                                    <div className="flex gap-5">
+                                                        <div className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0 bg-slate-50 text-slate-500 transition-all group-hover:scale-105">
+                                                            <Activity className="h-5 w-5" />
                                                         </div>
-                                                        <p className="text-sm text-slate-600 mt-1">{log.details}</p>
-                                                        <div className="flex items-center gap-3 mt-2">
-                                                            <span className="text-xs text-slate-400 bg-white px-2 py-1 rounded-full border border-slate-200">
-                                                                Tiket: {log.ticketId}
-                                                            </span>
-                                                            <span className="text-xs text-slate-400">Oleh: {log.performedBy}</span>
+                                                        <div className="flex-1 min-w-0 pr-24">
+                                                            <div className="flex flex-col gap-0.5">
+                                                                <h4 className="font-bold text-slate-900 text-base tracking-tight leading-none">{log.action}</h4>
+                                                                <p className="text-sm text-slate-400 font-medium mt-1 uppercase text-[10px] tracking-wider">
+                                                                    Tiket: <span className="text-slate-700 font-bold">{log.ticketId}</span>
+                                                                </p>
+                                                            </div>
+
+                                                            <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 group">
+                                                                <div className="flex gap-2">
+                                                                    <span className="text-xs font-black text-slate-900 uppercase tracking-widest leading-relaxed">Detail:</span>
+                                                                    <span className="text-xs text-slate-500 leading-relaxed font-semibold">
+                                                                        {log.details}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="mt-4 flex items-center gap-2">
+                                                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Executor: {log.performedBy}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="absolute top-6 right-6 text-right">
+                                                            <p className="text-[11px] font-bold text-slate-300 font-mono whitespace-nowrap">{log.timestamp}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1813,6 +1831,6 @@ export default function ComplaintsPage() {
                     </div>
                 </DialogContent>
             </Dialog>
-        </div>
+        </div >
     )
 }

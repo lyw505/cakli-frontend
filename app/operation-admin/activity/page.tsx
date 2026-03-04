@@ -43,6 +43,8 @@ import {
     CheckCheck,
     Info,
     RefreshCw,
+    RotateCcw,
+    X
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import {
@@ -119,7 +121,7 @@ export default function ActivityPage() {
     const [logs, setLogs] = React.useState<ActionLog[]>([])
     const [message, setMessage] = React.useState("")
     const [actionResult, setActionResult] = React.useState<ActionResult | null>(null)
-    
+
     // State untuk pagination
     const [currentPage, setCurrentPage] = React.useState(1)
     const [searchQuery, setSearchQuery] = React.useState("")
@@ -127,7 +129,7 @@ export default function ActivityPage() {
 
     // Filter data berdasarkan pencarian
     const filteredDrivers = React.useMemo(() => {
-        return driverList.filter(driver => 
+        return driverList.filter(driver =>
             driver.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             driver.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
             driver.issue.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -137,7 +139,7 @@ export default function ActivityPage() {
 
     // Hitung total halaman
     const totalPages = Math.ceil(filteredDrivers.length / itemsPerPage)
-    
+
     // Dapatkan data untuk halaman saat ini
     const paginatedDrivers = React.useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage
@@ -351,13 +353,13 @@ export default function ActivityPage() {
                     <Button
                         variant="outline"
                         size="sm"
-                        className="h-9 gap-2 rounded-xl text-slate-600 border-slate-200"
+                        className="h-9 px-4 text-sm gap-2 border-slate-200 rounded-xl"
                         onClick={() => setShowLogsModal(true)}
                     >
-                        <History className="w-4 h-4" />
-                        Log Audit
+                        <RotateCcw className="h-4 w-4" />
+                        <span className="font-semibold text-slate-700">Audit Log</span>
                         {logs.length > 0 && (
-                            <span className="ml-1 bg-[#E04D04] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#E04D04] text-[10px] font-bold text-white ml-0.5">
                                 {logs.length > 9 ? "9+" : logs.length}
                             </span>
                         )}
@@ -382,29 +384,29 @@ export default function ActivityPage() {
                 </div>
             </div>
 
-       <div className="grid gap-4 md:grid-cols-3">
-    <MetricCard
-        label="Pengemudi Diam"
-        value={String(driverList.filter(d => d.issue.toLowerCase().includes("diam")).length)}
-        sublabel={`${driverList.filter(d => d.issue.toLowerCase().includes("diam")).length} pengemudi perlu perhatian`}
-        icon={<Clock className="w-5 h-5" />}
-        iconColor="text-blue-400"
-    />
-    <MetricCard
-        label="Tingkat Batal Tinggi"
-        value={String(driverList.filter(d => d.issue.toLowerCase().includes("pembatalan")).length)}
-        sublabel="Membutuhkan evaluasi"
-        icon={<AlertTriangle className="w-5 h-5" />}
-        iconColor="text-orange-400"
-    />
-    <MetricCard
-        label="Offline Terbaru"
-        value={String(driverList.filter(d => d.issue.toLowerCase().includes("offline") || d.lastOnline === "Offline").length)}
-        sublabel="Dalam 30 menit terakhir"
-        icon={<UserX className="w-5 h-5" />}
-        iconColor="text-rose-400"
-    />
-</div>
+            <div className="grid gap-4 md:grid-cols-3">
+                <MetricCard
+                    label="Pengemudi Diam"
+                    value={String(driverList.filter(d => d.issue.toLowerCase().includes("diam")).length)}
+                    sublabel={`${driverList.filter(d => d.issue.toLowerCase().includes("diam")).length} pengemudi perlu perhatian`}
+                    icon={<Clock className="w-5 h-5" />}
+                    iconColor="text-blue-400"
+                />
+                <MetricCard
+                    label="Tingkat Batal Tinggi"
+                    value={String(driverList.filter(d => d.issue.toLowerCase().includes("pembatalan")).length)}
+                    sublabel="Membutuhkan evaluasi"
+                    icon={<AlertTriangle className="w-5 h-5" />}
+                    iconColor="text-orange-400"
+                />
+                <MetricCard
+                    label="Offline Terbaru"
+                    value={String(driverList.filter(d => d.issue.toLowerCase().includes("offline") || d.lastOnline === "Offline").length)}
+                    sublabel="Dalam 30 menit terakhir"
+                    icon={<UserX className="w-5 h-5" />}
+                    iconColor="text-rose-400"
+                />
+            </div>
 
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between mb-6">
@@ -414,8 +416,8 @@ export default function ActivityPage() {
                     </div>
                     <div className="relative">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input 
-                            placeholder="Cari pengemudi..." 
+                        <Input
+                            placeholder="Cari pengemudi..."
                             className="pl-8 w-[250px]"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -490,7 +492,7 @@ export default function ActivityPage() {
                         <span className="font-bold text-slate-900">{filteredDrivers.length}</span>{' '}
                         entri
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
                         <Button
                             variant="outline"
@@ -501,7 +503,7 @@ export default function ActivityPage() {
                         >
                             <ChevronLeft className="w-4 h-4" />
                         </Button>
-                        
+
                         <div className="flex items-center gap-1">
                             {getPageNumbers().map((page, index) => (
                                 <React.Fragment key={index}>
@@ -510,11 +512,10 @@ export default function ActivityPage() {
                                     ) : (
                                         <Button
                                             size="sm"
-                                            className={`h-9 w-9 rounded-xl font-medium ${
-                                                currentPage === page
-                                                    ? 'bg-slate-200 text-slate-800 hover:bg-slate-300 border-none'
-                                                    : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
-                                            }`}
+                                            className={`h-9 w-9 rounded-xl font-medium ${currentPage === page
+                                                ? 'bg-slate-200 text-slate-800 hover:bg-slate-300 border-none'
+                                                : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
+                                                }`}
                                             onClick={() => goToPage(Number(page))}
                                         >
                                             {page}
@@ -523,7 +524,7 @@ export default function ActivityPage() {
                                 </React.Fragment>
                             ))}
                         </div>
-                        
+
                         <Button
                             variant="outline"
                             size="icon"
@@ -596,12 +597,64 @@ export default function ActivityPage() {
                 </DialogContent>
             </Dialog>
 
+            {/* Audit Log Modal */}
+            <Dialog open={showLogsModal} onOpenChange={setShowLogsModal}>
+                <DialogContent className="max-w-4xl p-0 overflow-hidden border border-slate-200 max-h-[90vh] flex flex-col">
+                    <div className="px-7 py-6 flex items-start justify-between bg-white shrink-0 border-b border-slate-100">
+                        <div className="space-y-1">
+                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Audit Log</h2>
+                            <p className="text-sm text-slate-500 font-medium">
+                                Catatan tindakan intervensi pada pemantauan aktivitas
+                            </p>
+                        </div>
+                        <Button variant="ghost" onClick={() => setShowLogsModal(false)} className="h-10 w-10 p-0 rounded-full hover:bg-slate-100">
+                            <span className="flex h-5 w-5 items-center justify-center text-slate-400"><X /></span>
+                        </Button>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto px-7 p-7 pt-4 space-y-3 bg-white custom-scrollbar">
+                        {logs.length > 0 ? (
+                            <div className="space-y-3">
+                                {logs.map((log) => (
+                                    <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:bg-slate-50 transition-all relative overflow-hidden group">
+                                        <div className="flex gap-5">
+                                            <div className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0 bg-slate-50 text-slate-500 transition-all group-hover:scale-105">
+                                                <Activity className="h-5 w-5" />
+                                            </div>
+                                            <div className="flex-1 min-w-0 pr-24">
+                                                <div className="flex flex-col gap-0.5">
+                                                    <h4 className="font-bold text-slate-900 text-base tracking-tight leading-none">{log.action}</h4>
+                                                    <p className="text-sm text-slate-400 font-medium mt-1 uppercase text-[10px] tracking-wider">
+                                                        Driver: <span className="text-slate-700 font-bold">{log.driver}</span>
+                                                    </p>
+                                                </div>
+
+                                                <div className="mt-4 flex items-center gap-2">
+                                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Executor: {log.admin}</span>
+                                                </div>
+                                            </div>
+                                            <div className="absolute top-6 right-6 text-right">
+                                                <p className="text-[11px] font-bold text-slate-300 font-mono whitespace-nowrap">{log.timestamp}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-12">
+                                <RotateCcw className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                                <p className="text-slate-500 font-medium">Belum ada aktivitas</p>
+                            </div>
+                        )}
+                    </div>
+                </DialogContent>
+            </Dialog>
             {/* MODAL: Kirim Peringatan */}
             <Dialog open={actionType === "reminder"} onOpenChange={closeModal}>
-                <DialogContent className="max-w-4xl rounded-3xl p-0 border-none shadow-2xl flex flex-col max-h-[90vh]">
+                <DialogContent className="max-w-4xl rounded-3xl p-0 border-none flex flex-col max-h-[90vh]">
                     <DialogHeader className="p-8 pb-6 bg-white border-b border-slate-100 flex-shrink-0 rounded-t-3xl">
                         <div className="flex items-center gap-5">
-                            <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center border border-orange-100 shadow-sm">
+                            <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center border border-orange-100">
                                 <MessageSquare className="w-8 h-8 text-[#E04D04]" />
                             </div>
                             <div className="space-y-1">
@@ -613,7 +666,7 @@ export default function ActivityPage() {
                     <div className="flex-1 overflow-y-auto">
                         <div className="flex min-h-0">
                             <div className="w-[52%] p-8 pr-4 space-y-4">
-                                <div className="bg-white p-7 rounded-3xl border border-slate-100 relative overflow-hidden group shadow-sm">
+                                <div className="bg-white p-7 rounded-3xl border border-slate-100 relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                                         <AlertCircle className="w-20 h-20 text-[#E04D04]" />
                                     </div>
@@ -621,7 +674,7 @@ export default function ActivityPage() {
                                         <div>
                                             <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 px-0.5">Pengemudi Target</h4>
                                             <div className="flex items-center gap-4">
-                                                <div className="w-14 h-14 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center font-bold text-slate-600 shadow-inner">
+                                                <div className="w-14 h-14 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center font-bold text-slate-600">
                                                     {selectedDriver?.name?.charAt(0)}
                                                 </div>
                                                 <div>
@@ -983,7 +1036,7 @@ function ActionButton({ item, openModal }: { item: ActivityDriver; openModal: (d
         "Dipantau": "Lihat Status",
         "Diselidiki": "Tindak Lanjut"
     }
-    
+
     // Mapping tipe aksi berdasarkan status
     const actionType: Record<DriverStatus, "monitor" | "reminder" | "investigate"> = {
         "Info": "monitor",
@@ -992,10 +1045,10 @@ function ActionButton({ item, openModal }: { item: ActivityDriver; openModal: (d
         "Dipantau": "monitor",
         "Diselidiki": "investigate"
     }
-    
+
     // Button tanpa icon, teks biru lebih besar, rata kanan
     const baseClass = "h-9 px-2 text-sm font-medium rounded-xl inline-flex items-center justify-end text-blue-600 hover:text-blue-800 hover:bg-transparent w-full transition-colors"
-    
+
     return (
         <Button
             variant="link"
@@ -1008,15 +1061,15 @@ function ActionButton({ item, openModal }: { item: ActivityDriver; openModal: (d
     )
 }
 
-function MetricCard({ icon, label, value, sublabel, iconColor }: { 
-    icon: React.ReactNode, 
-    label: string, 
-    value: string, 
+function MetricCard({ icon, label, value, sublabel, iconColor }: {
+    icon: React.ReactNode,
+    label: string,
+    value: string,
     sublabel?: string,
-    iconColor?: string 
+    iconColor?: string
 }) {
     return (
-        <Card className="relative group bg-white p-5 rounded-2xl border-none ring-1 ring-slate-200 shadow-sm flex flex-col justify-between h-32 transition-all hover:shadow-md">
+        <Card className="relative group bg-white p-5 rounded-2xl ring-1 ring-slate-200 flex flex-col justify-between h-32 transition-all">
             <div className="absolute left-4 top-5 bottom-5 w-[6px] bg-[#E04D04] rounded-full" />
             <div className={`absolute top-5 right-5 ${iconColor || 'text-slate-200'} group-hover:opacity-80 transition-colors`}>
                 {icon}

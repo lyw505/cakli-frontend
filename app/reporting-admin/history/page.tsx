@@ -64,7 +64,7 @@ export default function OrderHistoryPage() {
                 </div>
             </div>
 
-            <Card>
+            <Card className="border border-slate-200">
                 <CardHeader className="pb-3">
                     <CardTitle className="text-lg">Audit Search</CardTitle>
                 </CardHeader>
@@ -130,7 +130,7 @@ export default function OrderHistoryPage() {
                                             <Eye className="h-4 w-4 mr-2" /> Detail
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent className="max-w-md">
+                                    <DialogContent className="max-w-md border border-slate-200">
                                         <DialogHeader>
                                             <DialogTitle>Order Detail Audit</DialogTitle>
                                             <DialogDescription>Full record for {order.id}</DialogDescription>

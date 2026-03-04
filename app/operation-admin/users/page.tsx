@@ -3,6 +3,89 @@
 import React, { useState, useMemo, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
+import {
+    Select as ShadcnSelect,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import {
+    DropdownMenu as ShadcnDropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+// ─── Shadcn Wrappers ────────────────────────────────────────────────────────
+function Select({ value, onChange, options, placeholder, className = "", id }: any) {
+    return (
+        <ShadcnSelect value={value} onValueChange={onChange}>
+            <SelectTrigger className={className} id={id}>
+                <SelectValue placeholder={placeholder} />
+            </SelectTrigger>
+            <SelectContent>
+                {options.map((option: any) => (
+                    <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </ShadcnSelect>
+    )
+}
+
+function Modal({ isOpen, onClose, children, maxWidth = "md" }: any) {
+    if (!isOpen) return null;
+    const maxWidths: any = { sm: "max-w-sm", md: "max-w-md", lg: "max-w-lg", xl: "max-w-xl", "4xl": "max-w-4xl" };
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className={`${maxWidths[maxWidth]} p-0 overflow-hidden max-h-[90vh] flex flex-col border border-slate-200`}>
+                <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+                    {children}
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+function DropdownMenu({ trigger, children }: any) {
+    return (
+        <ShadcnDropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <div className="cursor-pointer inline-block">{trigger}</div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+                {children}
+            </DropdownMenuContent>
+        </ShadcnDropdownMenu>
+    )
+}
+
+function DropdownItem({ children, onClick, className = "", disabled, danger }: any) {
+    return (
+        <DropdownMenuItem onClick={onClick} disabled={disabled} className={`${className} ${danger ? "text-red-600 focus:text-red-600 focus:bg-red-50" : "text-slate-700"} cursor-pointer`}>
+            {children}
+        </DropdownMenuItem>
+    )
+}
+
+function DropdownLabel({ children }: any) {
+    return <DropdownMenuLabel className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">{children}</DropdownMenuLabel>
+}
+
+function DropdownSeparator() {
+    return <DropdownMenuSeparator className="bg-slate-200 my-1" />
+}
+
+
 // ─── Types ─────────────────────────────────────────────────────────────
 
 type AccountStatus = "Active" | "Suspended" | "Under Review"
@@ -289,257 +372,8 @@ const Icons = {
 }
 
 // ─── Native UI Components ───────────────────────────────────────────────
+// Native components have been replaced by Shadcn UI equivalents above.
 
-function Button({
-    children,
-    onClick,
-    disabled = false,
-    variant = "default",
-    className = "",
-    style = {},
-    type = "button"
-}: {
-    children: React.ReactNode
-    onClick?: () => void
-    disabled?: boolean
-    variant?: "default" | "outline" | "ghost"
-    className?: string
-    style?: React.CSSProperties
-    type?: "button" | "submit"
-}) {
-    const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed"
-
-    const variants = {
-        default: "bg-slate-900 text-white hover:bg-slate-800 border border-transparent",
-        outline: "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300",
-        ghost: "bg-transparent hover:bg-slate-100 text-slate-600"
-    }
-
-    return (
-        <button
-            type={type}
-            onClick={onClick}
-            disabled={disabled}
-            className={`${baseStyles} ${variants[variant]} ${className}`}
-            style={style}
-        >
-            {children}
-        </button>
-    )
-}
-
-function Input({
-    value,
-    onChange,
-    placeholder,
-    className = "",
-    type = "text"
-}: {
-    value: string
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-    placeholder?: string
-    className?: string
-    type?: string
-}) {
-    return (
-        <input
-            type={type}
-            value={value}
-            onChange={onChange}
-            placeholder={placeholder}
-            className={`w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-300 ${className}`}
-        />
-    )
-}
-
-function Textarea({
-    value,
-    onChange,
-    placeholder,
-    className = "",
-    rows = 3
-}: {
-    value: string
-    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
-    placeholder?: string
-    className?: string
-    rows?: number
-}) {
-    return (
-        <textarea
-            value={value}
-            onChange={onChange}
-            placeholder={placeholder}
-            rows={rows}
-            className={`w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-300 resize-none ${className}`}
-        />
-    )
-}
-
-function Select({
-    value,
-    onChange,
-    options,
-    placeholder,
-    className = ""
-}: {
-    value: string
-    onChange: (value: string) => void
-    options: { value: string; label: string }[]
-    placeholder?: string
-    className?: string
-}) {
-    const [isOpen, setIsOpen] = useState(false)
-    const ref = React.useRef<HTMLDivElement>(null)
-
-    React.useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
-                setIsOpen(false)
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside)
-        return () => document.removeEventListener("mousedown", handleClickOutside)
-    }, [])
-
-    const selectedLabel = options.find(o => o.value === value)?.label || placeholder
-
-    return (
-        <div className={`relative ${className}`} ref={ref}>
-            <button
-                type="button"
-                onClick={() => setIsOpen(!isOpen)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 flex items-center justify-between hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-200"
-            >
-                <span className={value ? "text-slate-900" : "text-slate-400"}>{selectedLabel}</span>
-                <Icons.ChevronDown />
-            </button>
-            {isOpen && (
-                <div className="absolute z-50 w-full mt-1 py-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-auto">
-                    {options.map((option) => (
-                        <button
-                            key={option.value}
-                            type="button"
-                            onClick={() => {
-                                onChange(option.value)
-                                setIsOpen(false)
-                            }}
-                            className={`w-full px-3 py-2 text-left text-sm hover:bg-slate-50 ${value === option.value ? "bg-slate-50 font-medium" : ""}`}
-                        >
-                            {option.label}
-                        </button>
-                    ))}
-                </div>
-            )}
-        </div>
-    )
-}
-
-function Badge({ children, className = "", style = {} }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
-    return (
-        <span
-            className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${className}`}
-            style={style}
-        >
-            {children}
-        </span>
-    )
-}
-
-function Modal({
-    isOpen,
-    onClose,
-    children,
-    maxWidth = "md"
-}: {
-    isOpen: boolean
-    onClose: () => void
-    children: React.ReactNode
-    maxWidth?: "sm" | "md" | "lg" | "xl" | "4xl"
-}) {
-    if (!isOpen) return null
-
-    const maxWidths = {
-        sm: "max-w-sm",
-        md: "max-w-md",
-        lg: "max-w-lg",
-        xl: "max-w-xl",
-        "4xl": "max-w-4xl"
-    }
-
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div
-                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-                onClick={onClose}
-            />
-            <div className={`relative w-full ${maxWidths[maxWidth]} bg-white rounded-xl shadow-xl overflow-hidden max-h-[90vh] flex flex-col`}>
-                {children}
-            </div>
-        </div>
-    )
-}
-
-function DropdownMenu({
-    trigger,
-    children
-}: {
-    trigger: React.ReactNode
-    children: React.ReactNode
-}) {
-    const [isOpen, setIsOpen] = useState(false)
-    const ref = React.useRef<HTMLDivElement>(null)
-
-    React.useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
-                setIsOpen(false)
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside)
-        return () => document.removeEventListener("mousedown", handleClickOutside)
-    }, [])
-
-    return (
-        <div className="relative inline-block" ref={ref}>
-            <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-                {trigger}
-            </div>
-            {isOpen && (
-                <div className="absolute right-0 mt-1 w-48 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50">
-                    {children}
-                </div>
-            )}
-        </div>
-    )
-}
-
-function DropdownItem({
-    children,
-    onClick,
-    className = "",
-    danger = false
-}: {
-    children: React.ReactNode
-    onClick?: () => void
-    className?: string
-    danger?: boolean
-}) {
-    return (
-        <button
-            onClick={() => {
-                onClick?.()
-            }}
-            className={`w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-slate-50 ${danger ? "text-red-600 hover:bg-red-50" : "text-slate-700"} ${className}`}
-        >
-            {children}
-        </button>
-    )
-}
-
-function DropdownSeparator() {
-    return <div className="h-px bg-slate-200 my-1" />
-}
 
 // ─── Sub-components ────────────────────────────────────────────────────────────
 
@@ -791,9 +625,13 @@ export default function UserManagementPage() {
                     <Button
                         variant="outline"
                         onClick={() => setShowGlobalLogs(true)}
-                        className="h-10 px-4 text-sm"
+                        className="h-10 px-4 text-sm gap-2 border-slate-200 rounded-xl"
                     >
-                        <span className="mr-2"><Icons.History /></span> Audit Logs
+                        <span className="h-4 w-4"><Icons.History /></span>
+                        <span className="font-semibold text-slate-700">Audit Logs</span>
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#E04D04] text-[10px] font-bold text-white ml-0.5">
+                            {globalLogs.length}
+                        </span>
                     </Button>
                     <Button
                         className="h-10 px-5 text-sm"
@@ -836,7 +674,7 @@ export default function UserManagementPage() {
 
             {/* ── User Table ── */}
             <div className="space-y-6">
-                <div className="bg-white border border-slate-300 rounded-xl overflow-hidden shadow-md">
+                <div className="bg-white border border-slate-300 rounded-xl overflow-hidden">
                     <table className="w-full">
                         <thead className="bg-slate-53 border-b border-slate-300">
                             <tr>
@@ -961,7 +799,7 @@ export default function UserManagementPage() {
             {/* ── Suspend Confirmation Modal ── */}
             <Modal isOpen={!!suspendTarget} onClose={() => setSuspendTarget(null)}>
                 <div className="p-6 flex flex-col items-center text-center space-y-4" style={{ backgroundColor: 'rgba(224, 77, 4, 0.1)' }}>
-                    <div className="h-16 w-16 rounded-full bg-white flex items-center justify-center shadow-sm" style={{ color: '#E04D04' }}>
+                    <div className="h-16 w-16 rounded-full bg-white flex items-center justify-center border border-orange-100" style={{ color: '#E04D04' }}>
                         <Icons.ShieldAlert />
                     </div>
                     <div className="space-y-2">
@@ -1021,7 +859,7 @@ export default function UserManagementPage() {
                     <Button
                         onClick={handleSuspend}
                         disabled={!suspendReason}
-                        className="w-full h-10 font-medium text-sm shadow-sm"
+                        className="w-full h-10 font-medium text-sm"
                         style={{ backgroundColor: '#E04D04', color: 'white' }}
                     >
                         Suspend Account
@@ -1212,20 +1050,19 @@ export default function UserManagementPage() {
 
             {/* ── Global Audit Log Modal ── */}
             <Modal isOpen={showGlobalLogs} onClose={() => setShowGlobalLogs(false)} maxWidth="4xl">
-                <div className="px-6 py-6 flex items-start justify-between bg-white border-b border-slate-100">
-                    <div>
-                        <h3 className="text-xl font-bold text-slate-900">Audit Log</h3>
-                        <p className="text-sm text-slate-500 mt-1">Catatan semua tindakan administratif</p>
+                <div className="px-7 py-6 flex items-start justify-between bg-white shrink-0">
+                    <div className="space-y-1">
+                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Audit Log</h2>
+                        <p className="text-sm text-slate-500 font-medium">
+                            Catatan tindakan administratif pada akun user
+                        </p>
                     </div>
-                    <button
-                        onClick={() => setShowGlobalLogs(false)}
-                        className="text-slate-400 hover:text-slate-600 transition-colors p-1"
-                    >
-                        <Icons.X />
-                    </button>
+                    <Button variant="ghost" onClick={() => setShowGlobalLogs(false)} className="h-10 w-10 p-0 rounded-full hover:bg-slate-100">
+                        <span className="h-5 w-5 text-slate-400"><Icons.X /></span>
+                    </Button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/30">
+                <div className="flex-1 overflow-y-auto px-7 p-7 pt-0 space-y-3 bg-white custom-scrollbar">
                     {paginatedAuditLogs.map((log) => {
                         // Determine icon and colors based on action
                         let icon = <Icons.Activity />
@@ -1247,34 +1084,36 @@ export default function UserManagementPage() {
                         }
 
                         return (
-                            <div key={log.id} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
-                                <div className="flex gap-4">
-                                    <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center shrink-0 border border-transparent transition-all group-hover:scale-105", bgColor, iconColor)}>
+                            <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:bg-slate-50 transition-all relative overflow-hidden group">
+                                <div className="flex gap-5">
+                                    <div className={cn("h-11 w-11 rounded-xl flex items-center justify-center shrink-0 transition-all group-hover:scale-105", bgColor, iconColor)}>
                                         {icon}
                                     </div>
                                     <div className="flex-1 min-w-0 pr-24">
                                         <div className="flex flex-col gap-0.5">
-                                            <h4 className="font-bold text-slate-900 text-[15px]">{log.action}</h4>
-                                            <p className="text-sm text-slate-500 line-clamp-1">
-                                                {log.action} user: <span className="font-medium text-slate-700">{log.userName} ({log.userId})</span>
+                                            <h4 className="font-bold text-slate-900 text-base tracking-tight leading-none">{log.action}</h4>
+                                            <p className="text-sm text-slate-400 font-medium mt-1 uppercase text-[10px] tracking-wider">
+                                                User: <span className="text-slate-700 font-bold">{log.userName}</span> ({log.userId})
                                             </p>
                                         </div>
 
                                         {log.reason && (
-                                            <div className="mt-4 p-3.5 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-2.5">
-                                                <span className="text-[13px] font-bold text-slate-900 whitespace-nowrap pt-0.5">Alasan:</span>
-                                                <span className="text-[13px] text-slate-600 leading-relaxed font-medium">
-                                                    {log.reason}
-                                                </span>
+                                            <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 group">
+                                                <div className="flex gap-2">
+                                                    <span className="text-xs font-black text-slate-900 uppercase tracking-widest leading-relaxed">Alasan:</span>
+                                                    <span className="text-xs text-slate-500 leading-relaxed font-semibold">
+                                                        {log.reason}
+                                                    </span>
+                                                </div>
                                             </div>
                                         )}
 
-                                        <div className="mt-3 flex items-center gap-2">
-                                            <span className="text-[10px] font-black uppercase tracking-wider text-slate-300">Executor: {log.admin}</span>
+                                        <div className="mt-4 flex items-center gap-2">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Executor: {log.admin}</span>
                                         </div>
                                     </div>
-                                    <div className="absolute top-5 right-5 text-right">
-                                        <p className="text-[11px] font-medium text-slate-400">{log.timestamp}</p>
+                                    <div className="absolute top-6 right-6 text-right">
+                                        <p className="text-[11px] font-bold text-slate-300 font-mono whitespace-nowrap">{log.timestamp}</p>
                                     </div>
                                 </div>
                             </div>
