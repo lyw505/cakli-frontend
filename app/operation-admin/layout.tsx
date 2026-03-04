@@ -26,11 +26,11 @@ export default function OperationAdminLayout({
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem className="hidden md:block">
-                                    <BreadcrumbLink href="#">Admin Operasional</BreadcrumbLink>
+                                    <BreadcrumbLink href="#">Operation Admin</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator className="hidden md:block" />
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>Dasbor</BreadcrumbPage>
+                                    <BreadcrumbPage>Dashboard</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>

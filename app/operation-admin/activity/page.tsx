@@ -30,32 +30,24 @@ import {
 import { Input } from "@/components/ui/input"
 
 const activityData = [
-    { id: "DRV-001", name: "Budi Santoso", issue: "Diam > 30 menit", location: "Suhat", duration: "32m", status: "Warning" },
-    { id: "DRV-005", name: "Rudi H.", issue: "Sering Membatalkan", location: "Dinoyo", duration: "5 trips", status: "Critical" },
-    { id: "DRV-009", name: "Agus T.", issue: "Offline Mendadak", location: "Gadang", duration: "Baru saja", status: "Info" },
-    { id: "DRV-012", name: "Slamet", issue: "Diam > 15 menit", location: "Matos", duration: "18m", status: "Stable" },
+    { id: "DRV-001", name: "Budi Santoso", issue: "Idle > 30 mins", location: "Suhat", duration: "32m", status: "Warning" },
+    { id: "DRV-005", name: "Rudi H.", issue: "Frequent Cancellations", location: "Dinoyo", duration: "5 trips", status: "Critical" },
+    { id: "DRV-009", name: "Agus T.", issue: "Sudden Offline", location: "Gadang", duration: "Just now", status: "Info" },
+    { id: "DRV-012", name: "Slamet", issue: "Idle > 15 mins", location: "Matos", duration: "18m", status: "Stable" },
 ]
-
-function translateStatus(status: string) {
-    if (status === "Critical") return "Kritis"
-    if (status === "Warning") return "Peringatan"
-    if (status === "Info") return "Info"
-    if (status === "Stable") return "Stabil"
-    return status
-}
 
 export default function ActivityPage() {
     return (
         <div className="flex flex-col gap-6 p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Pemantauan Aktivitas Driver</h1>
-                    <p className="text-muted-foreground">Deteksi pola tidak produktif dan perubahan perilaku mendadak.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Driver Activity Monitoring</h1>
+                    <p className="text-muted-foreground">Detect non-productive patterns and sudden behavior changes.</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <Badge variant="outline" className="border-orange-500 text-orange-600 bg-orange-50">
                         <TrendingDown className="w-3 h-3 mr-2" />
-                        2 Driver Berkinerja Rendah
+                        2 Drivers Underperforming
                     </Badge>
                 </div>
             </div>
@@ -63,32 +55,32 @@ export default function ActivityPage() {
             <div className="grid gap-4 md:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Driver Diam</CardTitle>
+                        <CardTitle className="text-sm font-medium">Idle Drivers</CardTitle>
                         <Clock className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">12</div>
-                        <p className="text-xs text-muted-foreground">Menunggu 10+ menit</p>
+                        <p className="text-xs text-muted-foreground">Waiting for 10+ mins</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Tingkat Batal Tinggi</CardTitle>
+                        <CardTitle className="text-sm font-medium">High Cancel Rate</CardTitle>
                         <AlertTriangle className="h-4 w-4 text-orange-500" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">3</div>
-                        <p className="text-xs text-muted-foreground">Lebih dari 3 pembatalan/jam</p>
+                        <p className="text-xs text-muted-foreground">More than 3 cancels/hr</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Offline Terbaru</CardTitle>
-                        <UserX className="h-4 w-4 text-orange-700" />
+                        <CardTitle className="text-sm font-medium">Recent Offlines</CardTitle>
+                        <UserX className="h-4 w-4 text-red-500" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">8</div>
-                        <p className="text-xs text-muted-foreground">Dalam 30 menit terakhir</p>
+                        <p className="text-xs text-muted-foreground">In the last 30 mins</p>
                     </CardContent>
                 </Card>
             </div>
@@ -96,12 +88,12 @@ export default function ActivityPage() {
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle>Peringatan Inaktivitas & Pola</CardTitle>
-                        <CardDescription>Driver yang membutuhkan perhatian operasional.</CardDescription>
+                        <CardTitle>Inactivity & Pattern Alerts</CardTitle>
+                        <CardDescription>Drivers requiring operational attention.</CardDescription>
                     </div>
                     <div className="relative">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="Cari driver..." className="pl-8 w-[250px]" />
+                        <Input placeholder="Search drivers..." className="pl-8 w-[250px]" />
                     </div>
                 </CardHeader>
                 <CardContent>
@@ -109,11 +101,11 @@ export default function ActivityPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Driver</TableHead>
-                                <TableHead>Pola Masalah</TableHead>
-                                <TableHead>Lokasi Terakhir</TableHead>
-                                <TableHead>Durasi/Jumlah</TableHead>
+                                <TableHead>Issue Pattern</TableHead>
+                                <TableHead>Last Location</TableHead>
+                                <TableHead>Duration/Count</TableHead>
                                 <TableHead>Status</TableHead>
-                                <TableHead className="text-right">Aksi</TableHead>
+                                <TableHead className="text-right">Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -131,13 +123,13 @@ export default function ActivityPage() {
                                             item.status === "Critical" ? "destructive" :
                                                 item.status === "Warning" ? "default" : "secondary"
                                         }>
-                                            {translateStatus(item.status)}
+                                            {item.status}
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="sm" className="h-8 gap-1">
                                             <MousePointerClick className="h-3.5 w-3.5" />
-                                            Intervensi
+                                            Intervention
                                         </Button>
                                     </TableCell>
                                 </TableRow>

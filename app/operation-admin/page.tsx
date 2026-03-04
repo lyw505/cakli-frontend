@@ -18,27 +18,20 @@ import { Button } from "@/components/ui/button"
 import { AlertCircle, Clock, MapPin, CheckCircle2, MessageSquareWarning, ArrowUpRight, ArrowDownRight, Activity } from "lucide-react"
 import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 
-function translateStatus(status: string) {
-  if (status === "Picking Up") return "Menjemput"
-  if (status === "In Transit") return "Dalam Perjalanan"
-  if (status === "Assigning") return "Menugaskan"
-  return status
-}
-
 export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6 p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard Operasional</h1>
-          <p className="text-muted-foreground">Ikhtisar status sistem dan aktivitas saat ini.</p>
+          <p className="text-muted-foreground">Overview of current system status and activities.</p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-orange-700 border-orange-200 bg-orange-50 dark:bg-orange-950/20 px-3 py-1">
+          <Badge variant="outline" className="text-green-600 border-green-600 bg-green-50 dark:bg-green-950/20 px-3 py-1">
             <Activity className="w-3 h-3 mr-2" />
-            Sistem Normal
+            System Normal
           </Badge>
-          <span className="text-sm text-muted-foreground">Terakhir diperbarui: Baru saja</span>
+          <span className="text-sm text-muted-foreground">Last updated: Just now</span>
         </div>
       </div>
 
@@ -46,50 +39,50 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pesanan Aktif</CardTitle>
+            <CardTitle className="text-sm font-medium">Active Orders</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">24</div>
-            <div className="flex items-center text-xs text-orange-600">
+            <div className="flex items-center text-xs text-green-600">
               <ArrowUpRight className="h-3 w-3 mr-1" />
-              +2 dari jam terakhir
+              +2 from last hour
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Driver Online</CardTitle>
+            <CardTitle className="text-sm font-medium">Drivers Online</CardTitle>
             <MapPin className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">18/25</div>
-            <p className="text-xs text-muted-foreground">72% ketersediaan armada</p>
+            <p className="text-xs text-muted-foreground">72% fleet availability</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Keluhan Aktif</CardTitle>
-            <AlertCircle className="h-4 w-4 text-orange-700" />
+            <CardTitle className="text-sm font-medium">Active Complaints</CardTitle>
+            <AlertCircle className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-700">3</div>
-            <div className="flex items-center text-xs text-orange-600">
+            <div className="text-2xl font-bold text-red-500">3</div>
+            <div className="flex items-center text-xs text-red-600">
               <ArrowUpRight className="h-3 w-3 mr-1" />
-              +1 dari kemarin
+              +1 from yesterday
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pendapatan Harian</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-orange-500" />
+            <CardTitle className="text-sm font-medium">Daily Revenue</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Rp 2.4jt</div>
-            <div className="flex items-center text-xs text-orange-600">
+            <div className="text-2xl font-bold">Rp 2.4M</div>
+            <div className="flex items-center text-xs text-green-600">
               <ArrowUpRight className="h-3 w-3 mr-1" />
-              +12% dari kemarin
+              +12% from yesterday
             </div>
           </CardContent>
         </Card>
@@ -104,17 +97,17 @@ export default function DashboardPage() {
           {/* Live Orders Table */}
           <Card>
             <CardHeader>
-              <CardTitle>Pesanan Langsung</CardTitle>
-              <CardDescription>Status real-time dari perjalanan yang sedang berlangsung.</CardDescription>
+              <CardTitle>Live Orders</CardTitle>
+              <CardDescription>Real-time status of ongoing trips.</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>ID Pesanan</TableHead>
-                    <TableHead>Pelanggan</TableHead>
+                    <TableHead>Order ID</TableHead>
+                    <TableHead>Customer</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Aksi</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -130,11 +123,11 @@ export default function DashboardPage() {
                       <TableCell>{order.cust}</TableCell>
                       <TableCell>
                         <Badge variant={order.status === "Assigning" ? "secondary" : "default"}>
-                          {translateStatus(order.status)}
+                          {order.status}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">Detail</Button>
+                        <Button variant="ghost" size="sm">Details</Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -149,12 +142,12 @@ export default function DashboardPage() {
           {/* Quick Actions */}
           <Card className="border-orange-200 bg-orange-50/30">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold uppercase tracking-wider text-orange-900">Operasi Cepat</CardTitle>
+              <CardTitle className="text-sm font-bold uppercase tracking-wider text-orange-900">Quick Operations</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-2">
               <Button variant="outline" className="h-auto py-3 px-2 flex flex-col gap-1 border-orange-200 hover:bg-orange-100 text-orange-800">
                 <Activity className="h-4 w-4" />
-                <span className="text-[10px] uppercase font-bold">Siaran</span>
+                <span className="text-[10px] uppercase font-bold">Broadcast</span>
               </Button>
               <Button variant="outline" className="h-auto py-3 px-2 flex flex-col gap-1 border-orange-200 hover:bg-orange-100 text-orange-800">
                 <MapPin className="h-4 w-4" />
@@ -166,31 +159,31 @@ export default function DashboardPage() {
           {/* Alerts & Notifications */}
           <Card>
             <CardHeader>
-              <CardTitle>Peringatan Sistem</CardTitle>
-              <CardDescription>Pembaruan kritis yang membutuhkan perhatian.</CardDescription>
+              <CardTitle>System Alerts</CardTitle>
+              <CardDescription>Critical updates needing attention.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-start gap-4 rounded-lg border p-3 bg-orange-50 dark:bg-orange-950/20 border-orange-200">
-                <AlertCircle className="h-5 w-5 text-orange-700 mt-0.5" />
+              <div className="flex items-start gap-4 rounded-lg border p-3 bg-red-50 dark:bg-red-950/20">
+                <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
                 <div className="grid gap-1">
-                  <p className="font-medium text-orange-900 dark:text-orange-200">Sinyal Darurat</p>
-                  <p className="text-sm text-orange-800 dark:text-orange-300">
-                    Driver "Agus T." memicu tombol PANIK.
+                  <p className="font-medium text-red-900 dark:text-red-200">Emergency Signal</p>
+                  <p className="text-sm text-red-800 dark:text-red-300">
+                    Driver "Agus T." triggered PANIC button.
                   </p>
                   <div className="flex gap-2">
-                    <Button size="sm" className="mt-1 bg-orange-700 hover:bg-orange-800 text-white border-none">Panggil Driver</Button>
-                    <Button size="sm" variant="outline" className="mt-1 bg-white border-orange-200 text-orange-700 hover:bg-orange-50">Lacak Sekarang</Button>
+                    <Button size="sm" variant="destructive" className="mt-1">Call Driver</Button>
+                    <Button size="sm" variant="outline" className="mt-1 bg-white">Track Now</Button>
                   </div>
                 </div>
               </div>
               <div className="flex items-start gap-4 rounded-lg border p-3 bg-orange-50 dark:bg-orange-950/20 border-orange-200">
                 <MessageSquareWarning className="h-5 w-5 text-orange-600 mt-0.5" />
                 <div className="grid  gap-1">
-                  <p className="font-medium text-orange-900 dark:text-orange-200">Peringatan Permintaan Tinggi</p>
+                  <p className="font-medium text-orange-900 dark:text-orange-200">High Demand Alert</p>
                   <p className="text-sm text-orange-800 dark:text-orange-300">
-                    Lonjakan mendadak di area "Malang Kota".
+                    Sudden surge in "Malang Kota" area.
                   </p>
-                  <Button size="sm" variant="outline" className="w-fit mt-1 border-orange-200 hover:bg-orange-100 text-orange-700">Sesuaikan Pembayaran</Button>
+                  <Button size="sm" variant="outline" className="w-fit mt-1 border-orange-200 hover:bg-orange-100 text-orange-700">Adjust Payout</Button>
                 </div>
               </div>
             </CardContent>
@@ -199,29 +192,29 @@ export default function DashboardPage() {
           {/* Recent Activity */}
           <Card>
             <CardHeader>
-              <CardTitle>Statistik Armada</CardTitle>
-              <CardDescription>Status kendaraan real-time.</CardDescription>
+              <CardTitle>Fleet Statistics</CardTitle>
+              <CardDescription>Real-time vehicle status.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
-                    <div className="size-2 rounded-full bg-orange-600" />
-                    <span>Dalam Perjalanan</span>
+                    <div className="size-2 rounded-full bg-green-500" />
+                    <span>In-Trip</span>
                   </div>
                   <span className="font-bold">12</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
-                    <div className="size-2 rounded-full bg-orange-300" />
-                    <span>Diam (Mencari)</span>
+                    <div className="size-2 rounded-full bg-yellow-500" />
+                    <span>Idle (Searching)</span>
                   </div>
                   <span className="font-bold">6</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
-                    <div className="size-2 rounded-full bg-stone-400" />
-                    <span>Tidak Beroperasi</span>
+                    <div className="size-2 rounded-full bg-red-500" />
+                    <span>Out-of-Service</span>
                   </div>
                   <span className="font-bold">2</span>
                 </div>
