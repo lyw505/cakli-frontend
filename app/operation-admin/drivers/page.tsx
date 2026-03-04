@@ -99,9 +99,6 @@ interface AuditLog {
     details: string
 }
 
-// Tipe data untuk Role
-type UserRole = "Super Admin" | "Admin" | "Supervisor" | "Operator"
-
 // Tipe data berdasarkan spesifikasi
 interface Driver {
     id: string
@@ -344,44 +341,37 @@ const INITIAL_DRIVERS: Driver[] = [
     }
 ]
 
-
-
-// Stat Card Component mirip gambar
+// Stat Card Component dengan desain persis seperti contoh
 const StatCard = ({
     title,
     value,
     subtitle,
-    subtitleColor = "text-gray-500",
-    borderColor = "border-[#E04D04]",
-    icon: Icon
+    icon: Icon,
+    iconColor = "text-[#923403]",
+    className
 }: {
     title: string;
     value: React.ReactNode;
     subtitle: string;
-    subtitleColor?: string;
-    borderColor?: string;
     icon?: any;
+    iconColor?: string;
+    className?: string;
 }) => (
-    <div className={`bg-[#E8EBEA]/50 rounded-xl border-l-[3px] ${borderColor} border-t border-r border-b border-gray-100 p-4 relative`}>
-        {/* Icon di pojok kanan atas - lebih soft */}
-        {Icon && (
-            <div className="absolute top-4 right-4 text-slate-400">
-                <Icon className="h-4 w-4" />
-            </div>
-        )}
-
-        <div className="space-y-1">
-            <h3 className="text-xs font-semibold text-slate-600 mb-2 mr-6">{title}</h3>
-
-            <div className="text-2xl font-bold text-slate-800">
-                {value}
-            </div>
-
-            <div className={`text-[10px] sm:text-xs font-medium ${subtitleColor}`}>
-                {subtitle}
-            </div>
-        </div>
-    </div>
+    <Card className={`border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden ${className}`}>
+        <div className="absolute left-3 top-3 bottom-3 w-1 bg-orange-700 rounded-l-full"></div>
+        <CardHeader className="flex flex-row items-center justify-between pb-2 pl-8">
+            <CardTitle className="text-sm font-medium text-slate-600">{title}</CardTitle>
+            {Icon && (
+                <div className="h-8 w-8 rounded-full flex items-center justify-center bg-orange-50/50">
+                    <Icon className={`h-4 w-4 ${iconColor}`} />
+                </div>
+            )}
+        </CardHeader>
+        <CardContent className="pt-0 pl-8">
+            <div className="text-3xl font-bold text-slate-800">{value}</div>
+            <p className="text-xs text-slate-400 mt-1">{subtitle}</p>
+        </CardContent>
+    </Card>
 )
 
 // Modal Wrapper Component
@@ -434,69 +424,62 @@ export default function DriversPage() {
     const [currentPage, setCurrentPage] = useState(1)
     const [detailTab, setDetailTab] = useState("info")
 
-    // Simulasi role-based control
-    const [currentUserRole, setCurrentUserRole] = useState<UserRole>("Super Admin")
+    // Menghitung jumlah log baru
+    const newLogCount = logList.length
 
     const getStatusBadge = (status: Driver["status"]) => {
         switch (status) {
             case "Aktif":
-                return <Badge variant="success">Aktif</Badge>
+                return <Badge variant="success" className="px-2 py-0.5 text-xs">Aktif</Badge>
             case "Pending Verifikasi":
-                return <Badge variant="warning">Pending Verifikasi</Badge>
+                return <Badge variant="warning" className="px-2 py-0.5 text-xs">Pending</Badge>
             case "Suspend":
-                return <Badge variant="danger">Suspend</Badge>
+                return <Badge variant="danger" className="px-2 py-0.5 text-xs">Suspend</Badge>
             case "Nonaktif":
-                return <Badge variant="neutral">Nonaktif</Badge>
+                return <Badge variant="neutral" className="px-2 py-0.5 text-xs">Nonaktif</Badge>
             default:
-                return <Badge variant="outline">{status}</Badge>
+                return <Badge variant="outline" className="px-2 py-0.5 text-xs">{status}</Badge>
         }
     }
 
     const getOnlineStatusBadge = (status: Driver["onlineStatus"]) => {
         switch (status) {
             case "Online":
-                return <Badge variant="success">Online</Badge>
+                return <Badge variant="success" className="px-2 py-0.5 text-xs">Online</Badge>
             case "Offline":
-                return <Badge variant="neutral">Offline</Badge>
+                return <Badge variant="neutral" className="px-2 py-0.5 text-xs">Offline</Badge>
         }
     }
 
     const getTripStatusBadge = (status: string) => {
         switch (status) {
             case "On Trip":
-                return <Badge variant="blue">On Trip</Badge>
+                return <Badge variant="blue" className="px-2 py-0.5 text-xs">On Trip</Badge>
             case "Assigned":
-                return <Badge variant="purple">Assigned</Badge>
+                return <Badge variant="purple" className="px-2 py-0.5 text-xs">Assigned</Badge>
             case "Issue":
-                return <Badge variant="orange">Issue</Badge>
+                return <Badge variant="orange" className="px-2 py-0.5 text-xs">Issue</Badge>
             case "Selesai":
-                return <Badge variant="success">Selesai</Badge>
+                return <Badge variant="success" className="px-2 py-0.5 text-xs">Selesai</Badge>
             case "Batal":
-                return <Badge variant="danger">Batal</Badge>
+                return <Badge variant="danger" className="px-2 py-0.5 text-xs">Batal</Badge>
             default:
-                return <Badge variant="outline">{status}</Badge>
+                return <span className="text-gray-400 text-xs">-</span>
         }
     }
 
-    // Cek permission berdasarkan role
-    const canSuspend = () => {
-        return currentUserRole === "Super Admin" || currentUserRole === "Admin"
-    }
-
-    const canVerify = () => {
-        return currentUserRole === "Super Admin" || currentUserRole === "Admin" || currentUserRole === "Supervisor"
-    }
-
-    const canReactivate = () => {
-        return currentUserRole === "Super Admin" || currentUserRole === "Admin"
-    }
-
-    const canViewAuditLog = () => {
-        return currentUserRole === "Super Admin" || currentUserRole === "Admin"
+    const getRiskBadge = (cancelRate: number) => {
+        if (cancelRate > 10) {
+            return <Badge variant="danger" className="px-2 py-0.5 text-xs">Tinggi</Badge>
+        } else if (cancelRate > 5) {
+            return <Badge variant="warning" className="px-2 py-0.5 text-xs">Sedang</Badge>
+        } else {
+            return <Badge variant="success" className="px-2 py-0.5 text-xs">Rendah</Badge>
+        }
     }
 
     const getInitials = (name: string) => {
-        return name.split(" ").map(n => n[0]).join("").toUpperCase()
+        return name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2)
     }
 
     const filteredDrivers = driverList.filter(driver => {
@@ -510,19 +493,6 @@ export default function DriversPage() {
     })
 
     const handleAction = (driver: Driver, action: "suspend" | "reinstate" | "verify") => {
-        if (action === "suspend" && !canSuspend()) {
-            alert("Anda tidak memiliki izin untuk melakukan suspend driver")
-            return
-        }
-        if (action === "verify" && !canVerify()) {
-            alert("Anda tidak memiliki izin untuk melakukan verifikasi driver")
-            return
-        }
-        if (action === "reinstate" && !canReactivate()) {
-            alert("Anda tidak memiliki izin untuk mengaktifkan kembali driver")
-            return
-        }
-
         setSelectedDriver(driver)
         setActionType(action)
         setActionReason("")
@@ -536,7 +506,9 @@ export default function DriversPage() {
         }
 
         const newStatus: Driver["status"] =
-            actionType === "suspend" ? "Suspend" : "Aktif";
+            actionType === "suspend" ? "Suspend" :
+                actionType === "reinstate" ? "Aktif" :
+                    selectedDriver.status === "Pending Verifikasi" ? "Aktif" : selectedDriver.status;
 
         // Update driver status in the list
         setDriverList(prev => prev.map(d =>
@@ -549,7 +521,7 @@ export default function DriversPage() {
             action: actionType === "suspend" ? "Suspend Driver" :
                 actionType === "reinstate" ? "Aktivasi Kembali" : "Verifikasi Driver",
             admin: "Admin Utama",
-            adminRole: currentUserRole,
+            adminRole: "Admin",
             timestamp: new Date().toLocaleString('id-ID', {
                 year: 'numeric',
                 month: '2-digit',
@@ -574,17 +546,10 @@ export default function DriversPage() {
     }
 
     // Data untuk select options
-    const roleOptions = [
-        { value: "Super Admin", label: "Super Admin" },
-        { value: "Admin", label: "Admin" },
-        { value: "Supervisor", label: "Supervisor" },
-        { value: "Operator", label: "Operator" }
-    ]
-
     const statusOptions = [
         { value: "all", label: "Semua Status" },
         { value: "aktif", label: "Aktif" },
-        { value: "pending verifikasi", label: "Pending Verifikasi" },
+        { value: "pending verifikasi", label: "Pending" },
         { value: "suspend", label: "Suspend" },
         { value: "nonaktif", label: "Nonaktif" }
     ]
@@ -596,42 +561,29 @@ export default function DriversPage() {
     ]
 
     return (
-        <div className="min-h-screen p-6">
+        <div className="min-h-screen p-4 md:p-6 bg-white">
             <div className="max-w-[1400px] mx-auto space-y-6">
                 {/* Header - Title di kiri, Controls di kanan */}
-                <div className="flex items-start justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900">Manajemen Driver</h1>
                         <p className="text-sm text-gray-500 mt-1">
                             Kelola driver, verifikasi dokumen, dan monitor performa armada.
                         </p>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <Select value={currentUserRole} onValueChange={(value) => setCurrentUserRole(value as UserRole)}>
-                            <SelectTrigger className="w-40 bg-white">
-                                <SelectValue placeholder="Role" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {roleOptions.map(opt => (
-                                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-
-                        {canViewAuditLog() && (
-                            <Button
-                                variant="outline"
-                                onClick={() => setIsAuditLogOpen(true)}
-                                className="bg-white"
-                            >
-                                <FileClock className="mr-2 h-4 w-4" />
-                                Audit Log
-                            </Button>
-                        )}
-
-                        <Button variant="outline" className="bg-white">
-                            <RefreshCw className="mr-2 h-4 w-4" />
-                            Refresh
+                    <div className="flex items-center gap-3 flex-wrap">
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsAuditLogOpen(true)}
+                            className="bg-white relative"
+                        >
+                            <FileClock className="mr-2 h-4 w-4" />
+                            Audit Log
+                            {newLogCount > 0 && (
+                                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#E04D04] text-[10px] font-bold text-white">
+                                    {newLogCount}
+                                </span>
+                            )}
                         </Button>
                         <Button onClick={() => setIsAddDriverOpen(true)} className="bg-[#E04D04] hover:bg-[#c94504] text-white">
                             <Plus className="mr-2 h-4 w-4" />
@@ -640,214 +592,183 @@ export default function DriversPage() {
                     </div>
                 </div>
 
-                {/* Stats Cards - Mirip gambar referensi */}
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                {/* Stats Cards - Desain persis seperti contoh dengan garis oranye vertikal */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
                     <StatCard
                         title="Total Driver"
                         value={driverList.length}
                         subtitle="Registered drivers"
-                        borderColor="border-[#E04D04]"
                         icon={Users}
+                        iconColor="text-[#923403]"
                     />
                     <StatCard
                         title="Online"
                         value={driverList.filter(d => d.onlineStatus === "Online").length}
                         subtitle={`${driverList.filter(d => d.status === "Aktif").length} total aktif`}
-                        subtitleColor="text-gray-500"
-                        borderColor="border-[#E04D04]"
                         icon={Wifi}
+                        iconColor="text-[#923403]"
                     />
                     <StatCard
-                        title="Pending Verifikasi"
+                        title="Pending"
                         value={driverList.filter(d => d.status === "Pending Verifikasi").length}
                         subtitle="Menunggu verifikasi"
-                        subtitleColor="text-gray-500"
-                        borderColor="border-[#E04D04]"
                         icon={Clock}
+                        iconColor="text-[#923403]"
                     />
                     <StatCard
-                        title="Rating Rata-rata"
-                        value={
-                            <span className="flex items-center gap-1">
-                                4.5
-                            </span>
-                        }
+                        title="Rating"
+                        value="4.5"
                         subtitle="Dari 2.5k ulasan"
-                        subtitleColor="text-gray-500"
-                        borderColor="border-[#E04D04]"
                         icon={ShieldCheck}
+                        iconColor="text-[#923403]"
                     />
                     <StatCard
                         title="Cancel Rate"
                         value="4.2%"
                         subtitle="batas aman: 5%"
-                        subtitleColor="text-gray-500"
-                        borderColor="border-[#E04D04]"
                         icon={ActivitySquare}
+                        iconColor="text-[#923403]"
                     />
                 </div>
 
-                {/* Filter Horizontal - Tanpa Card Background */}
-                <div className="flex items-center gap-3">
-                    <div className="relative flex-1 max-w-md">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                {/* Filter */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                    <div className="relative w-full sm:w-auto sm:flex-1 max-w-md">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600" />
                         <Input
                             type="search"
                             placeholder="Cari nama, ID, NIK, atau kendaraan..."
-                            className="pl-10 bg-white"
+                            className="pl-10 bg-white w-full h-11"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
-                    <Select value={statusFilter} onValueChange={setStatusFilter}>
-                        <SelectTrigger className="w-40 bg-white">
-                            <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {statusOptions.map(opt => (
-                                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <Select value={onlineFilter} onValueChange={setOnlineFilter}>
-                        <SelectTrigger className="w-32 bg-white">
-                            <SelectValue placeholder="Online" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {onlineOptions.map(opt => (
-                                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <div className="flex gap-3 w-full sm:w-auto">
+                        <Select value={statusFilter} onValueChange={setStatusFilter}>
+                            <SelectTrigger className="w-full sm:w-36 bg-white h-11">
+                                <SelectValue placeholder="Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {statusOptions.map(opt => (
+                                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Select value={onlineFilter} onValueChange={setOnlineFilter}>
+                            <SelectTrigger className="w-full sm:w-32 bg-white h-11">
+                                <SelectValue placeholder="Online" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {onlineOptions.map(opt => (
+                                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
 
-                {/* Tabel Driver - Lebih Rapat dan Rapi */}
-                <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                    <Table>
+                {/* Tabel Driver - Lebih Lega */}
+                <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto">
+                    <Table className="min-w-[1000px] lg:min-w-full">
                         <TableHeader>
-                            <TableRow className="bg-gray-50/50">
-                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest w-[250px]">Driver</TableHead>
-                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Status Akun</TableHead>
-                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Online</TableHead>
-                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Trip Status</TableHead>
-                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Kendaraan</TableHead>
-                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest w-[100px]">Rating</TableHead>
-                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest w-[100px]">Order</TableHead>
-                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Risiko</TableHead>
-                                <TableHead className="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest w-[120px] text-right">Aksi</TableHead>
+                            <TableRow className="border-b border-gray-100">
+                                <TableHead className="py-5 px-4 text-[11px] font-black text-slate-500 uppercase tracking-widest">Driver</TableHead>
+                                <TableHead className="py-5 px-4 text-[11px] font-black text-slate-500 uppercase tracking-widest">Status</TableHead>
+                                <TableHead className="py-5 px-4 text-[11px] font-black text-slate-500 uppercase tracking-widest">Online</TableHead>
+                                <TableHead className="py-5 px-4 text-[11px] font-black text-slate-500 uppercase tracking-widest">Trip</TableHead>
+                                <TableHead className="py-5 px-4 text-[11px] font-black text-slate-500 uppercase tracking-widest">Kendaraan</TableHead>
+                                <TableHead className="py-5 px-4 text-[11px] font-black text-slate-500 uppercase tracking-widest">Rating</TableHead>
+                                <TableHead className="py-5 px-4 text-[11px] font-black text-slate-500 uppercase tracking-widest">Order</TableHead>
+                                <TableHead className="py-5 px-4 text-[11px] font-black text-slate-500 uppercase tracking-widest">Risiko</TableHead>
+                                <TableHead className="py-5 px-4 text-[11px] font-black text-slate-500 uppercase tracking-widest text-right">Aksi</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filteredDrivers.map((driver, index) => (
+                            {filteredDrivers.map((driver) => (
                                 <TableRow
                                     key={driver.id}
-                                    className={`border-b border-gray-100 hover:bg-gray-50 transition-colors`}
+                                    className="border-b border-gray-100 hover:bg-slate-50/50 transition-all duration-300"
                                 >
-                                    <TableCell className="py-3 px-4">
+                                    <TableCell className="py-4 px-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-[#E8EBEA] flex items-center justify-center text-gray-700 font-bold text-xs flex-shrink-0 shadow-inner">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 font-black text-xs flex-shrink-0 border border-slate-200 shadow-sm">
                                                 {getInitials(driver.name)}
                                             </div>
                                             <div className="min-w-0">
-                                                <div className="font-semibold text-gray-900 text-sm truncate">{driver.name}</div>
-                                                <div className="text-xs text-gray-400 font-mono">{driver.id}</div>
+                                                <div className="font-semibold text-slate-900 text-sm truncate tracking-tight">{driver.name}</div>
+                                                <div className="text-[10px] text-slate-400 font-mono font-medium">{driver.id}</div>
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="py-3 px-4">{getStatusBadge(driver.status)}</TableCell>
-                                    <TableCell className="py-3 px-4">{getOnlineStatusBadge(driver.onlineStatus)}</TableCell>
-                                    <TableCell className="py-3 px-4">
-                                        {driver.currentTrip ? (
-                                            getTripStatusBadge(driver.currentTrip.status)
-                                        ) : (
-                                            <span className="text-gray-400 text-sm">-</span>
-                                        )}
+                                    <TableCell className="py-4 px-4">{getStatusBadge(driver.status)}</TableCell>
+                                    <TableCell className="py-4 px-4">{getOnlineStatusBadge(driver.onlineStatus)}</TableCell>
+                                    <TableCell className="py-4 px-4">
+                                        {driver.currentTrip ? getTripStatusBadge(driver.currentTrip.status) : <span className="text-slate-300">-</span>}
                                     </TableCell>
-                                    <TableCell className="py-3 px-4">
-                                        <div className="flex items-center gap-2 text-gray-600">
-                                            <Bike className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                                            <span className="text-sm truncate">{driver.vehicle}</span>
+                                    <TableCell className="py-4 px-4">
+                                        <div className="flex items-center gap-2 text-slate-600">
+                                            <Bike className="h-4 w-4 text-slate-600 flex-shrink-0" />
+                                            <span className="text-sm font-bold truncate max-w-[120px] tracking-tight">{driver.vehicle}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="py-3 px-4">
-                                        <div className="flex items-center gap-1">
-                                            <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400 flex-shrink-0" />
-                                            <span className="text-sm font-semibold text-gray-900">
-                                                {driver.rating > 0 ? driver.rating.toFixed(1) : "-"}
+                                    <TableCell className="py-4 px-4">
+                                        <div className="flex items-center gap-1.5">
+                                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                                            <span className="text-sm font-semibold text-slate-900">
+                                                {driver.rating > 0 ? driver.rating.toFixed(1) : '-'}
                                             </span>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="py-4 px-6 text-sm text-gray-900 font-medium">{driver.totalOrders}</TableCell>
-                                    <TableCell className="py-4 px-6">
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden w-16">
-                                                <div
-                                                    className={`h-full rounded-full transition-all duration-500 ${driver.cancelRate > 10 ? 'bg-red-500' :
-                                                        driver.cancelRate > 5 ? 'bg-orange-400' : 'bg-emerald-500'
-                                                        }`}
-                                                    style={{ width: `${Math.min(driver.cancelRate * 4, 100)}%` }}
-                                                />
-                                            </div>
-                                            <span className={`text-[12px] font-bold ${driver.cancelRate > 10 ? "text-red-500" :
-                                                driver.cancelRate > 5 ? "text-orange-500" : "text-emerald-500"
-                                                }`}>
-                                                {driver.cancelRate > 10 ? 'Tinggi' : driver.cancelRate > 5 ? 'Sedang' : 'Rendah'}
-                                            </span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="py-3 px-4 text-right">
-                                        <div className="flex justify-end gap-1">
+                                    <TableCell className="py-4 px-4 text-sm text-slate-900 font-semibold">{driver.totalOrders}</TableCell>
+                                    <TableCell className="py-4 px-4">{getRiskBadge(driver.cancelRate)}</TableCell>
+                                    <TableCell className="py-4 px-4 text-right">
+                                        <div className="flex justify-end gap-2">
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                className="h-8 w-8 p-0"
+                                                className="h-9 w-9 p-0 rounded-lg hover:bg-slate-100"
                                                 onClick={() => {
                                                     setSelectedDriver(driver)
                                                     setIsDetailOpen(true)
                                                 }}
                                             >
-                                                <FileText className="h-4 w-4" />
+                                                <FileText className="h-4 w-4 text-slate-600" />
                                             </Button>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                        <MoreVertical className="h-4 w-4" />
+                                                    <Button variant="ghost" size="sm" className="h-9 w-9 p-0 rounded-lg hover:bg-slate-100">
+                                                        <MoreVertical className="h-4 w-4 text-slate-600" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="w-56">
-                                                    <DropdownMenuLabel>Operasional Armada</DropdownMenuLabel>
+                                                <DropdownMenuContent align="end" className="w-56 rounded-xl shadow-xl border-slate-200">
+                                                    <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-3 py-2">Operasional</DropdownMenuLabel>
                                                     <DropdownMenuSeparator />
-                                                    {canVerify() && (
-                                                        <DropdownMenuItem
-                                                            onClick={() => handleAction(driver, "verify")}
-                                                            disabled={driver.status !== "Pending Verifikasi"}
-                                                        >
-                                                            <Shield className="mr-2 h-4 w-4" />
-                                                            Verifikasi Driver
-                                                        </DropdownMenuItem>
-                                                    )}
+                                                    <DropdownMenuItem
+                                                        onClick={() => handleAction(driver, "verify")}
+                                                        disabled={driver.status !== "Pending Verifikasi"}
+                                                        className="text-xs font-bold py-2.5 px-3"
+                                                    >
+                                                        <Shield className="mr-3 h-4 w-4 text-slate-600" />
+                                                        Verifikasi Driver
+                                                    </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     {driver.status === "Suspend" ? (
-                                                        canReactivate() && (
-                                                            <DropdownMenuItem
-                                                                onClick={() => handleAction(driver, "reinstate")}
-                                                                className="text-emerald-600 focus:text-emerald-600 focus:bg-emerald-50"
-                                                            >
-                                                                <RotateCcw className="mr-2 h-4 w-4" />
-                                                                Aktifkan Kembali
-                                                            </DropdownMenuItem>
-                                                        )
+                                                        <DropdownMenuItem
+                                                            onClick={() => handleAction(driver, "reinstate")}
+                                                            className="text-emerald-600 focus:text-emerald-600 focus:bg-emerald-50 text-xs font-bold py-2.5 px-3"
+                                                        >
+                                                            <RotateCcw className="mr-3 h-4 w-4" />
+                                                            Aktifkan Kembali
+                                                        </DropdownMenuItem>
                                                     ) : (
-                                                        canSuspend() && (
-                                                            <DropdownMenuItem
-                                                                onClick={() => handleAction(driver, "suspend")}
-                                                                disabled={driver.status !== "Aktif"}
-                                                                className="text-red-600 focus:text-red-600 focus:bg-red-50"
-                                                            >
-                                                                <UserX className="mr-2 h-4 w-4" />
-                                                                Suspend Driver
-                                                            </DropdownMenuItem>
-                                                        )
+                                                        <DropdownMenuItem
+                                                            onClick={() => handleAction(driver, "suspend")}
+                                                            disabled={driver.status !== "Aktif"}
+                                                            className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 text-xs font-bold py-2.5 px-3"
+                                                        >
+                                                            <UserX className="mr-3 h-4 w-4" />
+                                                            Suspend Driver
+                                                        </DropdownMenuItem>
                                                     )}
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
@@ -859,25 +780,25 @@ export default function DriversPage() {
                     </Table>
                 </div>
 
-                {/* Pagination - Warna #DCDCDC untuk tidak aktif */}
-                <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
+                {/* Pagination */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="text-sm text-gray-500 order-2 sm:order-1">
                         Menampilkan <span className="font-medium text-gray-900">{filteredDrivers.length}</span> dari{" "}
                         <span className="font-medium text-gray-900">{driverList.length}</span> driver
                     </div>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 order-1 sm:order-2">
                         <button
-                            className="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all disabled:opacity-30 disabled:scale-100 text-gray-400 hover:bg-gray-100 hover:text-gray-900 active:scale-90 border border-transparent"
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all disabled:opacity-30 text-slate-600 hover:bg-gray-100 hover:text-gray-900 border border-transparent"
                             disabled={currentPage === 1}
                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                         >
-                            <ChevronLeft className="h-4.5 w-4.5" />
+                            <ChevronLeft className="h-4 w-4" />
                         </button>
                         {[1, 2, 3].map((page) => (
                             <button
                                 key={page}
-                                className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-all active:scale-90 ${currentPage === page
-                                    ? 'bg-[#E8EBEA] text-gray-900 shadow-sm'
+                                className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all ${currentPage === page
+                                    ? 'bg-[#E8EBEA] text-gray-900'
                                     : 'text-gray-500 hover:bg-gray-100'
                                     }`}
                                 onClick={() => setCurrentPage(page)}
@@ -885,25 +806,25 @@ export default function DriversPage() {
                                 {page}
                             </button>
                         ))}
-                        <span className="px-1.5 text-gray-300 font-bold tracking-widest">...</span>
+                        <span className="px-1 text-gray-300 font-bold">...</span>
                         <button
-                            className="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold text-gray-500 hover:bg-gray-100 active:scale-90 transition-all"
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold text-gray-500 hover:bg-gray-100"
                             onClick={() => setCurrentPage(12)}
                         >
                             12
                         </button>
                         <button
-                            className="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-all disabled:opacity-30 disabled:scale-100 text-gray-400 hover:bg-gray-100 hover:text-gray-900 active:scale-90 border border-transparent"
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-all disabled:opacity-30 text-slate-600 hover:bg-gray-100 hover:text-gray-900 border border-transparent"
                             disabled={currentPage === 12}
                             onClick={() => setCurrentPage(prev => Math.min(prev + 1, 12))}
                         >
-                            <ChevronRight className="h-4.5 w-4.5" />
+                            <ChevronRight className="h-4 w-4" />
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Modal Tambah Driver Baru - Desain Seperti Sebelumnya */}
+            {/* Modal Tambah Driver Baru */}
             <Modal
                 isOpen={isAddDriverOpen}
                 onClose={() => setIsAddDriverOpen(false)}
@@ -1183,41 +1104,33 @@ export default function DriversPage() {
                 isOpen={isAuditLogOpen}
                 onClose={() => setIsAuditLogOpen(false)}
                 maxWidth="max-w-4xl"
-                title="Audit Log - Memori Sistem"
-                description="Catatan semua tindakan administratif untuk akuntabilitas"
+                title="Audit Log"
+                description="Catatan semua tindakan administratif"
             >
                 <div className="p-6 max-h-[60vh] overflow-y-auto">
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {logList.map((log) => (
                             <div
                                 key={log.id}
-                                className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow bg-white"
+                                className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow bg-white"
                             >
-                                <div className="flex items-start gap-4">
-                                    <div className={`p-3 rounded-xl ${log.action.includes('Suspend') ? 'bg-red-50' :
+                                <div className="flex items-start gap-3">
+                                    <div className={`p-2 rounded-lg ${log.action.includes('Suspend') ? 'bg-red-50' :
                                         log.action.includes('Verifikasi') ? 'bg-orange-50' :
                                             log.action.includes('Aktivasi') ? 'bg-emerald-50' : 'bg-blue-50'
                                         }`}>
-                                        <FileClock className={`h-6 w-6 ${log.action.includes('Suspend') ? 'text-red-600' :
+                                        <FileClock className={`h-4 w-4 ${log.action.includes('Suspend') ? 'text-red-600' :
                                             log.action.includes('Verifikasi') ? 'text-orange-600' :
                                                 log.action.includes('Aktivasi') ? 'text-emerald-600' : 'text-blue-600'
                                             }`} />
                                     </div>
                                     <div className="flex-1">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <div className="flex items-center gap-3">
-                                                <h4 className="font-semibold text-gray-900">{log.action}</h4>
-                                                <span className="text-xs text-gray-400 font-mono">{log.id}</span>
-                                            </div>
-                                            <span className="text-xs text-gray-500">{log.timestamp}</span>
+                                        <div className="flex items-center justify-between mb-1">
+                                            <h4 className="font-semibold text-sm text-gray-900">{log.action}</h4>
+                                            <span className="text-[10px] text-gray-500">{log.timestamp}</span>
                                         </div>
-                                        <p className="text-sm text-gray-600 mb-3">{log.details}</p>
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <Badge variant="outline">
-                                                {log.admin} ({log.adminRole})
-                                            </Badge>
-                                        </div>
-                                        <div className="bg-gray-50 rounded-lg p-3 text-sm">
+                                        <p className="text-xs text-gray-600 mb-2">{log.details}</p>
+                                        <div className="bg-gray-50 rounded-lg p-2 text-xs">
                                             <span className="font-semibold text-gray-700">Alasan: </span>
                                             <span className="text-gray-600">{log.reason}</span>
                                         </div>
@@ -1238,68 +1151,58 @@ export default function DriversPage() {
                 }}
                 maxWidth="max-w-md"
             >
-                <div className="p-8 text-center">
-                    <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 ${actionType === "suspend" ? "bg-red-100" :
+                <div className="p-6 text-center">
+                    <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 ${actionType === "suspend" ? "bg-red-100" :
                         actionType === "reinstate" ? "bg-emerald-100" : "bg-orange-100"
                         }`}>
-                        {actionType === "suspend" && <UserX className="h-10 w-10 text-red-600" />}
-                        {actionType === "reinstate" && <RotateCcw className="h-10 w-10 text-emerald-600" />}
-                        {actionType === "verify" && <Shield className="h-10 w-10 text-[#E04D04]" />}
+                        {actionType === "suspend" && <UserX className="h-8 w-8 text-red-600" />}
+                        {actionType === "reinstate" && <RotateCcw className="h-8 w-8 text-emerald-600" />}
+                        {actionType === "verify" && <Shield className="h-8 w-8 text-[#E04D04]" />}
                     </div>
 
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
                         {actionType === "suspend" && "Suspend Driver"}
-                        {actionType === "reinstate" && "Aktifkan Kembali Driver"}
+                        {actionType === "reinstate" && "Aktifkan Kembali"}
                         {actionType === "verify" && "Verifikasi Driver"}
                     </h3>
-                    <p className="text-gray-500 mb-8">
+                    <p className="text-sm text-gray-500 mb-6">
                         {actionType === "suspend" && "Apakah Anda yakin ingin menonaktifkan driver ini?"}
                         {actionType === "reinstate" && "Apakah Anda yakin ingin mengaktifkan kembali driver ini?"}
                         {actionType === "verify" && "Apakah Anda yakin ingin memverifikasi driver ini?"}
                     </p>
 
                     <div className="text-left mb-6">
-                        <Label htmlFor="reason">
-                            Alasan <span className="text-red-500">*</span>
-                        </Label>
+                        <Label htmlFor="reason" className="text-xs">Alasan <span className="text-red-500">*</span></Label>
                         <Textarea
                             id="reason"
-                            placeholder="Jelaskan alasan tindakan ini (wajib diisi)"
+                            placeholder="Jelaskan alasan tindakan ini"
                             value={actionReason}
                             onChange={(e) => setActionReason(e.target.value)}
-                            className="mt-2"
+                            className="mt-2 text-sm"
                             rows={3}
                         />
-                        <p className="text-xs text-gray-500 mt-2">
-                            Alasan akan tercatat di audit log untuk akuntabilitas
-                        </p>
                     </div>
 
-                    <div className="flex justify-center gap-3">
-                        <Button
-                            variant="outline"
-                            onClick={() => {
-                                setIsConfirmDialogOpen(false)
-                                setActionReason("")
-                            }}
-                            className="px-8"
-                        >
+                    <div className="flex justify-center gap-2">
+                        <Button variant="outline" onClick={() => {
+                            setIsConfirmDialogOpen(false)
+                            setActionReason("")
+                        }} size="sm">
                             Batal
                         </Button>
                         <Button
                             variant={actionType === "suspend" ? "destructive" : "default"}
                             onClick={confirmAction}
                             disabled={!actionReason.trim()}
-                            className="px-8"
+                            size="sm"
                         >
-                            {actionType === "suspend" && "Ya, Suspend"}
-                            {actionType === "reinstate" && "Ya, Aktifkan"}
-                            {actionType === "verify" && "Ya, Verifikasi"}
+                            Konfirmasi
                         </Button>
                     </div>
                 </div>
             </Modal>
 
+            {/* Modal Detail Driver */}
             <Modal
                 isOpen={isDetailOpen}
                 onClose={() => setIsDetailOpen(false)}
@@ -1527,7 +1430,7 @@ export default function DriversPage() {
                                     </div>
                                 ))}
 
-                                {selectedDriver?.status === "Pending Verifikasi" && canVerify() && (
+                                {selectedDriver?.status === "Pending Verifikasi" && (
                                     <Button
                                         className="w-full mt-6"
                                         onClick={() => {
