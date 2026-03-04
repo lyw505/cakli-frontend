@@ -11,8 +11,12 @@ import {
     Search,
     ChevronDown
 } from "lucide-react"
+<<<<<<< HEAD
 import { addDays, format } from "date-fns"
 import { DateRange } from "react-day-picker"
+=======
+import Link from "next/link"
+>>>>>>> reporting-admin
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -61,6 +65,8 @@ const reportData = [
     { id: "RPT-005", type: "Travel Report", date: "2024-02-10", area: "Sidoarjo", items: 210, status: "Processing" },
 ]
 
+
+
 export default function ReportsPage() {
     const [date, setDate] = React.useState<DateRange | undefined>({
         from: new Date(),
@@ -69,6 +75,7 @@ export default function ReportsPage() {
 
     return (
         <div className="flex flex-col gap-6 p-6">
+<<<<<<< HEAD
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">System Reports</h1>
@@ -221,6 +228,70 @@ export default function ReportsPage() {
                     </Card>
                 </TabsContent>
             </Tabs>
+=======
+            <div>
+                <h1 className="text-3xl font-bold tracking-tight">Reports Dashboard</h1>
+                <p className="text-muted-foreground">Select a specific report category to view detailed analytics.</p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <Link href="/reporting-admin/history" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-primary" />
+                                Order History
+                            </CardTitle>
+                            <CardDescription>
+                                Complete audit log of all orders with status and details.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+
+                <Link href="/reporting-admin/reports/revenue" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-green-600" />
+                                Revenue Report
+                            </CardTitle>
+                            <CardDescription>
+                                Financial breakdown, income sources, and transaction logs.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+
+                <Link href="/reporting-admin/reports/driver-performance" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-blue-600" />
+                                Driver Performance
+                            </CardTitle>
+                            <CardDescription>
+                                Driver metrics, ratings, completion rates, and earnings.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+
+                <Link href="/reporting-admin/reports/cancellation" className="block group">
+                    <Card className="h-full transition-colors group-hover:border-primary/50 group-hover:bg-accent/5">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <FileText className="size-5 text-red-600" />
+                                Cancellation Analysis
+                            </CardTitle>
+                            <CardDescription>
+                                Analysis of cancelled orders, reasons, and penalties.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+                </Link>
+            </div>
+>>>>>>> reporting-admin
         </div>
     )
 }
