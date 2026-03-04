@@ -12,6 +12,16 @@ interface TimelineEvent {
     done: boolean
 }
 
+interface AuditLogEntry {
+    id: string
+    time: string
+    action: string
+    by: string
+    reason?: string
+    details?: string
+    orderId?: string
+}
+
 interface Order {
     id: string
     customer: string
@@ -45,7 +55,7 @@ interface Order {
     metodePembayaran: string
     statusPembayaran: "belum" | "lunas"
     timeline: TimelineEvent[]
-    auditLog: { time: string; action: string; by: string }[]
+    auditLog: AuditLogEntry[]
 }
 
 // ─── Static Data ──────────────────────────────────────────────────────────────
@@ -64,7 +74,7 @@ const INITIAL_ORDERS: Order[] = [
             { status: "on-trip", label: "Perjalanan Dimulai", timestamp: "-", done: false },
             { status: "selesai", label: "Order Selesai", timestamp: "-", done: false },
         ],
-        auditLog: [{ time: "2024-02-20 10:30", action: "Order dibuat", by: "System" }],
+        auditLog: [{ id: "LOG-001", time: "2024-02-20 10:30", action: "Order dibuat", by: "System", details: "Order baru masuk ke sistem" }],
     },
     {
         id: "ORD-002", customer: "Ahmad Jayadi", customerPhone: "0813-2233-4455", customerNote: "",
@@ -81,8 +91,8 @@ const INITIAL_ORDERS: Order[] = [
             { status: "selesai", label: "Order Selesai", timestamp: "-", done: false },
         ],
         auditLog: [
-            { time: "2024-02-20 10:45", action: "Order dibuat", by: "System" },
-            { time: "2024-02-20 10:47", action: "Driver ditugaskan: Siti Aminah", by: "System" },
+            { id: "LOG-002", time: "2024-02-20 10:45", action: "Order dibuat", by: "System", details: "Order baru masuk ke sistem" },
+            { id: "LOG-003", time: "2024-02-20 10:47", action: "Driver ditugaskan: Siti Aminah", by: "System", details: "Penugasan otomatis oleh sistem" },
         ],
     },
     {
@@ -100,9 +110,9 @@ const INITIAL_ORDERS: Order[] = [
             { status: "selesai", label: "Order Selesai", timestamp: "-", done: false },
         ],
         auditLog: [
-            { time: "2024-02-20 11:00", action: "Order dibuat", by: "System" },
-            { time: "2024-02-20 11:02", action: "Driver ditugaskan: Hendra Wijaya", by: "System" },
-            { time: "2024-02-20 11:10", action: "Status diubah ke On-Trip", by: "Driver App" },
+            { id: "LOG-004", time: "2024-02-20 11:00", action: "Order dibuat", by: "System", details: "Order baru masuk ke sistem" },
+            { id: "LOG-005", time: "2024-02-20 11:02", action: "Driver ditugaskan: Hendra Wijaya", by: "System", details: "Penugasan otomatis oleh sistem" },
+            { id: "LOG-006", time: "2024-02-20 11:10", action: "Status diubah ke On-Trip", by: "Driver App", details: "Driver memulai perjalanan" },
         ],
     },
     {
@@ -120,9 +130,9 @@ const INITIAL_ORDERS: Order[] = [
             { status: "selesai", label: "Order Selesai", timestamp: "-", done: false },
         ],
         auditLog: [
-            { time: "2024-02-20 11:15", action: "Order dibuat", by: "System" },
-            { time: "2024-02-20 11:17", action: "Driver ditugaskan: Dewi Lestari", by: "System" },
-            { time: "2024-02-20 11:35", action: "Ditandai bermasalah: Driver sulit dihubungi", by: "Admin" },
+            { id: "LOG-007", time: "2024-02-20 11:15", action: "Order dibuat", by: "System", details: "Order baru masuk ke sistem" },
+            { id: "LOG-008", time: "2024-02-20 11:17", action: "Driver ditugaskan: Dewi Lestari", by: "System", details: "Penugasan otomatis oleh sistem" },
+            { id: "LOG-009", time: "2024-02-20 11:35", action: "Ditandai bermasalah: Driver sulit dihubungi", by: "Admin", details: "Masalah dilaporkan oleh admin operasional" },
         ],
     },
     {
@@ -141,10 +151,10 @@ const INITIAL_ORDERS: Order[] = [
             { status: "selesai", label: "Order Selesai", timestamp: "2024-02-20 09:48", done: true },
         ],
         auditLog: [
-            { time: "2024-02-20 09:15", action: "Order dibuat", by: "System" },
-            { time: "2024-02-20 09:17", action: "Driver ditugaskan: Rudi Hartono", by: "System" },
-            { time: "2024-02-20 09:25", action: "Status diubah ke On-Trip", by: "Driver App" },
-            { time: "2024-02-20 09:48", action: "Order selesai", by: "Driver App" },
+            { id: "LOG-010", time: "2024-02-20 09:15", action: "Order dibuat", by: "System", details: "Order baru masuk ke sistem" },
+            { id: "LOG-011", time: "2024-02-20 09:17", action: "Driver ditugaskan: Rudi Hartono", by: "System", details: "Penugasan otomatis oleh sistem" },
+            { id: "LOG-012", time: "2024-02-20 09:25", action: "Status diubah ke On-Trip", by: "Driver App", details: "Driver memulai perjalanan" },
+            { id: "LOG-013", time: "2024-02-20 09:48", action: "Order selesai", by: "Driver App", details: "Driver menyelesaikan pengantaran" },
         ],
     },
     {
@@ -161,9 +171,9 @@ const INITIAL_ORDERS: Order[] = [
             { status: "batal", label: "Order Dibatalkan", timestamp: "2024-02-20 08:45", done: true },
         ],
         auditLog: [
-            { time: "2024-02-20 08:30", action: "Order dibuat", by: "System" },
-            { time: "2024-02-20 08:32", action: "Driver ditugaskan: Eko Wibowo", by: "System" },
-            { time: "2024-02-20 08:45", action: "Order dibatalkan — Alasan: Kesalahan pemesanan", by: "Admin" },
+            { id: "LOG-014", time: "2024-02-20 08:30", action: "Order dibuat", by: "System", details: "Order baru masuk ke sistem" },
+            { id: "LOG-015", time: "2024-02-20 08:32", action: "Driver ditugaskan: Eko Wibowo", by: "System", details: "Penugasan otomatis oleh sistem" },
+            { id: "LOG-016", time: "2024-02-20 08:45", action: "Order dibatalkan — Alasan: Kesalahan pemesanan", by: "Admin", details: "Admin membatalkan order atas permintaan customer" },
         ],
     },
     {
@@ -182,10 +192,10 @@ const INITIAL_ORDERS: Order[] = [
             { status: "selesai", label: "Order Selesai", timestamp: "2024-02-20 08:32", done: true },
         ],
         auditLog: [
-            { time: "2024-02-20 08:10", action: "Order dibuat", by: "System" },
-            { time: "2024-02-20 08:12", action: "Driver ditugaskan: Agus Triyono", by: "System" },
-            { time: "2024-02-20 08:18", action: "Status diubah ke On-Trip", by: "Driver App" },
-            { time: "2024-02-20 08:32", action: "Order selesai", by: "Driver App" },
+            { id: "LOG-017", time: "2024-02-20 08:10", action: "Order dibuat", by: "System", details: "Order baru masuk ke sistem" },
+            { id: "LOG-018", time: "2024-02-20 08:12", action: "Driver ditugaskan: Agus Triyono", by: "System", details: "Penugasan otomatis oleh sistem" },
+            { id: "LOG-019", time: "2024-02-20 08:18", action: "Status diubah ke On-Trip", by: "Driver App", details: "Driver memulai perjalanan" },
+            { id: "LOG-020", time: "2024-02-20 08:32", action: "Order selesai", by: "Driver App", details: "Driver menyelesaikan pengantaran" },
         ],
     },
     {
@@ -202,7 +212,7 @@ const INITIAL_ORDERS: Order[] = [
             { status: "on-trip", label: "Perjalanan Dimulai", timestamp: "-", done: false },
             { status: "selesai", label: "Order Selesai", timestamp: "-", done: false },
         ],
-        auditLog: [{ time: "2024-02-20 12:00", action: "Order dibuat", by: "System" }],
+        auditLog: [{ id: "LOG-021", time: "2024-02-20 12:00", action: "Order dibuat", by: "System", details: "Order baru masuk ke sistem" }],
     },
     {
         id: "ORD-009", customer: "Mira Oktavia", customerPhone: "0817-9900-1122", customerNote: "",
@@ -219,8 +229,8 @@ const INITIAL_ORDERS: Order[] = [
             { status: "selesai", label: "Order Selesai", timestamp: "-", done: false },
         ],
         auditLog: [
-            { time: "2024-02-19 14:20", action: "Order dibuat", by: "System" },
-            { time: "2024-02-19 14:22", action: "Driver ditugaskan: Hendra Wijaya", by: "System" },
+            { id: "LOG-022", time: "2024-02-19 14:20", action: "Order dibuat", by: "System", details: "Order baru masuk ke sistem" },
+            { id: "LOG-023", time: "2024-02-19 14:22", action: "Driver ditugaskan: Hendra Wijaya", by: "System", details: "Penugasan otomatis oleh sistem" },
         ],
     },
     {
@@ -239,10 +249,10 @@ const INITIAL_ORDERS: Order[] = [
             { status: "selesai", label: "Order Selesai", timestamp: "2024-02-19 09:35", done: true },
         ],
         auditLog: [
-            { time: "2024-02-19 09:00", action: "Order dibuat", by: "System" },
-            { time: "2024-02-19 09:02", action: "Driver ditugaskan: Rudi Hartono", by: "System" },
-            { time: "2024-02-19 09:10", action: "Status diubah ke On-Trip", by: "Driver App" },
-            { time: "2024-02-19 09:35", action: "Order selesai", by: "Driver App" },
+            { id: "LOG-024", time: "2024-02-19 09:00", action: "Order dibuat", by: "System", details: "Order baru masuk ke sistem" },
+            { id: "LOG-025", time: "2024-02-19 09:02", action: "Driver ditugaskan: Rudi Hartono", by: "System", details: "Penugasan otomatis oleh sistem" },
+            { id: "LOG-026", time: "2024-02-19 09:10", action: "Status diubah ke On-Trip", by: "Driver App", details: "Driver memulai perjalanan" },
+            { id: "LOG-027", time: "2024-02-19 09:35", action: "Order selesai", by: "Driver App", details: "Driver menyelesaikan pengantaran" },
         ],
     },
     {
@@ -262,9 +272,9 @@ const INITIAL_ORDERS: Order[] = [
             { status: "selesai", label: "Order Selesai", timestamp: "2024-02-21 15:00", done: true },
         ],
         auditLog: [
-            { time: "2024-02-21 14:00", action: "Order dibuat", by: "System" },
-            { time: "2024-02-21 14:05", action: "Driver ditugaskan: Dewi Lestari", by: "Admin (Auto)" },
-            { time: "2024-02-21 15:00", action: "Order selesai dengan anomali durasi", by: "System" },
+            { id: "LOG-028", time: "2024-02-21 14:00", action: "Order dibuat", by: "System", details: "Order baru masuk ke sistem" },
+            { id: "LOG-029", time: "2024-02-21 14:05", action: "Driver ditugaskan: Dewi Lestari", by: "Admin (Auto)", details: "Penugasan sistem di area Malang Utara" },
+            { id: "LOG-030", time: "2024-02-21 15:00", action: "Order selesai dengan anomali durasi", by: "System", details: "Terdeteksi keterlambatan signifikan (>300%)" },
         ],
     },
 ]
@@ -288,42 +298,42 @@ const PAGE_SIZE = 7
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 const Icons = {
-    Download: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>,
-    Search: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>,
-    MapPin: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>,
-    User: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-    Truck: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>,
-    Eye: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>,
-    RotateCcw: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"/></svg>,
-    MoreHorizontal: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>,
-    XCircle: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>,
-    AlertTriangle: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>,
-    UserPlus: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>,
-    CheckCircle2: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>,
-    ChevronLeft: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6"/></svg>,
-    ChevronRight: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"/></svg>,
-    Phone: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
-    CreditCard: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>,
-    CalendarDays: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>,
-    Star: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
-    ShieldAlert: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>,
-    X: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>,
-    ChevronDown: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m6 9 6 6 6-6"/></svg>,
-    PowerOff: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18.36 6.64A9 9 0 0 1 20.77 15"/><path d="M6.16 6.16a9 9 0 1 0 12.68 12.68"/><path d="M12 2v4"/><path d="m2 2 20 20"/></svg>,
+    Download: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>,
+    Search: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>,
+    MapPin: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>,
+    User: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>,
+    Truck: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" /><circle cx="17" cy="18" r="2" /><circle cx="7" cy="18" r="2" /></svg>,
+    Eye: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>,
+    RotateCcw: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12" /></svg>,
+    MoreHorizontal: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>,
+    XCircle: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg>,
+    AlertTriangle: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>,
+    UserPlus: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" x2="19" y1="8" y2="14" /><line x1="22" x2="16" y1="11" y2="11" /></svg>,
+    CheckCircle2: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10" /><path d="m9 12 2 2 4-4" /></svg>,
+    ChevronLeft: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6" /></svg>,
+    ChevronRight: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6" /></svg>,
+    Phone: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>,
+    CreditCard: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></svg>,
+    CalendarDays: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" /></svg>,
+    Star: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>,
+    ShieldAlert: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>,
+    X: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>,
+    ChevronDown: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m6 9 6 6 6-6" /></svg>,
+    PowerOff: ({ className }: { className?: string } = {}) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18.36 6.64A9 9 0 0 1 20.77 15" /><path d="M6.16 6.16a9 9 0 1 0 12.68 12.68" /><path d="M12 2v4" /><path d="m2 2 20 20" /></svg>,
 }
 
 // ─── Native UI Components ─────────────────────────────────────────────────────
 
-function Button({ 
-    children, 
-    onClick, 
-    disabled = false, 
-    variant = "default", 
+function Button({
+    children,
+    onClick,
+    disabled = false,
+    variant = "default",
     size = "default",
-    className = "", 
+    className = "",
     style = {},
     type = "button"
-}: { 
+}: {
     children: React.ReactNode
     onClick?: () => void
     disabled?: boolean
@@ -334,7 +344,7 @@ function Button({
     type?: "button" | "submit"
 }) {
     const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed"
-    
+
     const variants = {
         default: "bg-slate-900 text-white hover:bg-slate-800 border border-transparent",
         outline: "bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 hover:border-slate-400",
@@ -360,14 +370,14 @@ function Button({
     )
 }
 
-function Input({ 
-    value, 
-    onChange, 
-    placeholder, 
+function Input({
+    value,
+    onChange,
+    placeholder,
     className = "",
     type = "text",
     id
-}: { 
+}: {
     value: string
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     placeholder?: string
@@ -387,13 +397,13 @@ function Input({
     )
 }
 
-function Textarea({ 
-    value, 
-    onChange, 
-    placeholder, 
+function Textarea({
+    value,
+    onChange,
+    placeholder,
     className = "",
     rows = 3
-}: { 
+}: {
     value: string
     onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
     placeholder?: string
@@ -411,14 +421,14 @@ function Textarea({
     )
 }
 
-function Select({ 
-    value, 
-    onChange, 
-    options, 
+function Select({
+    value,
+    onChange,
+    options,
     placeholder,
     className = "",
     id
-}: { 
+}: {
     value: string
     onChange: (value: string) => void
     options: { value: string; label: React.ReactNode }[]
@@ -472,12 +482,12 @@ function Select({
     )
 }
 
-function Modal({ 
-    isOpen, 
-    onClose, 
-    children, 
+function Modal({
+    isOpen,
+    onClose,
+    children,
     maxWidth = "md"
-}: { 
+}: {
     isOpen: boolean
     onClose: () => void
     children: React.ReactNode
@@ -495,8 +505,8 @@ function Modal({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div 
-                className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+            <div
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={onClose}
             />
             <div className={`relative w-full ${maxWidths[maxWidth]} bg-white rounded-xl shadow-xl overflow-hidden max-h-[90vh] flex flex-col`}>
@@ -506,10 +516,10 @@ function Modal({
     )
 }
 
-function DropdownMenu({ 
-    trigger, 
-    children 
-}: { 
+function DropdownMenu({
+    trigger,
+    children
+}: {
     trigger: React.ReactNode
     children: React.ReactNode
 }) {
@@ -540,12 +550,12 @@ function DropdownMenu({
     )
 }
 
-function DropdownItem({ 
-    children, 
-    onClick, 
+function DropdownItem({
+    children,
+    onClick,
     className = "",
     disabled = false
-}: { 
+}: {
     children: React.ReactNode
     onClick?: () => void
     className?: string
@@ -633,7 +643,7 @@ function DetailDialog({ order, onReassign }: { order: Order; onReassign: () => v
                     </div>
                 </div>
             )}
-            
+
             <div className="grid grid-cols-2 gap-4">
                 <div className="rounded-xl border bg-slate-50 p-4 space-y-3">
                     <p className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Customer</p>
@@ -750,19 +760,62 @@ function DetailDialog({ order, onReassign }: { order: Order; onReassign: () => v
                 </div>
             </div>
 
-            <div className="rounded-xl border p-4 bg-slate-50">
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Audit Log</p>
-                <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+            <div className="rounded-xl border p-5 bg-slate-50/50">
+                <div className="flex items-center justify-between mb-4">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                        <Icons.RotateCcw className="h-3 w-3" /> Audit Log
+                    </p>
+                    <span className="text-[10px] font-bold text-slate-400 bg-white px-2 py-0.5 rounded-full border">
+                        {order.auditLog.length} Entri
+                    </span>
+                </div>
+                <div className="space-y-3 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
                     {order.auditLog.map((log, i) => (
-                        <div key={i} className="text-[10px] flex gap-3 bg-white p-2 rounded border border-slate-200">
-                            <span className="font-mono text-slate-500 shrink-0 border-r pr-2">{log.time.split(" ")[1]}</span>
-                            <div className="flex-1 min-w-0">
-                                <p className="font-bold truncate text-slate-700">{log.by}</p>
-                                <p className="font-medium text-slate-900">{log.action}</p>
+                        <div key={i} className="bg-white border border-slate-200 rounded-xl p-3 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
+                            <div className="flex gap-3">
+                                <div className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 border border-transparent transition-all group-hover:scale-105 shadow-sm ${log.action.includes('diganti') || log.action.includes('ditugaskan') ? "bg-orange-50 text-[#E04D04]" :
+                                    log.action.includes('dinonaktifkan') || log.action.includes('dibatalkan') ? "bg-red-50 text-red-600" :
+                                        log.action.includes('bermasalah') ? "bg-amber-50 text-amber-600" : "bg-slate-50 text-slate-600"
+                                    }`}>
+                                    {log.action.includes('diganti') || log.action.includes('ditugaskan') ? <Icons.UserPlus className="h-4 w-4" /> :
+                                        log.action.includes('dinonaktifkan') ? <Icons.PowerOff className="h-4 w-4" /> :
+                                            log.action.includes('dibatalkan') ? <Icons.XCircle className="h-4 w-4" /> :
+                                                log.action.includes('bermasalah') ? <Icons.AlertTriangle className="h-4 w-4" /> :
+                                                    <Icons.RotateCcw className="h-4 w-4" />}
+                                </div>
+                                <div className="flex-1 min-w-0 pr-4">
+                                    <div className="flex flex-col">
+                                        <h4 className="font-bold text-slate-900 text-[11px] leading-tight">{log.action}</h4>
+                                        <p className="text-[10px] text-slate-500 mt-0.5 leading-relaxed italic">
+                                            {log.details || log.action}
+                                        </p>
+                                    </div>
+                                    {log.reason && (
+                                        <div className="mt-2 p-2 bg-slate-50 rounded-lg border border-slate-100 flex items-start gap-2">
+                                            <span className="text-[9px] font-bold text-slate-900 whitespace-nowrap pt-0.5">Alasan:</span>
+                                            <span className="text-[9px] text-slate-600 leading-relaxed font-medium">
+                                                {log.reason}
+                                            </span>
+                                        </div>
+                                    )}
+                                    <div className="mt-2 flex items-center gap-1.5 opacity-60">
+                                        <div className="h-3 w-3 rounded-full bg-slate-100 flex items-center justify-center">
+                                            <Icons.User className="h-2 w-2 text-slate-400" />
+                                        </div>
+                                        <span className="text-[8px] font-black uppercase tracking-wider text-slate-400">Oleh: {log.by}</span>
+                                    </div>
+                                </div>
+                                <div className="absolute top-3 right-3 text-right">
+                                    <p className="text-[9px] font-bold text-slate-400 font-mono tracking-tighter">{log.time.split(" ")[1]}</p>
+                                </div>
                             </div>
                         </div>
                     ))}
-                    {order.auditLog.length === 0 && <p className="text-[10px] text-center italic text-slate-500 py-2">Tidak ada data</p>}
+                    {order.auditLog.length === 0 && (
+                        <div className="text-center py-6 bg-white border border-dashed border-slate-200 rounded-xl">
+                            <p className="text-[10px] italic text-slate-400">Tidak ada data</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -790,6 +843,21 @@ export default function OrdersPage() {
     const [issueNote, setIssueNote] = useState("")
     const [reassignTarget, setReassignTarget] = useState<Order | null>(null)
     const [reassignDriver, setReassignDriver] = useState("")
+    const [reassignReason, setReassignReason] = useState("")
+
+    const [deactivateTarget, setDeactivateTarget] = useState<Order | null>(null)
+    const [deactivateReason, setDeactivateReason] = useState("")
+
+    const [isGlobalAuditOpen, setIsGlobalAuditOpen] = useState(false)
+    const [globalLogs, setGlobalLogs] = useState<AuditLogEntry[]>(() => {
+        const all: AuditLogEntry[] = []
+        INITIAL_ORDERS.forEach(o => {
+            o.auditLog.forEach(log => {
+                all.push({ ...log, orderId: o.id })
+            })
+        })
+        return all.sort((a, b) => b.time.localeCompare(a.time)).slice(0, 3)
+    })
 
     const activeFilters = [filterStatus !== "all", filterDate !== ""].filter(Boolean).length
 
@@ -818,28 +886,62 @@ export default function OrdersPage() {
     const applyCancel = () => {
         if (!cancelTarget || !cancelReason.trim()) return
         const t = now()
+        const logId = `LOG-${Math.floor(Math.random() * 10000)}`
+        const newLog: AuditLogEntry = {
+            id: logId,
+            time: t,
+            action: "Order Dibatalkan",
+            by: "Admin",
+            reason: cancelReason,
+            details: `Order dibatalkan secara manual oleh admin operasional`,
+            orderId: cancelTarget.id
+        }
         setOrders((prev) => prev.map((o) => o.id !== cancelTarget.id ? o : {
             ...o, status: "batal",
             timeline: [...o.timeline, { status: "batal", label: "Order Dibatalkan", timestamp: t, done: true }],
-            auditLog: [...o.auditLog, { time: t, action: `Order dibatalkan — Alasan: ${cancelReason}`, by: "Admin" }],
+            auditLog: [newLog, ...o.auditLog],
         }))
+        setGlobalLogs(prev => [newLog, ...prev])
         setCancelTarget(null); setCancelReason("")
     }
 
     const applyIssue = () => {
         if (!issueTarget || !issueNote.trim()) return
         const t = now()
+        const logId = `LOG-${Math.floor(Math.random() * 10000)}`
+        const newLog: AuditLogEntry = {
+            id: logId,
+            time: t,
+            action: "Ditandai Bermasalah",
+            by: "Admin",
+            reason: issueNote,
+            details: "Order membutuhkan perhatian khusus oleh admin",
+            orderId: issueTarget.id
+        }
         setOrders((prev) => prev.map((o) => o.id !== issueTarget.id ? o : {
             ...o, status: "issue",
-            auditLog: [...o.auditLog, { time: t, action: `Ditandai bermasalah: ${issueNote}`, by: "Admin" }],
+            auditLog: [newLog, ...o.auditLog],
         }))
+        setGlobalLogs(prev => [newLog, ...prev])
         setIssueTarget(null); setIssueNote("")
     }
 
     const applyReassign = () => {
-        if (!reassignTarget || !reassignDriver) return
+        if (!reassignTarget || !reassignDriver || !reassignReason.trim()) return
         const t = now()
+        const logId = `LOG-${Math.floor(Math.random() * 10000)}`
         const driverPhone = INITIAL_ORDERS.find((o) => o.driver === reassignDriver)?.driverPhone ?? "-"
+
+        const newLog: AuditLogEntry = {
+            id: logId,
+            time: t,
+            action: `Driver diganti ke: ${reassignDriver}`,
+            by: "Admin",
+            reason: reassignReason,
+            details: `Driver diganti dari ${reassignTarget.driver === "-" ? "Mencari" : reassignTarget.driver} ke ${reassignDriver}`,
+            orderId: reassignTarget.id
+        }
+
         setOrders((prev) => prev.map((o) => o.id !== reassignTarget.id ? o : {
             ...o,
             driver: reassignDriver, driverPhone, driverActive: true, driverInactiveSince: null,
@@ -847,17 +949,31 @@ export default function OrdersPage() {
             timeline: o.status === "unassigned"
                 ? [...o.timeline, { status: "assigned", label: "Driver Ditugaskan", timestamp: t, done: true }]
                 : o.timeline,
-            auditLog: [...o.auditLog, { time: t, action: `Driver diganti ke: ${reassignDriver}`, by: "Admin" }],
+            auditLog: [newLog, ...o.auditLog],
         }))
-        setReassignTarget(null); setReassignDriver("")
+        setGlobalLogs(prev => [newLog, ...prev])
+        setReassignTarget(null); setReassignDriver(""); setReassignReason("")
         setDetailOrder(null)
     }
 
-    const deactivateDriver = (orderId: string) => {
+    const applyDeactivateDriver = () => {
+        if (!deactivateTarget || !deactivateReason.trim()) return
         const t = now()
+        const logId = `LOG-${Math.floor(Math.random() * 10000)}`
+
+        const canRelease = ["pending", "assigned", "unassigned"].includes(deactivateTarget.status)
+        const newLog: AuditLogEntry = {
+            id: logId,
+            time: t,
+            action: `Driver ${deactivateTarget.driver} dinonaktifkan`,
+            by: "Admin",
+            reason: deactivateReason,
+            details: canRelease ? "Order dikembalikan ke antrian (Mencari Driver)" : "Driver offline namun tetap terikat order on-trip",
+            orderId: deactivateTarget.id
+        }
+
         setOrders((prev) => prev.map((o) => {
-            if (o.id !== orderId) return o
-            const canRelease = ["pending", "assigned", "unassigned"].includes(o.status)
+            if (o.id !== deactivateTarget.id) return o
             return {
                 ...o,
                 driverActive: false,
@@ -868,13 +984,11 @@ export default function OrdersPage() {
                 timeline: canRelease
                     ? [...o.timeline, { status: "unassigned", label: "Driver Dinonaktifkan — Order Dikembalikan ke Antrian", timestamp: t, done: true }]
                     : o.timeline,
-                auditLog: [...o.auditLog, {
-                    time: t,
-                    action: `Driver ${o.driver} dinonaktifkan — order dikembalikan ke antrian (Menunggu Driver)`,
-                    by: "System",
-                }],
+                auditLog: [newLog, ...o.auditLog],
             }
         }))
+        setGlobalLogs(prev => [newLog, ...prev])
+        setDeactivateTarget(null); setDeactivateReason("")
     }
 
     const canAct = (o: Order) => o.status !== "selesai" && o.status !== "batal"
@@ -903,15 +1017,27 @@ export default function OrdersPage() {
                         Pusat kendali operasional — monitoring, intervensi, dan pengambilan keputusan berbasis data.
                     </p>
                 </div>
-                <Button variant="outline" size="sm" className="gap-2 shrink-0">
-                    <Icons.Download /> Export CSV
-                </Button>
+                <div className="flex items-center gap-3 shrink-0">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-2 bg-white relative pr-4 h-9 shadow-sm"
+                        onClick={() => setIsGlobalAuditOpen(true)}
+                    >
+                        <Icons.RotateCcw className="h-4 w-4" /> Audit Log
+                        <span className="absolute -top-2.5 -right-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-[#E04D04] text-[11px] font-black text-white shadow-lg border-2 border-white ring-1 ring-orange-100 transition-transform hover:scale-110">
+                            {globalLogs.length}
+                        </span>
+                    </Button>
+                    <Button variant="outline" size="sm" className="gap-2 bg-white h-9 shadow-sm">
+                        <Icons.Download className="h-4 w-4" /> Export CSV
+                    </Button>
+                </div>
             </div>
 
             {/* ── Filter Panel & Table Container ── */}
-            <div className="space-y-4">
-                <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-5">
-                    <div className="flex items-center justify-between mb-3">
+            <div className="space-y-4 mt-2">
+                <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <p className="text-sm font-semibold text-slate-900">Filter Order</p>
                             {activeFilters > 0 && (
@@ -934,17 +1060,18 @@ export default function OrdersPage() {
                             </div>
                             <Input
                                 placeholder="Cari kode order, customer, atau driver…"
-                                className="pl-10 text-sm"
+                                className="pl-10 text-sm bg-white"
                                 value={search}
                                 onChange={(e) => { setSearch(e.target.value); setPage(1) }}
                             />
                         </div>
 
                         <div className="relative">
-                            <Select 
-                                value={filterStatus} 
+                            <Select
+                                value={filterStatus}
                                 onChange={(v) => { setFilterStatus(v); setPage(1) }}
                                 options={statusOptions}
+                                className="bg-white"
                             />
                         </div>
 
@@ -956,7 +1083,7 @@ export default function OrdersPage() {
                                 type="date"
                                 value={filterDate}
                                 onChange={(e) => { setFilterDate(e.target.value); setPage(1) }}
-                                className="text-sm pl-10"
+                                className="text-sm pl-10 bg-white"
                             />
                         </div>
                     </div>
@@ -1054,7 +1181,7 @@ export default function OrdersPage() {
                                                     <Icons.UserPlus /> Ganti Driver
                                                 </DropdownItem>
                                                 <DropdownItem
-                                                    onClick={() => deactivateDriver(order.id)}
+                                                    onClick={() => { setDeactivateTarget(order); setDeactivateReason("") }}
                                                     disabled={!(canAct(order) && order.driver !== "-" && order.driverActive)}
                                                     className="text-red-500"
                                                 >
@@ -1084,71 +1211,57 @@ export default function OrdersPage() {
                     </table>
                 </div>
 
-                {/* ── Summary Bar ── */}
-                <div className="flex items-center justify-between text-sm text-slate-500 px-1">
-                    <span>
-                        Menampilkan <span className="font-semibold text-slate-900">{filtered.length}</span> dari{" "}
-                        <span className="font-semibold text-slate-900">{orders.length}</span> order
-                    </span>
-                    <span>Halaman {page} dari {totalPages}</span>
-                </div>
+                {/* ── Summary & Pagination Bar ── */}
+                <div className="flex items-center justify-between text-sm text-slate-500 px-1 mt-6">
+                    <p className="font-medium text-slate-400">
+                        Menampilkan <span className="font-bold text-slate-700">{filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1} - {Math.min(page * PAGE_SIZE, filtered.length)}</span> dari <span className="font-bold text-slate-700">{filtered.length}</span> order
+                    </p>
 
-                {/* ── Pagination tanpa border ── */}
-                {totalPages > 1 && (
-                    <div className="flex items-center justify-center gap-2 pt-2">
-                        <Button
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => setPage((p) => Math.max(1, p - 1))}
-                            disabled={page === 1}
-                            className="h-8 px-3 gap-1 text-xs"
-                            style={{ color: page !== 1 ? '#E04D04' : '#94a3b8' }}
-                        >
-                            <Icons.ChevronLeft className="h-3.5 w-3.5" />
-                            <span>Prev</span>
-                        </Button>
-                        
-                        <div className="flex gap-1">
-                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
-                                const show = p === 1 || p === totalPages || Math.abs(p - page) <= 1
-                                if (!show) {
-                                    const prevShow = p - 1 === 1 || Math.abs((p - 1) - page) <= 1
-                                    if (!prevShow) return null
-                                    return <span key={`ellipsis-${p}`} className="px-1 text-slate-400">…</span>
-                                }
-                                return (
-                                    <Button 
-                                        key={p} 
-                                        variant={page === p ? "default" : "ghost"} 
-                                        size="sm"
-                                        onClick={() => setPage(p)} 
-                                        className="h-8 w-8 p-0 text-xs"
-                                        style={page === p ? { 
-                                            backgroundColor: '#E04D04', 
-                                            color: 'white'
-                                        } : { 
-                                            color: '#64748B'
-                                        }}
-                                    >
-                                        {p}
-                                    </Button>
-                                )
-                            })}
+                    {totalPages > 1 && (
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                                disabled={page === 1}
+                                className={`transition-all ${page === 1 ? "text-slate-200 cursor-not-allowed" : "text-slate-400 hover:text-slate-900"}`}
+                            >
+                                <Icons.ChevronLeft className="h-5 w-5" />
+                            </button>
+
+                            <div className="flex items-center gap-1">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                                    const isVisible = p === 1 || p === totalPages || Math.abs(p - page) <= 1;
+                                    const showEllipsisBefore = p === 2 && page > 3;
+                                    const showEllipsisAfter = p === totalPages - 1 && page < totalPages - 2;
+
+                                    if (showEllipsisBefore) return <span key="dots-before" className="px-1 text-slate-300">...</span>;
+                                    if (showEllipsisAfter) return <span key="dots-after" className="px-1 text-slate-300">...</span>;
+                                    if (!isVisible && p > 1 && p < totalPages) return null;
+
+                                    return (
+                                        <button
+                                            key={p}
+                                            onClick={() => setPage(p)}
+                                            className={`h-8 min-w-[32px] px-2 rounded-lg text-sm font-bold transition-all ${page === p
+                                                ? "bg-slate-100 text-slate-900 shadow-sm"
+                                                : "text-slate-400 hover:text-slate-900"
+                                                }`}
+                                        >
+                                            {p}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            <button
+                                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                                disabled={page === totalPages}
+                                className={`transition-all ${page === totalPages ? "text-slate-200 cursor-not-allowed" : "text-slate-400 hover:text-slate-900"}`}
+                            >
+                                <Icons.ChevronRight className="h-5 w-5" />
+                            </button>
                         </div>
-
-                        <Button
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                            disabled={page === totalPages}
-                            className="h-8 px-3 gap-1 text-xs"
-                            style={{ color: page < totalPages ? '#E04D04' : '#94a3b8' }}
-                        >
-                            <span>Next</span>
-                            <Icons.ChevronRight className="h-3.5 w-3.5" />
-                        </Button>
-                    </div>
-                )}
+                    )}
+                </div>
 
                 {/* ═══════════════════════════════════════════════════════════
                     DIALOGS
@@ -1190,26 +1303,40 @@ export default function OrdersPage() {
                             <span className="font-mono font-semibold" style={{ color: '#E04D04' }}>{reassignTarget?.id}</span>.
                             Driver sebelumnya: <strong className="text-slate-900">{reassignTarget?.driver === "-" ? "Belum ditugaskan" : reassignTarget?.driver}</strong>.
                         </p>
-                        <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
-                                Pilih Driver Aktif <span className="text-red-500">*</span>
-                            </label>
-                            <Select 
-                                value={reassignDriver} 
-                                onChange={setReassignDriver}
-                                options={DRIVER_OPTIONS
-                                    .filter((d) => d !== reassignTarget?.driver)
-                                    .map((d) => ({ value: d, label: d }))}
-                                placeholder="Pilih driver…"
-                            />
+                        <div className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                                    Pilih Driver Aktif <span className="text-red-500">*</span>
+                                </label>
+                                <Select
+                                    value={reassignDriver}
+                                    onChange={setReassignDriver}
+                                    options={DRIVER_OPTIONS
+                                        .filter((d) => d !== reassignTarget?.driver)
+                                        .map((d) => ({ value: d, label: d }))}
+                                    placeholder="Pilih driver…"
+                                />
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                                    Alasan Penggantian <span className="text-red-500">*</span>
+                                </label>
+                                <Textarea
+                                    placeholder="Jelaskan mengapa driver perlu diganti..."
+                                    className="text-sm"
+                                    rows={2}
+                                    value={reassignReason}
+                                    onChange={(e) => setReassignReason(e.target.value)}
+                                />
+                            </div>
                         </div>
                         <p className="text-xs text-slate-500">
                             Pergantian akan tercatat di audit log dan notifikasi dikirim ke driver baru.
                         </p>
                         <div className="flex gap-2 justify-end pt-2">
-                            <Button 
-                                variant="outline" 
-                                size="sm" 
+                            <Button
+                                variant="outline"
+                                size="sm"
                                 onClick={() => setReassignTarget(null)}
                             >
                                 Tutup
@@ -1253,9 +1380,9 @@ export default function OrdersPage() {
                         </div>
                         <p className="text-xs text-slate-500">Dibatalkan oleh: <strong>Admin</strong></p>
                         <div className="flex gap-2 justify-end pt-2">
-                            <Button 
-                                variant="outline" 
-                                size="sm" 
+                            <Button
+                                variant="outline"
+                                size="sm"
                                 onClick={() => setCancelTarget(null)}
                             >
                                 Tutup
@@ -1298,9 +1425,9 @@ export default function OrdersPage() {
                             />
                         </div>
                         <div className="flex gap-2 justify-end pt-2">
-                            <Button 
-                                variant="outline" 
-                                size="sm" 
+                            <Button
+                                variant="outline"
+                                size="sm"
                                 onClick={() => setIssueTarget(null)}
                             >
                                 Tutup
@@ -1316,7 +1443,120 @@ export default function OrdersPage() {
                         </div>
                     </div>
                 </Modal>
+
+                {/* Deactivate Driver Confirmation */}
+                <Modal isOpen={!!deactivateTarget} onClose={() => setDeactivateTarget(null)}>
+                    <div className="px-5 py-4 border-b border-slate-200">
+                        <div className="flex items-center gap-2 text-red-600">
+                            <Icons.PowerOff />
+                            <span className="font-semibold text-base">Nonaktifkan Driver</span>
+                        </div>
+                    </div>
+                    <div className="px-5 py-4 space-y-4 bg-white">
+                        <div className="p-4 bg-red-50 rounded-xl border border-red-100 flex gap-3 text-red-700">
+                            <Icons.AlertTriangle className="shrink-0" />
+                            <div className="text-xs leading-relaxed">
+                                <p className="font-bold uppercase tracking-wider mb-1 text-red-800">Peringatan Penting</p>
+                                <p>Tindakan ini akan menonaktifkan driver <strong>{deactivateTarget?.driver}</strong> dari armada aktif.</p>
+                                {["pending", "assigned", "unassigned"].includes(deactivateTarget?.status || "") && (
+                                    <p className="mt-1 font-bold">Order {deactivateTarget?.id} akan dikembalikan ke antrian pencarian driver.</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                                Alasan Nonaktifkan <span className="text-red-500">*</span>
+                            </label>
+                            <Textarea
+                                placeholder="Contoh: Perilaku tidak pantas, menolak order berkali-kali, tidak aktif terlalu lama..."
+                                className="mt-1.5 text-sm"
+                                rows={3}
+                                value={deactivateReason}
+                                onChange={(e) => setDeactivateReason(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="flex gap-2 justify-end pt-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setDeactivateTarget(null)}
+                            >
+                                Batal
+                            </Button>
+                            <Button
+                                size="sm"
+                                disabled={!deactivateReason.trim()}
+                                onClick={applyDeactivateDriver}
+                                style={{ backgroundColor: '#DC2626', color: 'white' }}
+                            >
+                                <Icons.PowerOff /> Konfirmasi Nonaktifkan
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
+
+                <Modal isOpen={isGlobalAuditOpen} onClose={() => setIsGlobalAuditOpen(false)} maxWidth="4xl">
+                    <div className="px-7 py-6 flex items-start justify-between bg-white">
+                        <div className="space-y-1">
+                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Audit Log</h2>
+                            <p className="text-sm text-slate-500 font-medium">
+                                Catatan semua tindakan administratif
+                            </p>
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => setIsGlobalAuditOpen(false)} className="h-10 w-10 p-0 rounded-full hover:bg-slate-100">
+                            <Icons.X className="h-5 w-5 text-slate-400" />
+                        </Button>
+                    </div>
+
+                    <div className="p-7 pt-0 overflow-y-auto max-h-[75vh] bg-white custom-scrollbar">
+                        <div className="space-y-3">
+                            {globalLogs.map((log) => (
+                                <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
+                                    <div className="flex gap-5">
+                                        {/* Icon Container */}
+                                        <div className={`h-11 w-11 rounded-xl flex items-center justify-center shrink-0 shadow-inner ${log.action.includes('diganti') || log.action.includes('ditugaskan') ? "bg-orange-50/50 text-orange-500" :
+                                            log.action.includes('dinonaktifkan') || log.action.includes('dibatalkan') ? "bg-red-50/50 text-red-500" :
+                                                log.action.includes('bermasalah') ? "bg-amber-50/50 text-amber-500" : "bg-emerald-50/50 text-emerald-500"
+                                            }`}>
+                                            {log.action.includes('diganti') || log.action.includes('ditugaskan') ? <Icons.UserPlus className="h-5 w-5" /> :
+                                                log.action.includes('dinonaktifkan') ? <Icons.PowerOff className="h-5 w-5" /> :
+                                                    log.action.includes('dibatalkan') ? <Icons.XCircle className="h-5 w-5" /> :
+                                                        log.action.includes('bermasalah') ? <Icons.AlertTriangle className="h-5 w-5" /> :
+                                                            <Icons.RotateCcw className="h-5 w-5" />}
+                                        </div>
+
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-start justify-between">
+                                                <div className="space-y-0.5">
+                                                    <h4 className="font-bold text-slate-900 text-base tracking-tight leading-none">{log.action}</h4>
+                                                    <p className="text-[13px] text-slate-400 font-medium mt-1">
+                                                        {log.details || log.action} {log.orderId && <span className="text-slate-300 ml-1">({log.orderId})</span>}
+                                                    </p>
+                                                </div>
+                                                <span className="text-[11px] font-bold text-slate-300 whitespace-nowrap pt-0.5 font-mono">
+                                                    {log.time}
+                                                </span>
+                                            </div>
+
+                                            {log.reason && (
+                                                <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 group">
+                                                    <div className="flex gap-2">
+                                                        <span className="text-xs font-black text-slate-900 uppercase tracking-widest leading-relaxed">Alasan:</span>
+                                                        <span className="text-xs text-slate-500 leading-relaxed font-semibold">
+                                                            {log.reason}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </Modal>
             </div>
-        </div>
-    )
+        )
 }
