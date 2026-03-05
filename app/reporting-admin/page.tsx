@@ -25,6 +25,8 @@ import {
     Search,
     MapPin,
     Clock,
+    FileSpreadsheet,
+    FileText,
 } from "lucide-react"
 import { addDays, format } from "date-fns"
 import { DateRange } from "react-day-picker"
@@ -45,6 +47,14 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
     Table,
     TableBody,
@@ -126,50 +136,71 @@ export default function ReportingDashboard() {
                             </PopoverContent>
                         </Popover>
                     </div>
-                    <Button variant="outline" size="icon">
-                        <Download className="h-4 w-4" />
-                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button className="bg-[#E04D04] hover:bg-[#c94504] text-white">
+                                <Download className="mr-2 h-4 w-4 text-white" />
+                                Ekspor Data
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Format</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                                <FileSpreadsheet className="mr-2 h-4 w-4" />
+                                Buku Besar Bulanan (.xlsx)
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <FileText className="mr-2 h-4 w-4" />
+                                Laporan Pencairan (.pdf)
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
 
             {/* KPI Cards */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                         <CardTitle className="text-sm font-medium">Total Pesanan</CardTitle>
-                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                        <ShoppingCart className="h-4 w-4 text-slate-400" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold">2,350</div>
                         <p className="text-xs text-muted-foreground">+12% dari minggu lalu</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                         <CardTitle className="text-sm font-medium">Total Pendapatan</CardTitle>
-                        <Wallet className="h-4 w-4 text-muted-foreground" />
+                        <Wallet className="h-4 w-4 text-slate-400" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold">Rp 45.2M</div>
                         <p className="text-xs text-muted-foreground">+8% dari minggu lalu</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                         <CardTitle className="text-sm font-medium">Pengemudi Aktif</CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground" />
+                        <Users className="h-4 w-4 text-slate-400" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold">145</div>
                         <p className="text-xs text-muted-foreground">Sedang online</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                         <CardTitle className="text-sm font-medium">Tingkat Penyelesaian</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-green-500" />
+                        <TrendingUp className="h-4 w-4 text-slate-400" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold">94.2%</div>
                         <p className="text-xs text-muted-foreground">5.8% Dibatalkan</p>
                     </CardContent>

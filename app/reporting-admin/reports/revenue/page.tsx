@@ -6,6 +6,7 @@ import {
     Filter,
     FileSpreadsheet,
     FileJson,
+    FileText,
     Calendar as CalendarIcon,
     ArrowUpRight,
     ArrowDownRight,
@@ -105,8 +106,8 @@ export default function RevenueReportPage() {
                     <Separator orientation="vertical" className="h-8" />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button>
-                                <Download className="mr-2 h-4 w-4" />
+                            <Button className="bg-[#E04D04] hover:bg-[#c94504] text-white">
+                                <Download className="mr-2 h-4 w-4 text-white" />
                                 Ekspor Data
                             </Button>
                         </DropdownMenuTrigger>
@@ -118,7 +119,7 @@ export default function RevenueReportPage() {
                                 Buku Besar Bulanan (.xlsx)
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <FileJson className="mr-2 h-4 w-4" />
+                                <FileText className="mr-2 h-4 w-4" />
                                 Laporan Pencairan (.pdf)
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -138,42 +139,46 @@ export default function RevenueReportPage() {
                 <TabsContent value="overview" className="space-y-4">
                     {/* KPI Cards */}
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <Card className="relative overflow-hidden">
+                            <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                                 <CardTitle className="text-sm font-medium">Total Pendapatan Kotor</CardTitle>
-                                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                                <DollarSign className="h-4 w-4 text-slate-400" />
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="pl-10">
                                 <div className="text-2xl font-bold">Rp 45.231.000</div>
                                 <p className="text-xs text-muted-foreground">+20.1% dari bulan lalu</p>
                             </CardContent>
                         </Card>
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <Card className="relative overflow-hidden">
+                            <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                                 <CardTitle className="text-sm font-medium">Pendapatan Bersih</CardTitle>
-                                <TrendingUp className="h-4 w-4 text-green-600" />
+                                <TrendingUp className="h-4 w-4 text-slate-400" />
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="pl-10">
                                 <div className="text-2xl font-bold text-green-600">Rp 12.450.000</div>
                                 <p className="text-xs text-muted-foreground">Setelah insentif & promo</p>
                             </CardContent>
                         </Card>
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <Card className="relative overflow-hidden">
+                            <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                                 <CardTitle className="text-sm font-medium">Pembayaran ke Mitra</CardTitle>
-                                <Wallet className="h-4 w-4 text-muted-foreground" />
+                                <Wallet className="h-4 w-4 text-slate-400" />
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="pl-10">
                                 <div className="text-2xl font-bold">Rp 28.500.000</div>
                                 <p className="text-xs text-muted-foreground">78% dari order selesai</p>
                             </CardContent>
                         </Card>
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <Card className="relative overflow-hidden">
+                            <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                                 <CardTitle className="text-sm font-medium">Bakar Uang Promo</CardTitle>
-                                <AlertCircle className="h-4 w-4 text-red-500" />
+                                <AlertCircle className="h-4 w-4 text-slate-400" />
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="pl-10">
                                 <div className="text-2xl font-bold text-red-500">Rp 4.281.000</div>
                                 <p className="text-xs text-muted-foreground">9.4% dari Pendapatan Kotor</p>
                             </CardContent>

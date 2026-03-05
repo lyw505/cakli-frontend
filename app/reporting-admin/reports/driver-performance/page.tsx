@@ -6,6 +6,7 @@ import {
     Filter,
     FileSpreadsheet,
     FileJson,
+    FileText,
     Search,
     Star,
     CheckCircle2,
@@ -71,9 +72,9 @@ export default function DriverPerformanceReportPage() {
                 <div className="flex items-center gap-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button>
-                                <Download className="mr-2 h-4 w-4" />
-                                Ekspor Laporan
+                            <Button className="bg-[#E04D04] hover:bg-[#c94504] text-white">
+                                <Download className="mr-2 h-4 w-4 text-white" />
+                                Ekspor Data
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -81,11 +82,11 @@ export default function DriverPerformanceReportPage() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
                                 <FileSpreadsheet className="mr-2 h-4 w-4" />
-                                Rincian (.xlsx)
+                                Buku Besar Bulanan (.xlsx)
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <FileJson className="mr-2 h-4 w-4" />
-                                Ringkasan (.pdf)
+                                <FileText className="mr-2 h-4 w-4" />
+                                Laporan Pencairan (.pdf)
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -94,42 +95,46 @@ export default function DriverPerformanceReportPage() {
 
             {/* KPI Cards */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                         <CardTitle className="text-sm font-medium">Performa Terbaik</CardTitle>
-                        <Trophy className="h-4 w-4 text-yellow-500" />
+                        <Trophy className="h-4 w-4 text-slate-400" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold">Joko Wow</div>
                         <p className="text-xs text-muted-foreground">145 Pesanan bulan ini</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                         <CardTitle className="text-sm font-medium">Rata-rata Penilaian</CardTitle>
-                        <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                        <Star className="h-4 w-4 text-slate-400" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold">4.72</div>
                         <p className="text-xs text-muted-foreground">Berdasarkan 500+ ulasan</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                         <CardTitle className="text-sm font-medium">Rata-rata Penyelesaian</CardTitle>
-                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                        <CheckCircle2 className="h-4 w-4 text-slate-400" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold">94.5%</div>
                         <p className="text-xs text-muted-foreground">Target Operasional: 95%</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                         <CardTitle className="text-sm font-medium">Tingkat Pembatalan Tinggi</CardTitle>
-                        <XCircle className="h-4 w-4 text-red-500" />
+                        <XCircle className="h-4 w-4 text-slate-400" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold">12 Pengemudi</div>
                         <p className="text-xs text-muted-foreground">{">"} 10% Tingkat Pembatalan</p>
                     </CardContent>

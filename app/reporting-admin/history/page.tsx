@@ -10,6 +10,7 @@ import {
     Download,
     FileSpreadsheet,
     FileJson,
+    FileText,
     ChevronLeft,
     ChevronRight,
 } from "lucide-react"
@@ -79,9 +80,9 @@ export default function HistoryPage() {
                 <div className="flex items-center gap-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button>
-                                <Download className="mr-2 h-4 w-4" />
-                                Export History
+                            <Button className="bg-[#E04D04] hover:bg-[#c94504] text-white">
+                                <Download className="mr-2 h-4 w-4 text-white" />
+                                Ekspor Data
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -89,11 +90,11 @@ export default function HistoryPage() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
                                 <FileSpreadsheet className="mr-2 h-4 w-4" />
-                                Excel (.xlsx)
+                                Buku Besar Bulanan (.xlsx)
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <FileJson className="mr-2 h-4 w-4" />
-                                PDF (.pdf)
+                                <FileText className="mr-2 h-4 w-4" />
+                                Laporan Pencairan (.pdf)
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

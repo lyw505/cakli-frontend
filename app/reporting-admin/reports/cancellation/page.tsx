@@ -6,6 +6,7 @@ import {
     Filter,
     FileSpreadsheet,
     FileJson,
+    FileText,
     Search,
     AlertCircle,
     ChevronLeft,
@@ -65,9 +66,9 @@ export default function CancellationReportPage() {
                 <div className="flex items-center gap-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button>
-                                <Download className="mr-2 h-4 w-4" />
-                                Ekspor Laporan
+                            <Button className="bg-[#E04D04] hover:bg-[#c94504] text-white">
+                                <Download className="mr-2 h-4 w-4 text-white" />
+                                Ekspor Data
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -75,11 +76,11 @@ export default function CancellationReportPage() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
                                 <FileSpreadsheet className="mr-2 h-4 w-4" />
-                                Excel (.xlsx)
+                                Buku Besar Bulanan (.xlsx)
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <FileJson className="mr-2 h-4 w-4" />
-                                PDF (.pdf)
+                                <FileText className="mr-2 h-4 w-4" />
+                                Laporan Pencairan (.pdf)
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -123,32 +124,35 @@ export default function CancellationReportPage() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                         <CardTitle className="text-sm font-medium">Tingkat Pembatalan</CardTitle>
-                        <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                        <AlertCircle className="h-4 w-4 text-slate-400" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold text-destructive">4.2%</div>
                         <p className="text-xs text-muted-foreground">+0.5% dari minggu lalu</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                         <CardTitle className="text-sm font-medium">Pembatalan oleh Pengemudi</CardTitle>
-                        <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                        <AlertCircle className="h-4 w-4 text-slate-400" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold">1.8%</div>
                         <p className="text-xs text-muted-foreground">Alasan utama: Masalah Kendaraan</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-10">
                         <CardTitle className="text-sm font-medium">Pembatalan oleh Pelanggan</CardTitle>
-                        <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                        <AlertCircle className="h-4 w-4 text-slate-400" />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold">2.4%</div>
                         <p className="text-xs text-muted-foreground">Alasan utama: Pengemudi terlalu jauh</p>
                     </CardContent>

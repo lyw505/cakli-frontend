@@ -22,6 +22,8 @@ import {
     AlertCircle,
     Download,
     Filter,
+    FileSpreadsheet,
+    FileText,
 } from "lucide-react"
 
 import {
@@ -45,6 +47,14 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const comparisonData = [
     { city: "Malang", orders: 15230, revenue: 18500, cancelRate: 4.2 },
@@ -89,43 +99,72 @@ export default function CrossAreaAnalytics() {
                             <SelectItem value="growth">Pertumbuhan Tinggi</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="outline">
-                        <Download className="mr-2 h-4 w-4" /> Ekspor Laporan
-                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button className="bg-[#E04D04] hover:bg-[#c94504] text-white">
+                                <Download className="mr-2 h-4 w-4 text-white" />
+                                Ekspor Data
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Format</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>
+                                <FileSpreadsheet className="mr-2 h-4 w-4" />
+                                Buku Besar Bulanan (.xlsx)
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <FileText className="mr-2 h-4 w-4" />
+                                Laporan Pencairan (.pdf)
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
 
             {/* Key Comparison Metrics */}
             <div className="grid gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Kota Pendapatan Tertinggi</CardTitle>
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="pb-2 pl-10">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center justify-between">
+                            Kota Pendapatan Tertinggi
+                            <ArrowUpRight className="h-4 w-4 text-slate-400" />
+                        </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold flex items-center gap-2">
-                            Surabaya <ArrowUpRight className="text-green-500 size-5" />
+                            Surabaya
                         </div>
                         <p className="text-xs text-muted-foreground">Menyumbang 68% dari total pendapatan kotor</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Tingkat Pembatalan Terendah</CardTitle>
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="pb-2 pl-10">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center justify-between">
+                            Tingkat Pembatalan Terendah
+                            <TrendingDown className="h-4 w-4 text-slate-400" />
+                        </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold flex items-center gap-2">
                             Batu <Badge variant="secondary" className="ml-2 text-green-600 bg-green-50">2.1%</Badge>
                         </div>
                         <p className="text-xs text-muted-foreground">Skor kepuasan pelanggan tertinggi (4.9/5)</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Pertumbuhan Tercepat</CardTitle>
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="pb-2 pl-10">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center justify-between">
+                            Pertumbuhan Tercepat
+                            <TrendingUp className="h-4 w-4 text-slate-400" />
+                        </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold flex items-center gap-2">
-                            Sidoarjo <TrendingUp className="text-blue-500 size-5" />
+                            Sidoarjo
                         </div>
                         <p className="text-xs text-muted-foreground">+5.8% MoM Akuisisi Pengguna Baru</p>
                     </CardContent>
