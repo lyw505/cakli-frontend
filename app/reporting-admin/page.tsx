@@ -64,6 +64,17 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
+import { toast } from "sonner"
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
+
 const hourlyData = [
     { name: "06:00", orders: 12, revenue: 150000 },
     { name: "08:00", orders: 45, revenue: 560000 },
@@ -90,8 +101,14 @@ export default function ReportingDashboard() {
         to: addDays(new Date(2024, 0, 20), 20),
     })
 
+    React.useEffect(() => {
+        toast.message("Dashboard Berhasil Dimuat", {
+            description: "Statistik bisnis terbaru telah diperbarui.",
+        })
+    }, [])
+
     return (
-        <div className="flex flex-col gap-6 p-6">
+        <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Ikhtisar Bisnis</h1>
@@ -105,7 +122,7 @@ export default function ReportingDashboard() {
                                     id="date"
                                     variant={"outline"}
                                     className={cn(
-                                        "w-[240px] justify-start text-left font-normal",
+                                        "w-[240px] justify-start text-left font-normal border-gray-200 focus-visible:ring-1 focus-visible:ring-[#E04D04] focus-visible:ring-offset-0",
                                         !date && "text-muted-foreground"
                                     )}
                                 >

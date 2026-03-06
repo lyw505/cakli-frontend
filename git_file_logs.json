@@ -1,0 +1,27 @@
+{
+  "app/master-admin/layout.tsx": [
+    "2299028 resolve conflict pull",
+    "d809e1e v1.5 minor  changes: coloring and remove sum item",
+    "541d697 v1.2 w/sidebar"
+  ],
+  "app/master-admin/analytics/page.tsx": [
+    "13cf4f7 v1.3 fitur analytics reporting-admin",
+    "0c79043 save #1"
+  ],
+  "app/master-admin/areas/page.tsx": [
+    "0c79043 save #1",
+    "72cb52a first commit"
+  ],
+  "app/master-admin/page.tsx": [
+    "0c79043 save #1",
+    "72cb52a first commit"
+  ],
+  "app/master-admin/roles/page.tsx": [
+    "0c79043 save #1",
+    "72cb52a first commit"
+  ],
+  "app/master-admin/tariffs/page.tsx": [
+    "0c79043 save #1",
+    "72cb52a first commit"
+  ]
+}

@@ -13,9 +13,10 @@ import {
     XCircle,
     TrendingUp,
     Trophy,
-    ChevronLeft,
-    ChevronRight,
 } from "lucide-react"
+import { addDays, format } from "date-fns"
+import { DateRange } from "react-day-picker"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -51,7 +52,22 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
 
 const driverData = [
     { id: "DRV-1024", name: "Agus Santoso", area: "Malang Kota", orders: 124, completion: "98%", rating: 4.8, status: "Aktif", cancelRate: "2%" },
@@ -61,9 +77,64 @@ const driverData = [
     { id: "DRV-1028", name: "Hendra P.", area: "Malang Kota", orders: 56, completion: "94%", rating: 4.7, status: "Aktif", cancelRate: "6%" },
 ]
 
-export default function DriverPerformanceReportPage() {
+function DatePickerWithRange({
+    className,
+}: React.HTMLAttributes<HTMLDivElement>) {
+    const [date, setDate] = React.useState<DateRange | undefined>({
+        from: new Date(2024, 1, 1),
+        to: addDays(new Date(2024, 1, 1), 7),
+    })
+
     return (
-        <div className="flex flex-col gap-6 p-6">
+        <div className={cn("grid gap-2", className)}>
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Button
+                        id="date"
+                        variant={"outline"}
+                        className={cn(
+                            "w-[260px] justify-start text-left font-normal border-gray-200 focus-visible:ring-1 focus-visible:ring-[#E04D04] focus-visible:ring-offset-0",
+                            !date && "text-muted-foreground"
+                        )}
+                    >
+                        <Search className="mr-2 h-4 w-4" />
+                        {date?.from ? (
+                            date.to ? (
+                                <>
+                                    {format(date.from, "dd MMM yyyy")} - {format(date.to, "dd MMM yyyy")}
+                                </>
+                            ) : (
+                                format(date.from, "dd MMM yyyy")
+                            )
+                        ) : (
+                            <span>Pilih Rentang Tanggal</span>
+                        )}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                        initialFocus
+                        mode="range"
+                        defaultMonth={date?.from}
+                        selected={date}
+                        onSelect={setDate}
+                        numberOfMonths={2}
+                    />
+                </PopoverContent>
+            </Popover>
+        </div>
+    )
+}
+
+export default function DriverPerformanceReportPage() {
+    React.useEffect(() => {
+        toast.message("Data Berhasil Dimuat", {
+            description: "Analisis kinerja pengemudi telah siap ditampilkan.",
+        })
+    }, [])
+
+    return (
+        <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Wawasan Kinerja Pengemudi</h1>
@@ -149,16 +220,16 @@ export default function DriverPerformanceReportPage() {
                         <Input
                             type="search"
                             placeholder="Cari Nama atau ID Pengemudi..."
-                            className="pl-8"
+                            className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0"
                         />
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Input type="date" className="w-full" />
+                    <DatePickerWithRange />
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 ml-12">
                     <Select defaultValue="all">
-                        <SelectTrigger>
+                        <SelectTrigger className="focus:ring-1 focus:ring-[#E04D04] focus:ring-offset-0">
                             <SelectValue placeholder="Area" />
                         </SelectTrigger>
                         <SelectContent>
@@ -243,20 +314,43 @@ export default function DriverPerformanceReportPage() {
                 </CardContent>
             </Card>
 
-            <div className="flex items-center justify-center gap-2 mt-4">
-                <Button variant="outline" size="sm" className="h-8 w-auto px-4" disabled>
-                    <ChevronLeft className="mr-2 h-4 w-4" />
-                    Back
-                </Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">1</Button>
-                <Button variant="default" size="sm" className="h-8 w-8 p-0 bg-[#E04D04] hover:bg-[#c94504]">2</Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">3</Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">4</Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">5</Button>
-                <Button variant="outline" size="sm" className="h-8 w-auto px-4">
-                    Next
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="text-xs text-muted-foreground font-medium">
+                    Menampilkan <span className="font-bold text-foreground">1–{driverData.length}</span> dari <span className="font-bold text-foreground">{driverData.length}</span> pengemudi
+                </div>
+                <Pagination className="justify-end w-auto mx-0">
+                    <PaginationContent className="gap-1">
+                        <PaginationItem>
+                            <PaginationPrevious href="#" className="h-8 w-8 p-0 text-gray-500 hover:text-gray-900 border border-gray-200 bg-white rounded-md shadow-none transition-all" text="" />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" isActive className="h-8 w-8 bg-[#E04D04] border-0 text-white hover:bg-[#E04D04] hover:text-white rounded-md shadow-none">
+                                1
+                            </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" className="h-8 w-8 border-0 bg-transparent text-gray-700 hover:text-foreground hover:bg-transparent rounded-md shadow-none">
+                                2
+                            </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" className="h-8 w-8 border-0 bg-transparent text-gray-700 hover:text-foreground hover:bg-transparent rounded-md shadow-none">
+                                3
+                            </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationEllipsis className="h-8 w-8 flex items-center justify-center text-gray-400" />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" className="h-8 w-8 border-0 bg-transparent text-gray-700 hover:text-foreground hover:bg-transparent rounded-md shadow-none">
+                                12
+                            </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationNext href="#" className="h-8 w-8 p-0 text-gray-500 hover:text-gray-900 border border-gray-200 bg-white rounded-md shadow-none transition-all" text="" />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
             </div>
         </div>
     )

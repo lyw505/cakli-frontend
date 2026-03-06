@@ -1,0 +1,11 @@
+{
+  "touched": [
+    "app/master-admin/layout.tsx",
+    "app/master-admin/analytics/page.tsx",
+    "app/master-admin/areas/page.tsx",
+    "app/master-admin/page.tsx",
+    "app/master-admin/roles/page.tsx",
+    "app/master-admin/tariffs/page.tsx"
+  ],
+  "total": 39
+}
