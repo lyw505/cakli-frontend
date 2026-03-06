@@ -1,5 +1,6 @@
 import React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
+import { Toaster } from "@/components/ui/sonner"
 
 export default function MasterAdminLayout({
     children,
@@ -19,6 +20,7 @@ export default function MasterAdminLayout({
                     {children}
                 </main>
             </div>
+            <Toaster position="bottom-right" />
         </div>
     )
 }
