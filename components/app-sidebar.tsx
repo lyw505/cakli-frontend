@@ -18,6 +18,7 @@ import {
   Home,
   Zap,
   EllipsisVertical,
+  UserCheck,
 } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -51,6 +52,7 @@ const adminNavigation = {
       { title: "Area & Zone", url: "/master-admin/areas", icon: Map },
       { title: "Admin Roles", url: "/master-admin/roles", icon: ShieldCheck },
       { title: "Audit Log", url: "/master-admin/audit", icon: ClipboardList },
+      { title: "Kebijakan Mitra", url: "/master-admin/partners", icon: UserCheck },
     ],
   },
   "operation-admin": {
