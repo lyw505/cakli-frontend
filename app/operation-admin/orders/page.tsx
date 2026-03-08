@@ -1,6 +1,11 @@
 "use client"
 
 import React, { useState, useMemo } from "react"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { id as localeId } from "date-fns/locale"
+import { type DateRange } from "react-day-picker"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,7 +18,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import {
+    Empty,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+    EmptyDescription as EmptyDesc,
+} from "@/components/ui/empty"
 import {
     DropdownMenu as ShadcnDropdownMenu,
     DropdownMenuContent,
@@ -41,19 +53,7 @@ function Select({ value, onChange, options, placeholder, className = "", id }: {
     )
 }
 
-function Modal({ isOpen, onClose, children, maxWidth = "md" }: any) {
-    if (!isOpen) return null;
-    const maxWidths: any = { sm: "max-w-sm", md: "max-w-md", lg: "max-w-lg", xl: "max-w-xl", "4xl": "max-w-4xl" };
-    return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className={`${maxWidths[maxWidth]} p-0 overflow-hidden max-h-[90vh] flex flex-col border border-slate-200`}>
-                <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
-                    {children}
-                </div>
-            </DialogContent>
-        </Dialog>
-    )
-}
+// Modal wrapper removed — using shadcn Dialog directly
 
 function DropdownMenu({ trigger, children }: any) {
     return (
@@ -657,7 +657,7 @@ export default function OrdersPage() {
 
     const [search, setSearch] = useState("")
     const [filterStatus, setFilterStatus] = useState("all")
-    const [filterDate, setFilterDate] = useState("")
+    const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
     const [page, setPage] = useState(1)
 
     const [filterDriver] = useState("all")
@@ -688,10 +688,10 @@ export default function OrdersPage() {
         return all.sort((a, b) => b.time.localeCompare(a.time)).slice(0, 3)
     })
 
-    const activeFilters = [filterStatus !== "all", filterDate !== ""].filter(Boolean).length
+    const activeFilters = [filterStatus !== "all", dateRange !== undefined].filter(Boolean).length
 
     const resetFilters = () => {
-        setSearch(""); setFilterStatus("all"); setFilterDate(""); setPage(1)
+        setSearch(""); setFilterStatus("all"); setDateRange(undefined); setPage(1)
     }
 
     const filtered = useMemo(() => {
@@ -699,12 +699,22 @@ export default function OrdersPage() {
         return orders.filter((o) => {
             if (q && !o.id.toLowerCase().includes(q) && !o.customer.toLowerCase().includes(q) && !o.driver.toLowerCase().includes(q)) return false
             if (filterStatus !== "all" && o.status !== filterStatus) return false
-            if (filterDate !== "" && o.dateOnly !== filterDate) return false
+            if (dateRange?.from) {
+                const orderDate = new Date(o.dateOnly)
+                const from = new Date(dateRange.from)
+                from.setHours(0, 0, 0, 0)
+                if (orderDate < from) return false
+                if (dateRange.to) {
+                    const to = new Date(dateRange.to)
+                    to.setHours(23, 59, 59, 999)
+                    if (orderDate > to) return false
+                }
+            }
             if (filterDriver !== "all" && o.driver !== filterDriver) return false
             if (filterArea !== "all" && o.area !== filterArea) return false
             return true
         })
-    }, [orders, search, filterStatus, filterDate, filterDriver, filterArea])
+    }, [orders, search, filterStatus, dateRange, filterDriver, filterArea])
 
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
     const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
@@ -906,15 +916,32 @@ export default function OrdersPage() {
                     </div>
 
                     <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                            <Icons.CalendarDays />
-                        </div>
-                        <Input
-                            type="date"
-                            value={filterDate}
-                            onChange={(e) => { setFilterDate(e.target.value); setPage(1) }}
-                            className="text-sm pl-10 bg-white"
-                        />
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button variant="outline" className={`w-full justify-start text-sm bg-white ${!dateRange ? 'text-muted-foreground' : ''}`}>
+                                    <Icons.CalendarDays className="mr-2" />
+                                    {dateRange?.from ? (
+                                        dateRange.to ? (
+                                            <>{format(dateRange.from, 'dd MMM yyyy', { locale: localeId })} - {format(dateRange.to, 'dd MMM yyyy', { locale: localeId })}</>
+                                        ) : (
+                                            format(dateRange.from, 'dd MMM yyyy', { locale: localeId })
+                                        )
+                                    ) : (
+                                        'Pilih rentang tanggal'
+                                    )}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    mode="range"
+                                    defaultMonth={dateRange?.from}
+                                    selected={dateRange}
+                                    onSelect={(range) => { setDateRange(range); setPage(1) }}
+                                    numberOfMonths={2}
+                                    initialFocus
+                                />
+                            </PopoverContent>
+                        </Popover>
                     </div>
                 </div>
             </div>
@@ -1094,48 +1121,42 @@ export default function OrdersPage() {
             </div>
 
             {/* ═══════════════════════════════════════════════════════════
-                    DIALOGS
+                    DIALOGS (Shadcn Dialog style)
                 ═══════════════════════════════════════════════════════════ */}
 
             {/* Detail Order */}
-            <Modal isOpen={!!detailOrder} onClose={() => setDetailOrder(null)} maxWidth="4xl">
-                <div className="px-6 py-4 border-b border-slate-200 flex items-start justify-between bg-white">
-                    <div>
-                        <h2 className="text-xl font-semibold text-slate-900 flex items-center gap-2 flex-wrap">
-                            <span>Detail Order</span>
+            <Dialog open={!!detailOrder} onOpenChange={() => setDetailOrder(null)}>
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 flex-wrap">
+                            Detail Order
                             <span className="font-mono text-sm" style={{ color: '#E04D04' }}>{liveDetail?.id}</span>
                             {liveDetail && <StatusPill status={liveDetail.status} />}
-                        </h2>
-                        <p className="text-sm text-slate-500 mt-1">
+                        </DialogTitle>
+                        <DialogDescription>
                             Informasi lengkap transaksi — durasi, breakdown biaya, rating, audit log & rute.
-                        </p>
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-1 overflow-y-auto custom-scrollbar -mx-6 px-6">
+                        {liveDetail && <DetailDialog order={liveDetail} onReassign={() => { setReassignTarget(liveDetail); setReassignDriver(""); setDetailOrder(null) }} />}
                     </div>
-                    <Button variant="ghost" size="sm" onClick={() => setDetailOrder(null)} className="h-8 w-8 p-0">
-                        <Icons.X />
-                    </Button>
-                </div>
-                <div className="p-6 overflow-y-auto max-h-[70vh] bg-white">
-                    {liveDetail && <DetailDialog order={liveDetail} onReassign={() => { setReassignTarget(liveDetail); setReassignDriver(""); setDetailOrder(null) }} />}
-                </div>
-            </Modal>
+                </DialogContent>
+            </Dialog>
 
             {/* Reassign Driver */}
-            <Modal isOpen={!!reassignTarget} onClose={() => setReassignTarget(null)}>
-                <div className="px-5 py-4 border-b border-slate-200">
-                    <div className="flex items-center gap-2 text-[#E04D04]">
-                        <Icons.UserPlus />
-                        <span className="font-semibold text-base">Ganti Driver</span>
-                    </div>
-                </div>
-                <div className="px-5 py-4 space-y-4 bg-white">
-                    <p className="text-sm text-slate-600 leading-relaxed">
-                        Pilih driver pengganti untuk order{" "}
-                        <span className="font-mono font-semibold" style={{ color: '#E04D04' }}>{reassignTarget?.id}</span>.
-                        Driver sebelumnya: <strong className="text-slate-900">{reassignTarget?.driver === "-" ? "Belum ditugaskan" : reassignTarget?.driver}</strong>.
-                    </p>
+            <Dialog open={!!reassignTarget} onOpenChange={() => setReassignTarget(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Ganti Driver</DialogTitle>
+                        <DialogDescription>
+                            Pilih driver pengganti untuk order{" "}
+                            <span className="font-mono font-semibold" style={{ color: '#E04D04' }}>{reassignTarget?.id}</span>.
+                            Driver sebelumnya: <strong className="text-slate-900">{reassignTarget?.driver === "-" ? "Belum ditugaskan" : reassignTarget?.driver}</strong>.
+                        </DialogDescription>
+                    </DialogHeader>
                     <div className="space-y-4">
                         <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                            <label className="text-sm font-medium">
                                 Pilih Driver Aktif <span className="text-red-500">*</span>
                             </label>
                             <Select
@@ -1148,7 +1169,7 @@ export default function OrdersPage() {
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
+                            <label className="text-sm font-medium">
                                 Alasan Penggantian <span className="text-red-500">*</span>
                             </label>
                             <Textarea
@@ -1159,234 +1180,211 @@ export default function OrdersPage() {
                                 onChange={(e) => setReassignReason(e.target.value)}
                             />
                         </div>
-                    </div>
-                    <p className="text-xs text-slate-500">
-                        Pergantian akan tercatat di audit log dan notifikasi dikirim ke driver baru.
-                    </p>
-                    <div className="flex gap-2 justify-end pt-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setReassignTarget(null)}
-                        >
-                            Tutup
-                        </Button>
-                        <Button
-                            size="sm"
-                            disabled={!reassignDriver}
-                            onClick={applyReassign}
-                            style={{ backgroundColor: '#E04D04', color: 'white' }}
-                        >
-                            <Icons.UserPlus /> Konfirmasi Ganti Driver
-                        </Button>
-                    </div>
-                </div>
-            </Modal>
-
-            {/* Cancel Order */}
-            <Modal isOpen={!!cancelTarget} onClose={() => setCancelTarget(null)}>
-                <div className="px-5 py-4 border-b border-slate-200">
-                    <div className="flex items-center gap-2 text-red-600">
-                        <Icons.XCircle />
-                        <span className="font-semibold text-base">Batalkan Order</span>
-                    </div>
-                </div>
-                <div className="px-5 py-4 space-y-4 bg-white">
-                    <p className="text-sm text-slate-600 leading-relaxed">
-                        Order <span className="font-mono font-semibold" style={{ color: '#E04D04' }}>{cancelTarget?.id}</span> —{" "}
-                        {cancelTarget?.customer} akan dibatalkan. Tindakan ini tercatat di audit log.
-                    </p>
-                    <div>
-                        <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
-                            Alasan Pembatalan <span className="text-red-500">*</span>
-                        </label>
-                        <Textarea
-                            placeholder="Contoh: Driver tidak datang, kesalahan pemesanan, gangguan sistem…"
-                            className="mt-1.5 text-sm"
-                            rows={3}
-                            value={cancelReason}
-                            onChange={(e) => setCancelReason(e.target.value)}
-                        />
-                    </div>
-                    <p className="text-xs text-slate-500">Dibatalkan oleh: <strong>Admin</strong></p>
-                    <div className="flex gap-2 justify-end pt-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setCancelTarget(null)}
-                        >
-                            Tutup
-                        </Button>
-                        <Button
-                            size="sm"
-                            disabled={!cancelReason.trim()}
-                            onClick={applyCancel}
-                            style={{ backgroundColor: '#DC2626', color: 'white' }}
-                        >
-                            <Icons.XCircle /> Konfirmasi Batalkan
-                        </Button>
-                    </div>
-                </div>
-            </Modal>
-
-            {/* Mark as Issue */}
-            <Modal isOpen={!!issueTarget} onClose={() => setIssueTarget(null)}>
-                <div className="px-5 py-4 border-b border-slate-200">
-                    <div className="flex items-center gap-2 text-orange-600">
-                        <Icons.AlertTriangle />
-                        <span className="font-semibold text-base">Tandai Bermasalah</span>
-                    </div>
-                </div>
-                <div className="px-5 py-4 space-y-4 bg-white">
-                    <p className="text-sm text-slate-600 leading-relaxed">
-                        Order <span className="font-mono font-semibold" style={{ color: '#E04D04' }}>{issueTarget?.id}</span> akan ditandai sebagai <strong>Issue</strong>.
-                        Order tidak dibatalkan, namun butuh perhatian admin.
-                    </p>
-                    <div>
-                        <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
-                            Catatan Masalah <span className="text-red-500">*</span>
-                        </label>
-                        <Textarea
-                            placeholder="Contoh: Driver sulit dihubungi, customer komplain, keterlambatan…"
-                            className="mt-1.5 text-sm"
-                            rows={3}
-                            value={issueNote}
-                            onChange={(e) => setIssueNote(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex gap-2 justify-end pt-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setIssueTarget(null)}
-                        >
-                            Tutup
-                        </Button>
-                        <Button
-                            size="sm"
-                            disabled={!issueNote.trim()}
-                            onClick={applyIssue}
-                            style={{ backgroundColor: '#F97316', color: 'white' }}
-                        >
-                            <Icons.AlertTriangle /> Tandai Bermasalah
-                        </Button>
-                    </div>
-                </div>
-            </Modal>
-
-            {/* Deactivate Driver Confirmation */}
-            <Modal isOpen={!!deactivateTarget} onClose={() => setDeactivateTarget(null)}>
-                <div className="px-5 py-4 border-b border-slate-200">
-                    <div className="flex items-center gap-2 text-red-600">
-                        <Icons.PowerOff />
-                        <span className="font-semibold text-base">Nonaktifkan Driver</span>
-                    </div>
-                </div>
-                <div className="px-5 py-4 space-y-4 bg-white">
-                    <div className="p-4 bg-red-50 rounded-xl border border-red-100 flex gap-3 text-red-700">
-                        <Icons.AlertTriangle className="shrink-0" />
-                        <div className="text-xs leading-relaxed">
-                            <p className="font-bold uppercase tracking-wider mb-1 text-red-800">Peringatan Penting</p>
-                            <p>Tindakan ini akan menonaktifkan driver <strong>{deactivateTarget?.driver}</strong> dari armada aktif.</p>
-                            {["pending", "assigned", "unassigned"].includes(deactivateTarget?.status || "") && (
-                                <p className="mt-1 font-bold">Order {deactivateTarget?.id} akan dikembalikan ke antrian pencarian driver.</p>
-                            )}
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
-                            Alasan Nonaktifkan <span className="text-red-500">*</span>
-                        </label>
-                        <Textarea
-                            placeholder="Contoh: Perilaku tidak pantas, menolak order berkali-kali, tidak aktif terlalu lama..."
-                            className="mt-1.5 text-sm"
-                            rows={3}
-                            value={deactivateReason}
-                            onChange={(e) => setDeactivateReason(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="flex gap-2 justify-end pt-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setDeactivateTarget(null)}
-                        >
-                            Batal
-                        </Button>
-                        <Button
-                            size="sm"
-                            disabled={!deactivateReason.trim()}
-                            onClick={applyDeactivateDriver}
-                            style={{ backgroundColor: '#DC2626', color: 'white' }}
-                        >
-                            <Icons.PowerOff /> Konfirmasi Nonaktifkan
-                        </Button>
-                    </div>
-                </div>
-            </Modal>
-
-            <Modal isOpen={isGlobalAuditOpen} onClose={() => setIsGlobalAuditOpen(false)} maxWidth="4xl">
-                <div className="px-7 py-6 flex items-start justify-between bg-white">
-                    <div className="space-y-1">
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Audit Log</h2>
-                        <p className="text-sm text-slate-500 font-medium">
-                            Catatan semua tindakan administratif
+                        <p className="text-xs text-muted-foreground">
+                            Pergantian akan tercatat di audit log dan notifikasi dikirim ke driver baru.
                         </p>
                     </div>
-                    <Button variant="ghost" size="sm" onClick={() => setIsGlobalAuditOpen(false)} className="h-10 w-10 p-0 rounded-full hover:bg-slate-100">
-                        <Icons.X className="h-5 w-5 text-slate-400" />
-                    </Button>
-                </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setReassignTarget(null)}>Batal</Button>
+                        <Button
+                            disabled={!reassignDriver}
+                            onClick={applyReassign}
+                            className="bg-[#E04D04] hover:bg-[#c94504] text-white"
+                        >
+                            Konfirmasi Ganti Driver
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
-                <div className="p-7 pt-0 overflow-y-auto max-h-[75vh] bg-white custom-scrollbar">
-                    <div className="space-y-3">
-                        {globalLogs.map((log) => (
-                            <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:bg-slate-50 transition-all relative overflow-hidden">
-                                <div className="flex gap-5">
-                                    {/* Icon Container */}
-                                    <div className={`h-11 w-11 rounded-xl flex items-center justify-center shrink-0 ${log.action.includes('diganti') || log.action.includes('ditugaskan') ? "bg-orange-50/50 text-orange-500" :
-                                        log.action.includes('dinonaktifkan') || log.action.includes('dibatalkan') ? "bg-red-50/50 text-red-500" :
-                                            log.action.includes('bermasalah') ? "bg-amber-50/50 text-amber-500" : "bg-emerald-50/50 text-emerald-500"
-                                        }`}>
-                                        {log.action.includes('diganti') || log.action.includes('ditugaskan') ? <Icons.UserPlus className="h-5 w-5" /> :
-                                            log.action.includes('dinonaktifkan') ? <Icons.PowerOff className="h-5 w-5" /> :
-                                                log.action.includes('dibatalkan') ? <Icons.XCircle className="h-5 w-5" /> :
-                                                    log.action.includes('bermasalah') ? <Icons.AlertTriangle className="h-5 w-5" /> :
-                                                        <Icons.RotateCcw className="h-5 w-5" />}
-                                    </div>
+            {/* Cancel Order */}
+            <Dialog open={!!cancelTarget} onOpenChange={() => setCancelTarget(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Batalkan Order</DialogTitle>
+                        <DialogDescription>
+                            Order <span className="font-mono font-semibold" style={{ color: '#E04D04' }}>{cancelTarget?.id}</span> —{" "}
+                            {cancelTarget?.customer} akan dibatalkan. Tindakan ini tercatat di audit log.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium">
+                                Alasan Pembatalan <span className="text-red-500">*</span>
+                            </label>
+                            <Textarea
+                                placeholder="Contoh: Driver tidak datang, kesalahan pemesanan, gangguan sistem…"
+                                className="text-sm"
+                                rows={3}
+                                value={cancelReason}
+                                onChange={(e) => setCancelReason(e.target.value)}
+                            />
+                        </div>
+                        <p className="text-xs text-muted-foreground">Dibatalkan oleh: <strong>Admin</strong></p>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setCancelTarget(null)}>Batal</Button>
+                        <Button
+                            disabled={!cancelReason.trim()}
+                            onClick={applyCancel}
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                        >
+                            Konfirmasi Batalkan
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-start justify-between">
-                                            <div className="space-y-0.5">
-                                                <h4 className="font-bold text-slate-900 text-base tracking-tight leading-none">{log.action}</h4>
-                                                <p className="text-[13px] text-slate-400 font-medium mt-1">
-                                                    {log.details || log.action} {log.orderId && <span className="text-slate-300 ml-1">({log.orderId})</span>}
-                                                </p>
-                                            </div>
-                                            <span className="text-[11px] font-bold text-slate-300 whitespace-nowrap pt-0.5 font-mono">
-                                                {log.time}
-                                            </span>
+            {/* Mark as Issue */}
+            <Dialog open={!!issueTarget} onOpenChange={() => setIssueTarget(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Tandai Bermasalah</DialogTitle>
+                        <DialogDescription>
+                            Order <span className="font-mono font-semibold" style={{ color: '#E04D04' }}>{issueTarget?.id}</span> akan ditandai sebagai <strong>Issue</strong>.
+                            Order tidak dibatalkan, namun butuh perhatian admin.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium">
+                                Catatan Masalah <span className="text-red-500">*</span>
+                            </label>
+                            <Textarea
+                                placeholder="Contoh: Driver sulit dihubungi, customer komplain, keterlambatan…"
+                                className="text-sm"
+                                rows={3}
+                                value={issueNote}
+                                onChange={(e) => setIssueNote(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIssueTarget(null)}>Batal</Button>
+                        <Button
+                            disabled={!issueNote.trim()}
+                            onClick={applyIssue}
+                            className="bg-orange-500 hover:bg-orange-600 text-white"
+                        >
+                            Tandai Bermasalah
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Deactivate Driver Confirmation */}
+            <Dialog open={!!deactivateTarget} onOpenChange={() => setDeactivateTarget(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Nonaktifkan Driver</DialogTitle>
+                        <DialogDescription>
+                            Tindakan ini akan menonaktifkan driver dari armada aktif.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="p-4 bg-red-50 rounded-xl border border-red-100 flex gap-3 text-red-700">
+                            <Icons.AlertTriangle className="shrink-0" />
+                            <div className="text-xs leading-relaxed">
+                                <p className="font-bold uppercase tracking-wider mb-1 text-red-800">Peringatan Penting</p>
+                                <p>Tindakan ini akan menonaktifkan driver <strong>{deactivateTarget?.driver}</strong> dari armada aktif.</p>
+                                {["pending", "assigned", "unassigned"].includes(deactivateTarget?.status || "") && (
+                                    <p className="mt-1 font-bold">Order {deactivateTarget?.id} akan dikembalikan ke antrian pencarian driver.</p>
+                                )}
+                            </div>
+                        </div>
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium">
+                                Alasan Nonaktifkan <span className="text-red-500">*</span>
+                            </label>
+                            <Textarea
+                                placeholder="Contoh: Perilaku tidak pantas, menolak order berkali-kali, tidak aktif terlalu lama..."
+                                className="text-sm"
+                                rows={3}
+                                value={deactivateReason}
+                                onChange={(e) => setDeactivateReason(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setDeactivateTarget(null)}>Batal</Button>
+                        <Button
+                            disabled={!deactivateReason.trim()}
+                            onClick={applyDeactivateDriver}
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                        >
+                            Konfirmasi Nonaktifkan
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Global Audit Log */}
+            <Dialog open={isGlobalAuditOpen} onOpenChange={() => setIsGlobalAuditOpen(false)}>
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Audit Log</DialogTitle>
+                        <DialogDescription>
+                            Catatan semua tindakan administratif
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-1 overflow-y-auto custom-scrollbar -mx-6 px-6 space-y-3">
+                        {globalLogs.length > 0 ? (
+                            globalLogs.map((log) => (
+                                <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:bg-slate-50 transition-all relative overflow-hidden">
+                                    <div className="flex gap-5">
+                                        <div className={`h-11 w-11 rounded-xl flex items-center justify-center shrink-0 ${log.action.includes('diganti') || log.action.includes('ditugaskan') ? "bg-orange-50/50 text-orange-500" :
+                                            log.action.includes('dinonaktifkan') || log.action.includes('dibatalkan') ? "bg-red-50/50 text-red-500" :
+                                                log.action.includes('bermasalah') ? "bg-amber-50/50 text-amber-500" : "bg-emerald-50/50 text-emerald-500"
+                                            }`}>
+                                            {log.action.includes('diganti') || log.action.includes('ditugaskan') ? <Icons.UserPlus className="h-5 w-5" /> :
+                                                log.action.includes('dinonaktifkan') ? <Icons.PowerOff className="h-5 w-5" /> :
+                                                    log.action.includes('dibatalkan') ? <Icons.XCircle className="h-5 w-5" /> :
+                                                        log.action.includes('bermasalah') ? <Icons.AlertTriangle className="h-5 w-5" /> :
+                                                            <Icons.RotateCcw className="h-5 w-5" />}
                                         </div>
-
-                                        {log.reason && (
-                                            <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 group">
-                                                <div className="flex gap-2">
-                                                    <span className="text-xs font-black text-slate-900 uppercase tracking-widest leading-relaxed">Alasan:</span>
-                                                    <span className="text-xs text-slate-500 leading-relaxed font-semibold">
-                                                        {log.reason}
-                                                    </span>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-start justify-between">
+                                                <div className="space-y-0.5">
+                                                    <h4 className="font-bold text-slate-900 text-base tracking-tight leading-none">{log.action}</h4>
+                                                    <p className="text-[13px] text-slate-400 font-medium mt-1">
+                                                        {log.details || log.action} {log.orderId && <span className="text-slate-300 ml-1">({log.orderId})</span>}
+                                                    </p>
                                                 </div>
+                                                <span className="text-[11px] font-bold text-slate-300 whitespace-nowrap pt-0.5 font-mono">
+                                                    {log.time}
+                                                </span>
                                             </div>
-                                        )}
+                                            {log.reason && (
+                                                <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50">
+                                                    <div className="flex gap-2">
+                                                        <span className="text-xs font-black text-slate-900 uppercase tracking-widest leading-relaxed">Alasan:</span>
+                                                        <span className="text-xs text-slate-500 leading-relaxed font-semibold">{log.reason}</span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <Empty className="h-full bg-muted/30">
+                                <EmptyHeader>
+                                    <EmptyMedia variant="icon">
+                                        <Icons.History />
+                                    </EmptyMedia>
+                                    <EmptyTitle>Belum Ada Aktivitas</EmptyTitle>
+                                    <EmptyDesc className="max-w-xs text-pretty">
+                                        Catatan tindakan administratif akan muncul di sini.
+                                    </EmptyDesc>
+                                </EmptyHeader>
+                            </Empty>
+                        )}
                     </div>
-                </div>
-            </Modal>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsGlobalAuditOpen(false)}>Tutup</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

@@ -14,7 +14,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import {
+    Empty,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+    EmptyDescription as EmptyDesc,
+} from "@/components/ui/empty"
 import {
     DropdownMenu as ShadcnDropdownMenu,
     DropdownMenuContent,
@@ -42,19 +49,7 @@ function Select({ value, onChange, options, placeholder, className = "", id }: a
     )
 }
 
-function Modal({ isOpen, onClose, children, maxWidth = "md" }: any) {
-    if (!isOpen) return null;
-    const maxWidths: any = { sm: "max-w-sm", md: "max-w-md", lg: "max-w-lg", xl: "max-w-xl", "4xl": "max-w-4xl" };
-    return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className={`${maxWidths[maxWidth]} p-0 overflow-hidden max-h-[90vh] flex flex-col border border-slate-200`}>
-                <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
-                    {children}
-                </div>
-            </DialogContent>
-        </Dialog>
-    )
-}
+// Modal wrapper removed — using shadcn Dialog directly
 
 function DropdownMenu({ trigger, children }: any) {
     return (
@@ -797,343 +792,325 @@ export default function UserManagementPage() {
             </div>
 
             {/* ── Suspend Confirmation Modal ── */}
-            <Modal isOpen={!!suspendTarget} onClose={() => setSuspendTarget(null)}>
-                <div className="p-6 flex flex-col items-center text-center space-y-4" style={{ backgroundColor: 'rgba(224, 77, 4, 0.1)' }}>
-                    <div className="h-16 w-16 rounded-full bg-white flex items-center justify-center border border-orange-100" style={{ color: '#E04D04' }}>
-                        <Icons.ShieldAlert />
-                    </div>
-                    <div className="space-y-2">
-                        <h2 className="text-xl font-bold tracking-tight" style={{ color: '#E04D04' }}>Confirm Suspension</h2>
-                        <p className="text-sm px-4" style={{ color: 'rgba(224, 77, 4, 0.8)' }}>
-                            You are about to restrict access for <span className="font-semibold" style={{ color: '#E04D04' }}>{suspendTarget?.name}</span>. This action cannot be easily undone.
-                        </p>
-                    </div>
-                </div>
-
-                <div className="p-6 space-y-5 max-h-[60vh] overflow-y-auto">
-                    <div className="space-y-2">
-                        <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">Suspension Type</label>
-                        <div className="grid grid-cols-2 gap-2">
-                            <Button
-                                variant={suspendType === "Temporary" ? "default" : "outline"}
-                                onClick={() => setSuspendType("Temporary")}
-                                className={`h-10 text-sm font-medium ${suspendType === "Temporary" ? "bg-slate-900 text-white border-transparent" : "border-slate-200 text-slate-600"}`}
-                                style={suspendType === "Temporary" ? { backgroundColor: '#E04D04' } : {}}
-                            >
-                                Temporary
-                            </Button>
-                            <Button
-                                variant={suspendType === "Permanent" ? "default" : "outline"}
-                                onClick={() => setSuspendType("Permanent")}
-                                className={`h-10 text-sm font-medium ${suspendType === "Permanent" ? "text-white border-transparent" : "border-slate-200 text-slate-600"}`}
-                                style={suspendType === "Permanent" ? { backgroundColor: '#E04D04' } : {}}
-                            >
-                                Permanent
-                            </Button>
+            <Dialog open={!!suspendTarget} onOpenChange={() => setSuspendTarget(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Confirm Suspension</DialogTitle>
+                        <DialogDescription>
+                            You are about to restrict access for <span className="font-semibold text-foreground">{suspendTarget?.name}</span>. This action cannot be easily undone.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium">Suspension Type</label>
+                            <div className="grid grid-cols-2 gap-2">
+                                <Button
+                                    variant={suspendType === "Temporary" ? "default" : "outline"}
+                                    onClick={() => setSuspendType("Temporary")}
+                                    className={`h-10 text-sm font-medium ${suspendType === "Temporary" ? "" : "border-slate-200 text-slate-600"}`}
+                                    style={suspendType === "Temporary" ? { backgroundColor: '#E04D04' } : {}}
+                                >
+                                    Temporary
+                                </Button>
+                                <Button
+                                    variant={suspendType === "Permanent" ? "default" : "outline"}
+                                    onClick={() => setSuspendType("Permanent")}
+                                    className={`h-10 text-sm font-medium ${suspendType === "Permanent" ? "" : "border-slate-200 text-slate-600"}`}
+                                    style={suspendType === "Permanent" ? { backgroundColor: '#E04D04' } : {}}
+                                >
+                                    Permanent
+                                </Button>
+                            </div>
                         </div>
-                    </div>
 
-                    {suspendType === "Temporary" && (
-                        <div className="space-y-2">
-                            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">Lock Duration</label>
-                            <Select
-                                value={suspendDuration}
-                                onChange={setSuspendDuration}
-                                options={durationOptions}
+                        {suspendType === "Temporary" && (
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-medium">Lock Duration</label>
+                                <Select
+                                    value={suspendDuration}
+                                    onChange={setSuspendDuration}
+                                    options={durationOptions}
+                                />
+                            </div>
+                        )}
+
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium">Official Reason <span className="text-red-500">*</span></label>
+                            <Textarea
+                                value={suspendReason}
+                                onChange={(e) => setSuspendReason(e.target.value)}
+                                placeholder="Explain the decision for internal auditing..."
+                                className="min-h-[100px]"
                             />
                         </div>
-                    )}
-
-                    <div className="space-y-2">
-                        <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">Official Reason <span style={{ color: '#E04D04' }}>*</span></label>
-                        <Textarea
-                            value={suspendReason}
-                            onChange={(e) => setSuspendReason(e.target.value)}
-                            placeholder="Explain the decision for internal auditing..."
-                            className="min-h-[100px]"
-                        />
                     </div>
-                </div>
-
-                <div className="p-6 pt-0">
-                    <Button
-                        onClick={handleSuspend}
-                        disabled={!suspendReason}
-                        className="w-full h-10 font-medium text-sm"
-                        style={{ backgroundColor: '#E04D04', color: 'white' }}
-                    >
-                        Suspend Account
-                    </Button>
-                </div>
-            </Modal>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setSuspendTarget(null)}>Cancel</Button>
+                        <Button
+                            onClick={handleSuspend}
+                            disabled={!suspendReason}
+                            className="bg-[#E04D04] hover:bg-[#c94504] text-white"
+                        >
+                            Suspend Account
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* ── User Detail Modal ── */}
-            <Modal isOpen={!!detailUser} onClose={() => setDetailUser(null)} maxWidth="4xl">
-                <div className="px-6 py-4 border-b border-slate-100 flex items-start shrink-0">
-                    <div className="flex items-center gap-4">
-                        <div className="h-14 w-14 rounded-lg bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center text-slate-700 text-xl font-medium border border-slate-200">
-                            {detailUser?.name.charAt(0)}
-                        </div>
-                        <div className="space-y-1">
-                            <h2 className="text-xl font-semibold text-slate-900">{detailUser?.name}</h2>
-                            <div className="flex flex-wrap items-center gap-2 text-sm">
-                                <span className="text-slate-400 flex items-center gap-1">
-                                    <Icons.Mail /> {detailUser?.email}
-                                </span>
-                                <span className="text-slate-300">•</span>
-                                <span className="text-slate-400">{detailUser?.phone}</span>
+            <Dialog open={!!detailUser} onOpenChange={() => setDetailUser(null)}>
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <div className="flex items-center gap-4">
+                            <div className="h-14 w-14 rounded-lg bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center text-slate-700 text-xl font-medium border border-slate-200">
+                                {detailUser?.name.charAt(0)}
                             </div>
-                            <div className="flex items-center gap-2 mt-1">
-                                {detailUser && <StatusBadge status={detailUser.status} />}
-                                <span className="text-xs text-slate-400 flex items-center gap-1">
-                                    <Icons.Calendar /> Joined {detailUser?.joinedDate}
-                                </span>
+                            <div className="space-y-1">
+                                <DialogTitle className="text-xl">{detailUser?.name}</DialogTitle>
+                                <DialogDescription className="flex flex-wrap items-center gap-2">
+                                    <span className="flex items-center gap-1">
+                                        <Icons.Mail /> {detailUser?.email}
+                                    </span>
+                                    <span>•</span>
+                                    <span>{detailUser?.phone}</span>
+                                </DialogDescription>
+                                <div className="flex items-center gap-2 mt-1">
+                                    {detailUser && <StatusBadge status={detailUser.status} />}
+                                    <span className="text-xs text-slate-400 flex items-center gap-1">
+                                        <Icons.Calendar /> Joined {detailUser?.joinedDate}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </DialogHeader>
 
-                <div className="flex-1 overflow-y-auto px-6 py-4 space-y-5">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar -mx-6 px-6 space-y-5">
 
-                    {/* Stats Summary */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                        <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
-                            <p className="text-xs uppercase font-medium text-slate-400 mb-1">Total Orders</p>
-                            <p className="text-2xl font-semibold text-slate-900">{detailUser?.totalOrders}</p>
-                            <p className="text-xs text-slate-400 mt-1">All time</p>
+                        {/* Stats Summary */}
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                            <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+                                <p className="text-xs uppercase font-medium text-slate-400 mb-1">Total Orders</p>
+                                <p className="text-2xl font-semibold text-slate-900">{detailUser?.totalOrders}</p>
+                                <p className="text-xs text-slate-400 mt-1">All time</p>
+                            </div>
+                            <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+                                <p className="text-xs uppercase font-medium text-slate-400 mb-1">Cancel Rate</p>
+                                <p className={`text-2xl font-semibold ${detailUser && detailUser.cancelRate > 30 ? "text-[#E04D04]" : "text-slate-900"}`}>
+                                    {detailUser?.cancelRate}%
+                                </p>
+                                <p className="text-xs text-slate-400 mt-1">Of total orders</p>
+                            </div>
+                            <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+                                <p className="text-xs uppercase font-medium text-slate-400 mb-1">Risk Reports</p>
+                                <p className={`text-2xl font-semibold ${detailUser && detailUser.totalReports > 0 ? "text-[#E04D04]" : "text-slate-900"}`}>
+                                    {detailUser?.totalReports}
+                                </p>
+                                <p className="text-xs text-slate-400 mt-1">Total reports</p>
+                            </div>
+                            <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+                                <p className="text-xs uppercase font-medium text-slate-400 mb-1">Avg Rating</p>
+                                <p className="text-2xl font-semibold text-slate-900">{detailUser?.rating}</p>
+                                <p className="text-xs text-slate-400 mt-1">Out of 5.0</p>
+                            </div>
                         </div>
 
-                        <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
-                            <p className="text-xs uppercase font-medium text-slate-400 mb-1">Cancel Rate</p>
-                            <p className={`text-2xl font-semibold ${detailUser && detailUser.cancelRate > 30 ? "text-[#E04D04]" : "text-slate-900"}`}>
-                                {detailUser?.cancelRate}%
-                            </p>
-                            <p className="text-xs text-slate-400 mt-1">Of total orders</p>
-                        </div>
-
-                        <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
-                            <p className="text-xs uppercase font-medium text-slate-400 mb-1">Risk Reports</p>
-                            <p className={`text-2xl font-semibold ${detailUser && detailUser.totalReports > 0 ? "text-[#E04D04]" : "text-slate-900"}`}>
-                                {detailUser?.totalReports}
-                            </p>
-                            <p className="text-xs text-slate-400 mt-1">Total reports</p>
-                        </div>
-
-                        <div className="bg-slate-50 rounded-lg p-4 border border-slate-100">
-                            <p className="text-xs uppercase font-medium text-slate-400 mb-1">Avg Rating</p>
-                            <p className="text-2xl font-semibold text-slate-900">{detailUser?.rating}</p>
-                            <p className="text-xs text-slate-400 mt-1">Out of 5.0</p>
-                        </div>
-                    </div>
-
-                    {/* Account Security & Violations */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                        {/* Security Info */}
-                        <div className="space-y-3">
-                            <h3 className="text-sm font-medium uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                                <Icons.ShieldCheck /> Account Security
-                            </h3>
-                            <div className="space-y-2">
-                                <div className="flex items-center justify-between p-4 rounded-lg border border-slate-100 bg-white hover:border-slate-200 transition-all">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-9 w-9 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
-                                            <Icons.ShieldCheck />
+                        {/* Account Security & Violations */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                            <div className="space-y-3">
+                                <h3 className="text-sm font-medium uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                                    <Icons.ShieldCheck /> Account Security
+                                </h3>
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between p-4 rounded-lg border border-slate-100 bg-white hover:border-slate-200 transition-all">
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-9 w-9 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                                                <Icons.ShieldCheck />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-slate-900">Identity Verification</p>
+                                                <p className="text-xs text-slate-500">KYC Level 2 Authorized</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="text-sm font-medium text-slate-900">Identity Verification</p>
-                                            <p className="text-xs text-slate-500">KYC Level 2 Authorized</p>
-                                        </div>
+                                        <Badge className="bg-emerald-50 text-emerald-700 border-none text-[10px] font-medium px-2 py-0.5">
+                                            Verified
+                                        </Badge>
                                     </div>
-                                    <Badge className="bg-emerald-50 text-emerald-700 border-none text-[10px] font-medium px-2 py-0.5">
-                                        Verified
-                                    </Badge>
-                                </div>
-
-                                <div className="flex items-center justify-between p-4 rounded-lg border border-slate-100 bg-white hover:border-slate-200 transition-all">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-9 w-9 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500">
-                                            <Icons.Lock />
+                                    <div className="flex items-center justify-between p-4 rounded-lg border border-slate-100 bg-white hover:border-slate-200 transition-all">
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-9 w-9 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500">
+                                                <Icons.Lock />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-slate-900">Account Standing</p>
+                                                <p className="text-xs text-slate-500">Regular account behavior</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="text-sm font-medium text-slate-900">Account Standing</p>
-                                            <p className="text-xs text-slate-500">Regular account behavior</p>
-                                        </div>
+                                        <Badge className="bg-slate-100 text-slate-600 border-none text-[10px] font-medium px-2 py-0.5">
+                                            Clear
+                                        </Badge>
                                     </div>
-                                    <Badge className="bg-slate-100 text-slate-600 border-none text-[10px] font-medium px-2 py-0.5">
-                                        Clear
-                                    </Badge>
+                                </div>
+                            </div>
+                            <div className="space-y-3">
+                                <h3 className="text-sm font-medium uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                                    <Icons.AlertCircle /> Violations
+                                </h3>
+                                <div className="h-[calc(100%-2rem)] min-h-[130px] border border-dashed border-slate-200 rounded-lg flex flex-col items-center justify-center text-center p-5 bg-slate-50/30">
+                                    <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center mb-2">
+                                        <Icons.Check />
+                                    </div>
+                                    <p className="text-sm font-medium text-slate-400">No active violations</p>
+                                    <p className="text-xs text-slate-400 mt-0.5">This user has a clean record</p>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Violations */}
-                        <div className="space-y-3">
-                            <h3 className="text-sm font-medium uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                                <Icons.AlertCircle /> Violations
-                            </h3>
-                            <div className="h-[calc(100%-2rem)] min-h-[130px] border border-dashed border-slate-200 rounded-lg flex flex-col items-center justify-center text-center p-5 bg-slate-50/30">
-                                <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center mb-2">
-                                    <Icons.Check />
-                                </div>
-                                <p className="text-sm font-medium text-slate-400">No active violations</p>
-                                <p className="text-xs text-slate-400 mt-0.5">This user has a clean record</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Transaction History */}
-                    <div className="space-y-3 pt-3 border-t border-slate-100">
-                        <h3 className="text-sm font-medium uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                            <Icons.History /> Recent Activity History
-                        </h3>
-                        <div className="rounded-lg border border-slate-100 overflow-hidden">
-                            <table className="w-full">
-                                <thead className="bg-slate-50/80">
-                                    <tr>
-                                        <th className="h-10 text-left text-xs font-medium uppercase text-slate-400 pl-4">ID</th>
-                                        <th className="h-10 text-left text-xs font-medium uppercase text-slate-400">Timestamp</th>
-                                        <th className="h-10 text-left text-xs font-medium uppercase text-slate-400">Status</th>
-                                        <th className="h-10 text-right text-xs font-medium uppercase text-slate-400 pr-4">Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {detailUser?.orderHistory && detailUser.orderHistory.length > 0 ? (
-                                        detailUser.orderHistory.slice(0, 3).map((order) => (
-                                            <tr key={order.id} className="border-b border-slate-50 last:border-none hover:bg-slate-50/50">
-                                                <td className="pl-4 py-3 font-mono text-sm text-slate-600">{order.id}</td>
-                                                <td className="text-sm text-slate-500">{order.date}</td>
-                                                <td>
-                                                    <OrderStatusBadge status={order.status} />
-                                                </td>
-                                                <td className="text-right pr-4 text-sm font-medium text-slate-900">{order.amount}</td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan={4} className="text-center py-8 text-slate-400 text-sm">
-                                                No transaction history available
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    {/* System Logs */}
-                    {detailUser?.statusHistory && detailUser.statusHistory.length > 0 && (
+                        {/* Transaction History */}
                         <div className="space-y-3 pt-3 border-t border-slate-100">
                             <h3 className="text-sm font-medium uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                                <Icons.Activity /> System Logs
+                                <Icons.History /> Recent Activity History
                             </h3>
-                            <div className="space-y-2">
-                                {detailUser.statusHistory.slice(0, 3).map((log, i) => (
-                                    <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-3 px-4 rounded-lg border border-slate-100 bg-slate-50/30 hover:bg-slate-50">
-                                        <div className="space-y-0.5">
-                                            <p className="text-sm font-medium text-slate-800">{log.action}</p>
-                                            <p className="text-xs text-slate-500">{log.reason}</p>
-                                            <p className="text-[10px] font-medium text-slate-400 uppercase">By {log.admin}</p>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="text-xs text-slate-400">{log.date}</p>
-                                            {log.duration && (
-                                                <p className="text-[10px] text-slate-400 mt-0.5">Duration: {log.duration}</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
+                            <div className="rounded-lg border border-slate-100 overflow-hidden">
+                                <table className="w-full">
+                                    <thead className="bg-slate-50/80">
+                                        <tr>
+                                            <th className="h-10 text-left text-xs font-medium uppercase text-slate-400 pl-4">ID</th>
+                                            <th className="h-10 text-left text-xs font-medium uppercase text-slate-400">Timestamp</th>
+                                            <th className="h-10 text-left text-xs font-medium uppercase text-slate-400">Status</th>
+                                            <th className="h-10 text-right text-xs font-medium uppercase text-slate-400 pr-4">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {detailUser?.orderHistory && detailUser.orderHistory.length > 0 ? (
+                                            detailUser.orderHistory.slice(0, 3).map((order) => (
+                                                <tr key={order.id} className="border-b border-slate-50 last:border-none hover:bg-slate-50/50">
+                                                    <td className="pl-4 py-3 font-mono text-sm text-slate-600">{order.id}</td>
+                                                    <td className="text-sm text-slate-500">{order.date}</td>
+                                                    <td><OrderStatusBadge status={order.status} /></td>
+                                                    <td className="text-right pr-4 text-sm font-medium text-slate-900">{order.amount}</td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan={4} className="text-center py-8 text-slate-400 text-sm">
+                                                    No transaction history available
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    )}
-                </div>
-            </Modal>
 
-            {/* ── Global Audit Log Modal ── */}
-            <Modal isOpen={showGlobalLogs} onClose={() => setShowGlobalLogs(false)} maxWidth="4xl">
-                <div className="px-7 py-6 flex items-start justify-between bg-white shrink-0">
-                    <div className="space-y-1">
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Audit Log</h2>
-                        <p className="text-sm text-slate-500 font-medium">
-                            Catatan tindakan administratif pada akun user
-                        </p>
-                    </div>
-                    <Button variant="ghost" onClick={() => setShowGlobalLogs(false)} className="h-10 w-10 p-0 rounded-full hover:bg-slate-100">
-                        <span className="h-5 w-5 text-slate-400"><Icons.X /></span>
-                    </Button>
-                </div>
-
-                <div className="flex-1 overflow-y-auto px-7 p-7 pt-0 space-y-3 bg-white custom-scrollbar">
-                    {paginatedAuditLogs.map((log) => {
-                        // Determine icon and colors based on action
-                        let icon = <Icons.Activity />
-                        let bgColor = "bg-slate-100"
-                        let iconColor = "text-slate-600"
-
-                        if (log.action.toLowerCase().includes("suspend")) {
-                            icon = <Icons.Ban />
-                            bgColor = "bg-rose-50"
-                            iconColor = "text-rose-600"
-                        } else if (log.action.toLowerCase().includes("reactivation") || log.action.toLowerCase().includes("active")) {
-                            icon = <Icons.UserCheck />
-                            bgColor = "bg-emerald-50"
-                            iconColor = "text-emerald-600"
-                        } else if (log.action.toLowerCase().includes("review") || log.action.toLowerCase().includes("verification")) {
-                            icon = <Icons.ShieldCheck />
-                            bgColor = "bg-amber-50"
-                            iconColor = "text-amber-600"
-                        }
-
-                        return (
-                            <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:bg-slate-50 transition-all relative overflow-hidden group">
-                                <div className="flex gap-5">
-                                    <div className={cn("h-11 w-11 rounded-xl flex items-center justify-center shrink-0 transition-all group-hover:scale-105", bgColor, iconColor)}>
-                                        {icon}
-                                    </div>
-                                    <div className="flex-1 min-w-0 pr-24">
-                                        <div className="flex flex-col gap-0.5">
-                                            <h4 className="font-bold text-slate-900 text-base tracking-tight leading-none">{log.action}</h4>
-                                            <p className="text-sm text-slate-400 font-medium mt-1 uppercase text-[10px] tracking-wider">
-                                                User: <span className="text-slate-700 font-bold">{log.userName}</span> ({log.userId})
-                                            </p>
-                                        </div>
-
-                                        {log.reason && (
-                                            <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 group">
-                                                <div className="flex gap-2">
-                                                    <span className="text-xs font-black text-slate-900 uppercase tracking-widest leading-relaxed">Alasan:</span>
-                                                    <span className="text-xs text-slate-500 leading-relaxed font-semibold">
-                                                        {log.reason}
-                                                    </span>
-                                                </div>
+                        {/* System Logs */}
+                        {detailUser?.statusHistory && detailUser.statusHistory.length > 0 && (
+                            <div className="space-y-3 pt-3 border-t border-slate-100">
+                                <h3 className="text-sm font-medium uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                                    <Icons.Activity /> System Logs
+                                </h3>
+                                <div className="space-y-2">
+                                    {detailUser.statusHistory.slice(0, 3).map((log, i) => (
+                                        <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-3 px-4 rounded-lg border border-slate-100 bg-slate-50/30 hover:bg-slate-50">
+                                            <div className="space-y-0.5">
+                                                <p className="text-sm font-medium text-slate-800">{log.action}</p>
+                                                <p className="text-xs text-slate-500">{log.reason}</p>
+                                                <p className="text-[10px] font-medium text-slate-400 uppercase">By {log.admin}</p>
                                             </div>
-                                        )}
-
-                                        <div className="mt-4 flex items-center gap-2">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Executor: {log.admin}</span>
+                                            <div className="text-right">
+                                                <p className="text-xs text-slate-400">{log.date}</p>
+                                                {log.duration && (
+                                                    <p className="text-[10px] text-slate-400 mt-0.5">Duration: {log.duration}</p>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="absolute top-6 right-6 text-right">
-                                        <p className="text-[11px] font-bold text-slate-300 font-mono whitespace-nowrap">{log.timestamp}</p>
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
-                        )
-                    })}
+                        )}
+                    </div>
+                </DialogContent>
+            </Dialog>
 
-                    {globalLogs.length === 0 && (
-                        <div className="text-center py-20 bg-white border border-dashed border-slate-200 rounded-2xl">
-                            <div className="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-3 text-slate-400">
-                                <Icons.History />
-                            </div>
-                            <p className="text-sm font-medium text-slate-900">No activity logs found</p>
-                            <p className="text-xs text-slate-400 mt-1">Updates to user accounts will appear here.</p>
-                        </div>
-                    )}
-                </div>
+            {/* ── Global Audit Log Modal ── */}
+            <Dialog open={showGlobalLogs} onOpenChange={() => setShowGlobalLogs(false)}>
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Audit Log</DialogTitle>
+                        <DialogDescription>
+                            Catatan tindakan administratif pada akun user
+                        </DialogDescription>
+                    </DialogHeader>
 
-                {/* Pagination Footer */}
-                <div className="bg-white p-4 px-6 border-t border-slate-100 shrink-0">
-                    <div className="flex items-center justify-between">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar -mx-6 px-6 space-y-3">
+                        {paginatedAuditLogs.map((log) => {
+                            let icon = <Icons.Activity />
+                            let bgColor = "bg-slate-100"
+                            let iconColor = "text-slate-600"
+
+                            if (log.action.toLowerCase().includes("suspend")) {
+                                icon = <Icons.Ban />
+                                bgColor = "bg-rose-50"
+                                iconColor = "text-rose-600"
+                            } else if (log.action.toLowerCase().includes("reactivation") || log.action.toLowerCase().includes("active")) {
+                                icon = <Icons.UserCheck />
+                                bgColor = "bg-emerald-50"
+                                iconColor = "text-emerald-600"
+                            } else if (log.action.toLowerCase().includes("review") || log.action.toLowerCase().includes("verification")) {
+                                icon = <Icons.ShieldCheck />
+                                bgColor = "bg-amber-50"
+                                iconColor = "text-amber-600"
+                            }
+
+                            return (
+                                <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:bg-slate-50 transition-all relative overflow-hidden group">
+                                    <div className="flex gap-5">
+                                        <div className={cn("h-11 w-11 rounded-xl flex items-center justify-center shrink-0 transition-all group-hover:scale-105", bgColor, iconColor)}>
+                                            {icon}
+                                        </div>
+                                        <div className="flex-1 min-w-0 pr-24">
+                                            <div className="flex flex-col gap-0.5">
+                                                <h4 className="font-bold text-slate-900 text-base tracking-tight leading-none">{log.action}</h4>
+                                                <p className="text-sm text-slate-400 font-medium mt-1 uppercase text-[10px] tracking-wider">
+                                                    User: <span className="text-slate-700 font-bold">{log.userName}</span> ({log.userId})
+                                                </p>
+                                            </div>
+                                            {log.reason && (
+                                                <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50">
+                                                    <div className="flex gap-2">
+                                                        <span className="text-xs font-black text-slate-900 uppercase tracking-widest leading-relaxed">Alasan:</span>
+                                                        <span className="text-xs text-slate-500 leading-relaxed font-semibold">{log.reason}</span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <div className="mt-4 flex items-center gap-2">
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Executor: {log.admin}</span>
+                                            </div>
+                                        </div>
+                                        <div className="absolute top-6 right-6 text-right">
+                                            <p className="text-[11px] font-bold text-slate-300 font-mono whitespace-nowrap">{log.timestamp}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+
+                        {globalLogs.length === 0 && (
+                            <Empty className="h-full bg-muted/30">
+                                <EmptyHeader>
+                                    <EmptyMedia variant="icon">
+                                        <Icons.History />
+                                    </EmptyMedia>
+                                    <EmptyTitle>Belum Ada Aktivitas</EmptyTitle>
+                                    <EmptyDesc className="max-w-xs text-pretty">
+                                        Perubahan pada akun user akan muncul di sini.
+                                    </EmptyDesc>
+                                </EmptyHeader>
+                            </Empty>
+                        )}
+                    </div>
+
+                    {/* Pagination Footer */}
+                    <DialogFooter className="flex-row items-center justify-between">
                         <div className="flex items-center gap-2">
                             <div className="h-2 w-2 rounded-full bg-emerald-500"></div>
                             <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
@@ -1151,7 +1128,6 @@ export default function UserManagementPage() {
                                 >
                                     <Icons.ChevronLeft />
                                 </Button>
-
                                 <div className="flex gap-1">
                                     {Array.from({ length: totalAuditLogPages }, (_, i) => i + 1)
                                         .filter(p => {
@@ -1162,7 +1138,6 @@ export default function UserManagementPage() {
                                         .map((p, idx, arr) => {
                                             const prev = arr[idx - 1]
                                             const showEllipsis = prev && p - prev > 1
-
                                             return (
                                                 <React.Fragment key={p}>
                                                     {showEllipsis && (
@@ -1181,7 +1156,6 @@ export default function UserManagementPage() {
                                             )
                                         })}
                                 </div>
-
                                 <Button
                                     variant="ghost"
                                     onClick={() => setAuditLogPage(p => Math.min(totalAuditLogPages, p + 1))}
@@ -1193,9 +1167,9 @@ export default function UserManagementPage() {
                             </div>
                         )}
                         <p className="text-[10px] text-slate-300 font-medium">Audit Trail v4.0</p>
-                    </div>
-                </div>
-            </Modal>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

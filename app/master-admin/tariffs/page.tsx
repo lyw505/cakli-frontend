@@ -71,6 +71,11 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Progress } from "@/components/ui/progress"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format, parse, isWithinInterval, startOfDay, endOfDay } from "date-fns"
+import { id as localeId } from "date-fns/locale"
+import { type DateRange } from "react-day-picker"
 
 // ===== DATA =====
 const ZONE_DATA = [
@@ -86,7 +91,28 @@ const VERSION_HISTORY = [
     { v: "v2.4.0", date: "01 Des 2023", user: "Admin Aulia", change: "Menambahkan biaya malam", status: "Diarsipkan" },
     { v: "v2.3.9", date: "12 Nov 2023", user: "Admin Goldi", change: "Tarif min 10k -> 12k", status: "Diarsipkan" },
     { v: "v2.3.8", date: "28 Okt 2023", user: "Admin Rafi", change: "Multiplikator Batu 1.0x -> 1.2x", status: "Diarsipkan" },
+    { v: "v2.3.7", date: "15 Sep 2023", user: "Admin Aulia", change: "Penyesuaian biaya platform 18% -> 20%", status: "Diarsipkan" },
+    { v: "v2.3.6", date: "02 Agu 2023", user: "Admin Goldi", change: "Tarif dasar 2.2k -> 2.4k", status: "Diarsipkan" },
+    { v: "v2.3.5", date: "19 Jul 2023", user: "Admin Rafi", change: "Menambahkan zona Kepanjen", status: "Diarsipkan" },
+    { v: "v2.3.4", date: "05 Jun 2023", user: "Admin Aulia", change: "Pengali lonjakan maks 1.8x -> 2.0x", status: "Diarsipkan" },
+    { v: "v2.3.3", date: "22 Mei 2023", user: "Admin Goldi", change: "Tarif minimum 8k -> 10k", status: "Diarsipkan" },
+    { v: "v2.3.2", date: "10 Apr 2023", user: "Admin Rafi", change: "Shift malam 8% -> 10%", status: "Diarsipkan" },
+    { v: "v2.3.1", date: "28 Mar 2023", user: "Admin Aulia", change: "Menambahkan zona Lahar Semeru", status: "Diarsipkan" },
+    { v: "v2.3.0", date: "15 Feb 2023", user: "Admin Goldi", change: "Revisi struktur tarif baru", status: "Diarsipkan" },
 ]
+
+const HISTORY_PER_PAGE = 5
+
+function parseIndonesianDate(dateStr: string): Date {
+    const months: Record<string, string> = {
+        'Jan': 'Jan', 'Feb': 'Feb', 'Mar': 'Mar', 'Apr': 'Apr',
+        'Mei': 'May', 'Jun': 'Jun', 'Jul': 'Jul', 'Agu': 'Aug',
+        'Sep': 'Sep', 'Okt': 'Oct', 'Nov': 'Nov', 'Des': 'Dec'
+    }
+    const parts = dateStr.split(' ')
+    const englishDate = `${parts[0]} ${months[parts[1]] || parts[1]} ${parts[2]}`
+    return parse(englishDate, 'dd MMM yyyy', new Date())
+}
 
 export default function TariffManagement() {
     const [reviewStep, setReviewStep] = React.useState(1)
@@ -96,10 +122,22 @@ export default function TariffManagement() {
     const [rollbackTarget, setRollbackTarget] = React.useState<string | null>(null)
     const [search, setSearch] = React.useState("")
 
+    // History tab state
+    const [historyPage, setHistoryPage] = React.useState(1)
+    const [dateRange, setDateRange] = React.useState<DateRange | undefined>(undefined)
+
+    const filteredHistory = VERSION_HISTORY.filter(row => {
+        const rowDate = parseIndonesianDate(row.date)
+        if (dateRange?.from && rowDate < startOfDay(dateRange.from)) return false
+        if (dateRange?.to && rowDate > endOfDay(dateRange.to)) return false
+        return true
+    })
+    const historyTotalPages = Math.max(1, Math.ceil(filteredHistory.length / HISTORY_PER_PAGE))
+    const paginatedHistory = filteredHistory.slice((historyPage - 1) * HISTORY_PER_PAGE, historyPage * HISTORY_PER_PAGE)
+
     const filteredZones = ZONE_DATA.filter(z =>
         z.zone.toLowerCase().includes(search.toLowerCase())
     )
-
     const resetReview = () => { setReviewStep(1); setReviewReason("") }
 
     return (
@@ -541,7 +579,7 @@ export default function TariffManagement() {
                                     </Button>
                                     <div className="flex items-center gap-1">
                                         {[1, 2, 3].map((p) => (
-                                            <Button key={p} variant={p === 1 ? "secondary" : "ghost"} size="sm" className="h-8 w-8 p-0 text-[10px] font-bold">
+                                            <Button key={p} variant={p === 1 ? "default" : "ghost"} size="sm" className={`h-8 w-8 p-0 text-[10px] font-bold ${p === 1 ? "bg-cakli-orange hover:bg-cakli-orange/90 text-white" : ""}`}>
                                                 {p}
                                             </Button>
                                         ))}
@@ -561,33 +599,68 @@ export default function TariffManagement() {
                     {/* REV 8: Riwayat Versi + Rollback */}
                     <TabsContent value="history">
                         <Card>
-                            <CardHeader className="pb-3">
-                                <CardTitle className="text-sm">Log Revisi Tarif</CardTitle>
-                                <CardDescription className="text-xs">Catatan historis perubahan harga sistem. Rollback ke versi sebelumnya jika diperlukan.</CardDescription>
+                            <CardHeader className="pb-3 flex flex-row items-center justify-between">
+                                <div>
+                                    <CardTitle className="text-sm">Log Revisi Tarif</CardTitle>
+                                    <CardDescription className="text-xs">Catatan historis perubahan harga sistem. Rollback ke versi sebelumnya jika diperlukan.</CardDescription>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button variant="outline" size="sm" className={`h-8 text-xs gap-1.5 justify-start font-normal ${!dateRange ? 'text-muted-foreground' : ''}`}>
+                                                <CalendarIcon className="size-3.5" />
+                                                {dateRange?.from ? (
+                                                    dateRange.to ? (
+                                                        <>{format(dateRange.from, 'dd MMM yyyy', { locale: localeId })} - {format(dateRange.to, 'dd MMM yyyy', { locale: localeId })}</>
+                                                    ) : (
+                                                        format(dateRange.from, 'dd MMM yyyy', { locale: localeId })
+                                                    )
+                                                ) : (
+                                                    'Pilih rentang tanggal'
+                                                )}
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="end">
+                                            <Calendar
+                                                mode="range"
+                                                defaultMonth={dateRange?.from}
+                                                selected={dateRange}
+                                                onSelect={(range) => { setDateRange(range); setHistoryPage(1) }}
+                                                numberOfMonths={2}
+                                                initialFocus
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                                    {dateRange && (
+                                        <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground" onClick={() => { setDateRange(undefined); setHistoryPage(1) }}>
+                                            <XCircle className="size-3.5 mr-1" /> Reset
+                                        </Button>
+                                    )}
+                                </div>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="p-0">
                                 <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="text-xs">Versi</TableHead>
-                                            <TableHead className="text-xs">Tanggal</TableHead>
-                                            <TableHead className="text-xs">Penulis</TableHead>
-                                            <TableHead className="text-xs">Perubahan</TableHead>
-                                            <TableHead className="text-xs">Status</TableHead>
-                                            <TableHead className="text-xs text-right">Aksi</TableHead>
+                                    <TableHeader className="bg-slate-50/50">
+                                        <TableRow className="hover:bg-transparent">
+                                            <TableHead className="text-[10px] font-bold uppercase py-3 pl-5">Versi</TableHead>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3">Tanggal</TableHead>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3">Penulis</TableHead>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3">Perubahan</TableHead>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3">Status</TableHead>
+                                            <TableHead className="text-[10px] font-bold uppercase py-3 text-right pr-5">Aksi</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {VERSION_HISTORY.map((row) => (
-                                            <TableRow key={row.v}>
-                                                <TableCell className="font-bold text-xs">{row.v}</TableCell>
-                                                <TableCell className="text-xs">{row.date}</TableCell>
-                                                <TableCell className="text-xs">{row.user}</TableCell>
-                                                <TableCell className="text-xs text-muted-foreground">{row.change}</TableCell>
-                                                <TableCell>
+                                        {paginatedHistory.map((row) => (
+                                            <TableRow key={row.v} className="hover:bg-slate-50/50 transition-colors">
+                                                <TableCell className="font-bold text-xs py-3 pl-5">{row.v}</TableCell>
+                                                <TableCell className="text-xs py-3">{row.date}</TableCell>
+                                                <TableCell className="text-xs py-3">{row.user}</TableCell>
+                                                <TableCell className="text-xs text-muted-foreground py-3">{row.change}</TableCell>
+                                                <TableCell className="py-3">
                                                     <Badge variant={row.status === "Aktif" ? "default" : "secondary"} className="text-[10px]">{row.status}</Badge>
                                                 </TableCell>
-                                                <TableCell className="text-right">
+                                                <TableCell className="text-right py-3 pr-5">
                                                     {row.status !== "Aktif" ? (
                                                         <Dialog open={rollbackTarget === row.v} onOpenChange={(open) => setRollbackTarget(open ? row.v : null)}>
                                                             <DialogTrigger asChild>
@@ -624,6 +697,34 @@ export default function TariffManagement() {
                                     </TableBody>
                                 </Table>
                             </CardContent>
+
+                            {/* ── PAGINATION ── */}
+                            <div className="flex items-center justify-between px-5 py-4 border-t border-slate-100 mt-auto">
+                                <p className="text-[10px] text-muted-foreground font-medium">
+                                    Menampilkan <span className="text-slate-900 font-bold">{(historyPage - 1) * HISTORY_PER_PAGE + 1}–{Math.min(historyPage * HISTORY_PER_PAGE, filteredHistory.length)}</span> dari <span className="text-slate-900 font-bold">{filteredHistory.length}</span> revisi
+                                </p>
+                                <div className="flex items-center gap-1.5">
+                                    <Button variant="outline" size="sm" className="h-8 w-8 p-0" disabled={historyPage <= 1} onClick={() => setHistoryPage(p => p - 1)}>
+                                        <ChevronRight className="size-4 rotate-180" />
+                                    </Button>
+                                    <div className="flex items-center gap-1">
+                                        {Array.from({ length: historyTotalPages }, (_, i) => i + 1).map((p) => (
+                                            <Button
+                                                key={p}
+                                                variant={p === historyPage ? "default" : "ghost"}
+                                                size="sm"
+                                                className={`h-8 w-8 p-0 text-[10px] font-bold ${p === historyPage ? "bg-cakli-orange hover:bg-cakli-orange/90 text-white" : ""}`}
+                                                onClick={() => setHistoryPage(p)}
+                                            >
+                                                {p}
+                                            </Button>
+                                        ))}
+                                    </div>
+                                    <Button variant="outline" size="sm" className="h-8 w-8 p-0" disabled={historyPage >= historyTotalPages} onClick={() => setHistoryPage(p => p + 1)}>
+                                        <ChevronRight className="size-4" />
+                                    </Button>
+                                </div>
+                            </div>
                         </Card>
                     </TabsContent>
                 </Tabs>

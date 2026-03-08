@@ -431,7 +431,7 @@ export default function AreasPage() {
                                     </Button>
                                     <div className="flex items-center gap-1">
                                         {[1, 2, 3].map((p) => (
-                                            <Button key={p} variant={p === 1 ? "secondary" : "ghost"} size="sm" className="h-8 w-8 p-0 text-[10px] font-bold">
+                                            <Button key={p} variant={p === 1 ? "default" : "ghost"} size="sm" className={`h-8 w-8 p-0 text-[10px] font-bold ${p === 1 ? "bg-cakli-orange hover:bg-cakli-orange/90 text-white" : ""}`}>
                                                 {p}
                                             </Button>
                                         ))}

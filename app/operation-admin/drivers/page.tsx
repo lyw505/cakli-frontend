@@ -87,6 +87,13 @@ import {
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 import { Users, Wifi, ShieldCheck, ActivitySquare } from "lucide-react"
+import {
+    Empty,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+    EmptyDescription,
+} from "@/components/ui/empty"
 
 // Tipe data untuk Audit Log
 interface AuditLog {
@@ -1101,80 +1108,85 @@ export default function DriversPage() {
             </Modal>
 
             {/* Modal Audit Log */}
-            <Modal
-                isOpen={isAuditLogOpen}
-                onClose={() => setIsAuditLogOpen(false)}
-                maxWidth="max-w-4xl"
-            >
-                <div className="px-6 py-6 flex items-start justify-between bg-white border-b border-slate-100">
-                    <div>
-                        <h2 className="text-2xl font-black text-slate-900 tracking-tight">Audit Log</h2>
-                        <p className="text-sm text-slate-500 mt-1">Catatan semua tindakan administratif</p>
-                    </div>
-                    <button
-                        onClick={() => setIsAuditLogOpen(false)}
-                        className="text-slate-400 hover:text-slate-600 transition-colors p-1"
-                    >
-                        <X className="h-5 w-5" />
-                    </button>
-                </div>
+            <Dialog open={isAuditLogOpen} onOpenChange={(open) => setIsAuditLogOpen(open)}>
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Audit Log</DialogTitle>
+                        <DialogDescription>Catatan semua tindakan administratif</DialogDescription>
+                    </DialogHeader>
 
-                <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/30 max-h-[60vh]">
-                    {logList.map((log) => {
-                        let icon = <FileClock className="h-5 w-5" />
-                        let bgColor = "bg-slate-100"
-                        let iconColor = "text-slate-600"
+                    <div className="flex-1 overflow-y-auto -mx-6 px-6 space-y-4">
+                        {logList.length > 0 ? (
+                            logList.map((log) => {
+                                let icon = <FileClock className="h-5 w-5" />
+                                let bgColor = "bg-slate-100"
+                                let iconColor = "text-slate-600"
 
-                        if (log.action.includes('Suspend')) {
-                            icon = <UserX className="h-5 w-5" />
-                            bgColor = "bg-rose-50"
-                            iconColor = "text-rose-600"
-                        } else if (log.action.includes('Verifikasi')) {
-                            icon = <Shield className="h-5 w-5" />
-                            bgColor = "bg-orange-50"
-                            iconColor = "text-[#E04D04]"
-                        } else if (log.action.includes('Aktivasi')) {
-                            icon = <RotateCcw className="h-5 w-5" />
-                            bgColor = "bg-emerald-50"
-                            iconColor = "text-emerald-600"
-                        }
+                                if (log.action.includes('Suspend')) {
+                                    icon = <UserX className="h-5 w-5" />
+                                    bgColor = "bg-rose-50"
+                                    iconColor = "text-rose-600"
+                                } else if (log.action.includes('Verifikasi')) {
+                                    icon = <Shield className="h-5 w-5" />
+                                    bgColor = "bg-orange-50"
+                                    iconColor = "text-[#E04D04]"
+                                } else if (log.action.includes('Aktivasi')) {
+                                    icon = <RotateCcw className="h-5 w-5" />
+                                    bgColor = "bg-emerald-50"
+                                    iconColor = "text-emerald-600"
+                                }
 
-                        return (
-                            <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:bg-slate-50 transition-all relative overflow-hidden group">
-                                <div className="flex gap-5">
-                                    <div className={cn("h-11 w-11 rounded-xl flex items-center justify-center shrink-0 transition-all group-hover:scale-105", bgColor, iconColor)}>
-                                        {icon}
-                                    </div>
-                                    <div className="flex-1 min-w-0 pr-24">
-                                        <div className="flex flex-col gap-0.5">
-                                            <h4 className="font-bold text-slate-900 text-base tracking-tight leading-none">{log.action}</h4>
-                                            <p className="text-sm text-slate-400 font-medium mt-1 uppercase text-[10px] tracking-wider">
-                                                Detail: <span className="text-slate-700 font-bold">{log.details}</span>
-                                            </p>
-                                        </div>
-
-                                        <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 group">
-                                            <div className="flex gap-2">
-                                                <span className="text-xs font-black text-slate-900 uppercase tracking-widest leading-relaxed">Alasan:</span>
-                                                <span className="text-xs text-slate-500 leading-relaxed font-semibold">
-                                                    Reviewed by system automation
-                                                </span>
+                                return (
+                                    <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:bg-slate-50 transition-all relative overflow-hidden group">
+                                        <div className="flex gap-5">
+                                            <div className={cn("h-11 w-11 rounded-xl flex items-center justify-center shrink-0 transition-all group-hover:scale-105", bgColor, iconColor)}>
+                                                {icon}
+                                            </div>
+                                            <div className="flex-1 min-w-0 pr-24">
+                                                <div className="flex flex-col gap-0.5">
+                                                    <h4 className="font-bold text-slate-900 text-base tracking-tight leading-none">{log.action}</h4>
+                                                    <p className="text-sm text-slate-400 font-medium mt-1 uppercase text-[10px] tracking-wider">
+                                                        Detail: <span className="text-slate-700 font-bold">{log.details}</span>
+                                                    </p>
+                                                </div>
+                                                <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50">
+                                                    <div className="flex gap-2">
+                                                        <span className="text-xs font-black text-slate-900 uppercase tracking-widest leading-relaxed">Alasan:</span>
+                                                        <span className="text-xs text-slate-500 leading-relaxed font-semibold">
+                                                            Reviewed by system automation
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="mt-4 flex items-center gap-2">
+                                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Executor: {log.admin}</span>
+                                                </div>
+                                            </div>
+                                            <div className="absolute top-6 right-6 text-right">
+                                                <p className="text-[11px] font-bold text-slate-300 font-mono whitespace-nowrap">{log.timestamp}</p>
                                             </div>
                                         </div>
-
-                                        <div className="mt-4 flex items-center gap-2">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Executor: {log.admin}</span>
-                                        </div>
                                     </div>
-                                    <div className="absolute top-6 right-6 text-right">
-                                        <p className="text-[11px] font-bold text-slate-300 font-mono whitespace-nowrap">{log.timestamp}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    })}
-                </div>
-            </Modal>
+                                )
+                            })
+                        ) : (
+                            <Empty className="h-full bg-muted/30">
+                                <EmptyHeader>
+                                    <EmptyMedia variant="icon">
+                                        <History />
+                                    </EmptyMedia>
+                                    <EmptyTitle>Belum Ada Aktivitas</EmptyTitle>
+                                    <EmptyDescription className="max-w-xs text-pretty">
+                                        Catatan tindakan administratif akan muncul di sini.
+                                    </EmptyDescription>
+                                </EmptyHeader>
+                            </Empty>
+                        )}
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsAuditLogOpen(false)}>Tutup</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* Modal Konfirmasi Tindakan */}
             <Modal

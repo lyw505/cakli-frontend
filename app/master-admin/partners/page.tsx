@@ -10,7 +10,10 @@ import {
     AlertTriangle,
     Plus,
     CheckCircle2,
-    Clock
+    Clock,
+    FileText,
+    CalendarIcon,
+    Send,
 } from "lucide-react"
 
 import {
@@ -33,8 +36,34 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter,
+    DialogClose,
+} from "@/components/ui/dialog"
+import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 export default function PartnerPolicyManagement() {
+    // ── Policy Modal State ──
+    const [policyOpen, setPolicyOpen] = React.useState(false)
+    const [policyCategory, setPolicyCategory] = React.useState("")
+    const [policySosialisasi, setPolicySosialisasi] = React.useState(true)
+    const [policySchedule, setPolicySchedule] = React.useState("scheduled")
+    const resetPolicy = () => { setPolicyCategory(""); setPolicySosialisasi(true); setPolicySchedule("scheduled") }
+
     return (
         <div className="flex flex-col gap-6 p-6">
             <div className="flex items-center justify-between">
@@ -42,9 +71,111 @@ export default function PartnerPolicyManagement() {
                     <h1 className="text-3xl font-bold tracking-tight">Kebijakan Mitra</h1>
                     <p className="text-muted-foreground">Kelola bagi hasil, standar kendaraan, dan persyaratan pengemudi secara global.</p>
                 </div>
-                <Button className="bg-cakli-orange hover:bg-cakli-orange/90">
-                    <Save className="mr-2 h-4 w-4" /> Publikasi Kebijakan Baru
-                </Button>
+                <Dialog open={policyOpen} onOpenChange={(open) => { setPolicyOpen(open); if (!open) resetPolicy() }}>
+                    <DialogTrigger asChild>
+                        <Button className="bg-cakli-orange hover:bg-cakli-orange/90">
+                            <Save className="mr-2 h-4 w-4" /> Publikasi Kebijakan Baru
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-lg">
+                        <DialogHeader>
+                            <DialogTitle>Publikasi Kebijakan Baru</DialogTitle>
+                            <DialogDescription>Buat dan publikasikan kebijakan baru yang berlaku untuk seluruh mitra pengemudi.</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                            {/* Title */}
+                            <div className="grid gap-1.5">
+                                <Label htmlFor="policy-title" className="text-xs">Judul Kebijakan <span className="text-red-500">*</span></Label>
+                                <Input id="policy-title" placeholder="cth: Penyesuaian Bagi Hasil Q1 2026" className="h-9 text-xs" />
+                            </div>
+
+                            {/* Category */}
+                            <div className="grid gap-1.5">
+                                <Label className="text-xs">Kategori <span className="text-red-500">*</span></Label>
+                                <Select value={policyCategory} onValueChange={setPolicyCategory}>
+                                    <SelectTrigger className="h-9 text-xs">
+                                        <SelectValue placeholder="Pilih kategori kebijakan..." />
+                                    </SelectTrigger>
+                                    <SelectContent className="text-xs">
+                                        <SelectItem value="revenue">Bagi Hasil & Insentif</SelectItem>
+                                        <SelectItem value="vehicle">Standar Kendaraan</SelectItem>
+                                        <SelectItem value="driver">Persyaratan Pengemudi</SelectItem>
+                                        <SelectItem value="operational">Operasional Umum</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {/* Description */}
+                            <div className="grid gap-1.5">
+                                <Label className="text-xs">Deskripsi Perubahan <span className="text-red-500">*</span></Label>
+                                <Textarea
+                                    placeholder="Jelaskan detail perubahan kebijakan yang akan diterapkan..."
+                                    className="text-xs resize-none"
+                                    rows={3}
+                                />
+                            </div>
+
+                            {/* Schedule */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="grid gap-1.5">
+                                    <Label className="text-xs">Tanggal Efektif <span className="text-red-500">*</span></Label>
+                                    <Input type="date" className="h-9 text-xs" />
+                                </div>
+                                <div className="grid gap-1.5">
+                                    <Label className="text-xs">Mode Aktivasi</Label>
+                                    <Select value={policySchedule} onValueChange={setPolicySchedule}>
+                                        <SelectTrigger className="h-9 text-xs">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent className="text-xs">
+                                            <SelectItem value="scheduled">Terjadwal</SelectItem>
+                                            <SelectItem value="immediate">Segera</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+
+                            {/* Sosialisasi Switch */}
+                            <div className="flex items-center justify-between px-3 py-3 bg-slate-50 rounded-lg border">
+                                <div className="flex items-center gap-2.5">
+                                    <Send className="size-4 text-slate-600" />
+                                    <div>
+                                        <p className="text-xs font-semibold">Sosialisasi Wajib</p>
+                                        <p className="text-[10px] text-muted-foreground">Kirim notifikasi ke semua mitra sebelum kebijakan berlaku</p>
+                                    </div>
+                                </div>
+                                <Switch checked={policySosialisasi} onCheckedChange={setPolicySosialisasi} />
+                            </div>
+
+                            {/* Scope info based on category */}
+                            {policyCategory === "revenue" && (
+                                <div className="flex items-start gap-2 p-2.5 rounded-md bg-orange-50 border border-orange-200">
+                                    <AlertTriangle className="size-3.5 text-orange-500 mt-0.5 shrink-0" />
+                                    <p className="text-[11px] text-orange-700 leading-snug">
+                                        <strong>Dampak tinggi:</strong> Perubahan bagi hasil berdampak langsung pada penghasilan harian ribuan mitra. Wajib sosialisasi 3x24 jam sebelum diterapkan.
+                                    </p>
+                                </div>
+                            )}
+
+                            {policyCategory && policyCategory !== "revenue" && (
+                                <div className="flex items-start gap-2 p-2.5 rounded-md bg-blue-50 border border-blue-200">
+                                    <Info className="size-3.5 text-blue-500 mt-0.5 shrink-0" />
+                                    <p className="text-[11px] text-blue-700 leading-snug">
+                                        Kebijakan akan dipublikasikan ke seluruh mitra melalui notifikasi push dan email. Mitra yang tidak memenuhi persyaratan baru akan mendapat masa grace period 14 hari.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="outline">Batal</Button>
+                            </DialogClose>
+                            <Button className="bg-cakli-orange hover:bg-orange-700 gap-1.5">
+                                <FileText className="size-3.5" /> Publikasikan Kebijakan
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

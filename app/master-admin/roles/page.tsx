@@ -62,12 +62,30 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter,
+    DialogClose,
+} from "@/components/ui/dialog"
+import { Switch } from "@/components/ui/switch"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { id as localeId } from "date-fns/locale"
+import { type DateRange } from "react-day-picker"
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
@@ -235,14 +253,14 @@ const PERMISSION_MATRIX = [
 ]
 
 const ACTIVITY_LOG = [
-    { time: "13:42", admin: "Aulia Rahmawati", action: "Edit Role", target: "ADM-006 → Operating Admin", ip: "103.145.22.10", result: "Success" },
-    { time: "13:05", admin: "Goldi Pratama", action: "Approve Request", target: "New Zone: Malang Selatan", ip: "180.242.11.44", result: "Success" },
-    { time: "12:51", admin: "Risma Fitriani", action: "Export Data", target: "Revenue Report Jan–Feb", ip: "203.77.55.21", result: "Success" },
-    { time: "11:30", admin: "Dev Internal", action: "Login Attempt", target: "-", ip: "10.0.0.1", result: "Failed" },
-    { time: "11:28", admin: "Dev Internal", action: "Login Attempt", target: "-", ip: "10.0.0.1", result: "Failed" },
-    { time: "10:15", admin: "Aulia Rahmawati", action: "Suspend Admin", target: "Dev Internal (ADM-005)", ip: "103.145.22.10", result: "Success" },
-    { time: "09:44", admin: "Admin Ops Surabaya", action: "Suspend Driver", target: "DR-0441", ip: "114.5.28.99", result: "Success" },
-    { time: "09:10", admin: "Goldi Pratama", action: "Reset MFA", target: "ADM-003 (Risma)", ip: "180.242.11.44", result: "Success" },
+    { date: "2025-02-28", time: "13:42", admin: "Aulia Rahmawati", action: "Edit Role", target: "ADM-006 → Operating Admin", ip: "103.145.22.10", result: "Success" },
+    { date: "2025-02-28", time: "13:05", admin: "Goldi Pratama", action: "Approve Request", target: "New Zone: Malang Selatan", ip: "180.242.11.44", result: "Success" },
+    { date: "2025-02-28", time: "12:51", admin: "Risma Fitriani", action: "Export Data", target: "Revenue Report Jan–Feb", ip: "203.77.55.21", result: "Success" },
+    { date: "2025-02-28", time: "11:30", admin: "Dev Internal", action: "Login Attempt", target: "-", ip: "10.0.0.1", result: "Failed" },
+    { date: "2025-02-28", time: "11:28", admin: "Dev Internal", action: "Login Attempt", target: "-", ip: "10.0.0.1", result: "Failed" },
+    { date: "2025-02-27", time: "10:15", admin: "Aulia Rahmawati", action: "Suspend Admin", target: "Dev Internal (ADM-005)", ip: "103.145.22.10", result: "Success" },
+    { date: "2025-02-27", time: "09:44", admin: "Admin Ops Surabaya", action: "Suspend Driver", target: "DR-0441", ip: "114.5.28.99", result: "Success" },
+    { date: "2025-02-26", time: "09:10", admin: "Goldi Pratama", action: "Reset MFA", target: "ADM-003 (Risma)", ip: "180.242.11.44", result: "Success" },
 ]
 
 const RISK_ALERTS = [
@@ -311,6 +329,31 @@ export default function RoleManagement() {
     const [roleFilter, setRoleFilter] = React.useState("all")
     const [statusFilter, setStatusFilter] = React.useState("all")
 
+    // ── New Admin Modal State ──
+    const [newAdminOpen, setNewAdminOpen] = React.useState(false)
+    const [newAdminRole, setNewAdminRole] = React.useState("")
+    const [newAdminScope, setNewAdminScope] = React.useState("")
+    const [newAdminMfa, setNewAdminMfa] = React.useState(true)
+    const resetNewAdmin = () => { setNewAdminRole(""); setNewAdminScope(""); setNewAdminMfa(true) }
+
+    // ── Activity Log Date Picker State ──
+    const [logDateRange, setLogDateRange] = React.useState<DateRange | undefined>(undefined)
+
+    const filteredLog = ACTIVITY_LOG.filter(log => {
+        const logDate = new Date(log.date)
+        if (logDateRange?.from) {
+            const from = new Date(logDateRange.from)
+            from.setHours(0, 0, 0, 0)
+            if (logDate < from) return false
+        }
+        if (logDateRange?.to) {
+            const to = new Date(logDateRange.to)
+            to.setHours(23, 59, 59, 999)
+            if (logDate > to) return false
+        }
+        return true
+    })
+
     const masterActiveCount = ADMINS.filter(a => a.role === "Master Admin" && a.status === "Active").length
     const totalActive = ADMINS.filter(a => a.status === "Active").length
     const mfaCompliant = ADMINS.filter(a => a.mfa === "Enabled").length
@@ -336,9 +379,149 @@ export default function RoleManagement() {
                     <h1 className="text-2xl font-bold tracking-tight">Kontrol Akses Admin</h1>
                     <p className="text-sm text-muted-foreground mt-0.5">Kelola peran, cakupan akses, dan keamanan administratif sistem.</p>
                 </div>
-                <Button className="bg-cakli-orange hover:bg-cakli-orange/90 text-white gap-2 h-9 text-xs shrink-0">
-                    <UserPlus className="size-3.5" /> Akses Admin Baru
-                </Button>
+                <Dialog open={newAdminOpen} onOpenChange={(open) => { setNewAdminOpen(open); if (!open) resetNewAdmin() }}>
+                    <DialogTrigger asChild>
+                        <Button className="bg-cakli-orange hover:bg-cakli-orange/90 text-white gap-2 h-9 text-xs shrink-0">
+                            <UserPlus className="size-3.5" /> Akses Admin Baru
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-lg">
+                        <DialogHeader>
+                            <DialogTitle>Tambah Akses Admin Baru</DialogTitle>
+                            <DialogDescription>Buat akun admin baru dengan peran dan cakupan akses yang sesuai.</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                            {/* Name & Email */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="grid gap-1.5">
+                                    <Label htmlFor="admin-name" className="text-xs">Nama Lengkap <span className="text-red-500">*</span></Label>
+                                    <Input id="admin-name" placeholder="cth: Budi Santoso" className="h-9 text-xs" />
+                                </div>
+                                <div className="grid gap-1.5">
+                                    <Label htmlFor="admin-email" className="text-xs">Email <span className="text-red-500">*</span></Label>
+                                    <Input id="admin-email" placeholder="budi@cakli.com" type="email" className="h-9 text-xs" />
+                                </div>
+                            </div>
+
+                            {/* Role */}
+                            <div className="grid gap-1.5">
+                                <Label className="text-xs">Peran Admin <span className="text-red-500">*</span></Label>
+                                <Select value={newAdminRole} onValueChange={(val) => {
+                                    setNewAdminRole(val)
+                                    if (val === "Master Admin") setNewAdminScope("Global")
+                                    else setNewAdminScope("")
+                                }}>
+                                    <SelectTrigger className="h-9 text-xs">
+                                        <SelectValue placeholder="Pilih peran..." />
+                                    </SelectTrigger>
+                                    <SelectContent className="text-xs">
+                                        <SelectItem value="Master Admin">Master Admin</SelectItem>
+                                        <SelectItem value="Operating Admin">Admin Operasional</SelectItem>
+                                        <SelectItem value="Reporting Admin">Admin Pelaporan</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                {newAdminRole === "Master Admin" && masterActiveCount >= 2 && (
+                                    <div className="flex items-start gap-2 p-2.5 rounded-md bg-red-50 border border-red-200">
+                                        <ShieldAlert className="size-3.5 text-red-500 mt-0.5 shrink-0" />
+                                        <p className="text-[11px] text-red-700 leading-snug">
+                                            <strong>Peringatan:</strong> Sudah ada {masterActiveCount} Master Admin aktif (batas aman: 2). Menambah Master Admin baru meningkatkan risiko keamanan sistem.
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Scope */}
+                            <div className="grid gap-1.5">
+                                <Label className="text-xs">Cakupan Akses <span className="text-red-500">*</span></Label>
+                                {newAdminRole === "Master Admin" ? (
+                                    <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-md border text-xs text-muted-foreground">
+                                        <Globe className="size-3.5 text-blue-500" />
+                                        Global — akses penuh ke semua sistem
+                                    </div>
+                                ) : (
+                                    <Select value={newAdminScope} onValueChange={setNewAdminScope} disabled={!newAdminRole}>
+                                        <SelectTrigger className="h-9 text-xs">
+                                            <SelectValue placeholder={newAdminRole ? "Pilih cakupan..." : "Pilih peran terlebih dahulu"} />
+                                        </SelectTrigger>
+                                        <SelectContent className="text-xs">
+                                            <SelectItem value="Regional">Regional</SelectItem>
+                                            <SelectItem value="Zone-Specific">Spesifik Zona</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            </div>
+
+                            {/* Region/Zone detail — only for non-Master */}
+                            {newAdminRole !== "Master Admin" && newAdminScope && (
+                                <div className="grid gap-1.5">
+                                    <Label className="text-xs">
+                                        {newAdminScope === "Regional" ? "Pilih Region" : "Pilih Zona"} <span className="text-red-500">*</span>
+                                    </Label>
+                                    <Select>
+                                        <SelectTrigger className="h-9 text-xs">
+                                            <SelectValue placeholder={newAdminScope === "Regional" ? "Pilih region..." : "Pilih zona..."} />
+                                        </SelectTrigger>
+                                        <SelectContent className="text-xs">
+                                            {newAdminScope === "Regional" ? (
+                                                <>
+                                                    <SelectItem value="Jawa Timur">Jawa Timur</SelectItem>
+                                                    <SelectItem value="Jawa Barat">Jawa Barat</SelectItem>
+                                                    <SelectItem value="Jawa Tengah">Jawa Tengah</SelectItem>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <SelectItem value="Malang Kota">Malang Kota</SelectItem>
+                                                    <SelectItem value="Surabaya Pusat">Surabaya Pusat</SelectItem>
+                                                    <SelectItem value="Batu Wisata">Batu Wisata</SelectItem>
+                                                    <SelectItem value="Sidoarjo Kota">Sidoarjo Kota</SelectItem>
+                                                    <SelectItem value="Kepanjen Sub">Kepanjen Sub</SelectItem>
+                                                </>
+                                            )}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            )}
+
+                            {/* MFA Switch */}
+                            <div className="flex items-center justify-between px-3 py-3 bg-slate-50 rounded-lg border">
+                                <div className="flex items-center gap-2.5">
+                                    <Fingerprint className="size-4 text-slate-600" />
+                                    <div>
+                                        <p className="text-xs font-semibold">Wajibkan MFA</p>
+                                        <p className="text-[10px] text-muted-foreground">Admin harus mendaftarkan authenticator saat login pertama</p>
+                                    </div>
+                                </div>
+                                <Switch checked={newAdminMfa} onCheckedChange={setNewAdminMfa} />
+                            </div>
+
+                            {/* Reason */}
+                            <div className="grid gap-1.5">
+                                <Label className="text-xs">Alasan Pembuatan <span className="text-red-500">*</span></Label>
+                                <Textarea
+                                    placeholder="cth: Dibutuhkan admin baru untuk operasional zona Sidoarjo..."
+                                    className="text-xs resize-none"
+                                    rows={2}
+                                />
+                            </div>
+
+                            {/* Info */}
+                            <div className="flex items-start gap-2 p-2.5 rounded-md bg-blue-50 border border-blue-200">
+                                <Info className="size-3.5 text-blue-500 mt-0.5 shrink-0" />
+                                <p className="text-[11px] text-blue-700 leading-snug">
+                                    Admin baru akan menerima email undangan dan harus menyelesaikan pendaftaran dalam 72 jam. Akun akan berstatus <strong>"Menunggu Persetujuan"</strong> hingga diaktifkan oleh Master Admin.
+                                </p>
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button variant="outline">Batal</Button>
+                            </DialogClose>
+                            <Button className="bg-cakli-orange hover:bg-orange-700 gap-1.5">
+                                <UserPlus className="size-3.5" /> Buat Admin Baru
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             {/* ── SUMMARY CARDS ── */}
@@ -554,7 +737,7 @@ export default function RoleManagement() {
                                     </Button>
                                     <div className="flex items-center gap-1">
                                         {[1, 2, 3].map((p) => (
-                                            <Button key={p} variant={p === 1 ? "secondary" : "ghost"} size="sm" className="h-8 w-8 p-0 text-[10px] font-bold">
+                                            <Button key={p} variant={p === 1 ? "default" : "ghost"} size="sm" className={`h-8 w-8 p-0 text-[10px] font-bold ${p === 1 ? "bg-cakli-orange hover:bg-cakli-orange/90 text-white" : ""}`}>
                                                 {p}
                                             </Button>
                                         ))}
@@ -618,12 +801,46 @@ export default function RoleManagement() {
                     </Card>
                 </TabsContent>
 
-                {/* ── TAB: ACTIVITY LOG ── */}
                 <TabsContent value="log" className="mt-0">
                     <Card className="border-none ring-1 ring-slate-200">
-                        <CardHeader className="pb-3 border-b">
-                            <CardTitle className="text-sm">Log Aktivitas Admin</CardTitle>
-                            <CardDescription className="text-xs">Semua aksi administratif tercatat secara real-time.</CardDescription>
+                        <CardHeader className="pb-3 border-b flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle className="text-sm">Log Aktivitas Admin</CardTitle>
+                                <CardDescription className="text-xs">Semua aksi administratif tercatat secara real-time.</CardDescription>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="outline" size="sm" className={`h-8 text-xs gap-1.5 justify-start font-normal ${!logDateRange ? 'text-muted-foreground' : ''}`}>
+                                            <Clock className="size-3.5" />
+                                            {logDateRange?.from ? (
+                                                logDateRange.to ? (
+                                                    <>{format(logDateRange.from, 'dd MMM yyyy', { locale: localeId })} - {format(logDateRange.to, 'dd MMM yyyy', { locale: localeId })}</>
+                                                ) : (
+                                                    format(logDateRange.from, 'dd MMM yyyy', { locale: localeId })
+                                                )
+                                            ) : (
+                                                'Pilih rentang tanggal'
+                                            )}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="end">
+                                        <Calendar
+                                            mode="range"
+                                            defaultMonth={logDateRange?.from}
+                                            selected={logDateRange}
+                                            onSelect={setLogDateRange}
+                                            numberOfMonths={2}
+                                            initialFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                {logDateRange && (
+                                    <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground" onClick={() => setLogDateRange(undefined)}>
+                                        <XCircle className="size-3.5 mr-1" /> Reset
+                                    </Button>
+                                )}
+                            </div>
                         </CardHeader>
                         <CardContent className="p-0">
                             <Table>
@@ -638,7 +855,7 @@ export default function RoleManagement() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {ACTIVITY_LOG.map((log, i) => (
+                                    {filteredLog.map((log, i) => (
                                         <TableRow key={i} className="hover:bg-slate-50/50 transition-colors">
                                             <TableCell className="pl-5 py-3 font-mono text-[10px] text-muted-foreground">{log.time}</TableCell>
                                             <TableCell className="text-xs font-medium">{log.admin}</TableCell>
@@ -659,14 +876,14 @@ export default function RoleManagement() {
                         {/* ── PAGINATION ── */}
                         <div className="flex items-center justify-between px-5 py-4 border-t border-slate-100 mt-auto">
                             <p className="text-[10px] text-muted-foreground font-medium">
-                                Showing latest <span className="text-slate-900 font-bold">{ACTIVITY_LOG.length}</span> activities
+                                Menampilkan <span className="text-slate-900 font-bold">{filteredLog.length}</span> aktivitas
                             </p>
                             <div className="flex items-center gap-1.5">
                                 <Button variant="outline" size="sm" className="h-8 w-8 p-0" disabled>
                                     <ChevronRight className="size-4 rotate-180" />
                                 </Button>
                                 <div className="flex items-center gap-1">
-                                    <Button variant="secondary" size="sm" className="h-8 w-8 p-0 text-[10px] font-bold">1</Button>
+                                    <Button variant="default" size="sm" className="h-8 w-8 p-0 text-[10px] font-bold bg-cakli-orange hover:bg-cakli-orange/90 text-white">1</Button>
                                 </div>
                                 <Button variant="outline" size="sm" className="h-8 w-8 p-0" disabled>
                                     <ChevronRight className="size-4" />

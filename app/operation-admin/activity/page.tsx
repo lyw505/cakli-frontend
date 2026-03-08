@@ -53,8 +53,16 @@ import {
     DialogHeader,
     DialogTitle,
     DialogDescription,
+    DialogFooter,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
+import {
+    Empty,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+    EmptyDescription,
+} from "@/components/ui/empty"
 
 type DriverStatus = "Peringatan" | "Kritis" | "Info" | "Dipantau" | "Diselidiki"
 
@@ -599,20 +607,15 @@ export default function ActivityPage() {
 
             {/* Audit Log Modal */}
             <Dialog open={showLogsModal} onOpenChange={setShowLogsModal}>
-                <DialogContent className="max-w-4xl p-0 overflow-hidden border border-slate-200 max-h-[90vh] flex flex-col">
-                    <div className="px-7 py-6 flex items-start justify-between bg-white shrink-0 border-b border-slate-100">
-                        <div className="space-y-1">
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Audit Log</h2>
-                            <p className="text-sm text-slate-500 font-medium">
-                                Catatan tindakan intervensi pada pemantauan aktivitas
-                            </p>
-                        </div>
-                        <Button variant="ghost" onClick={() => setShowLogsModal(false)} className="h-10 w-10 p-0 rounded-full hover:bg-slate-100">
-                            <span className="flex h-5 w-5 items-center justify-center text-slate-400"><X /></span>
-                        </Button>
-                    </div>
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Audit Log</DialogTitle>
+                        <DialogDescription>
+                            Catatan tindakan intervensi pada pemantauan aktivitas
+                        </DialogDescription>
+                    </DialogHeader>
 
-                    <div className="flex-1 overflow-y-auto px-7 p-7 pt-4 space-y-3 bg-white custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar -mx-6 px-6 space-y-3">
                         {logs.length > 0 ? (
                             <div className="space-y-3">
                                 {logs.map((log) => (
@@ -628,7 +631,6 @@ export default function ActivityPage() {
                                                         Driver: <span className="text-slate-700 font-bold">{log.driver}</span>
                                                     </p>
                                                 </div>
-
                                                 <div className="mt-4 flex items-center gap-2">
                                                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Executor: {log.admin}</span>
                                                 </div>
@@ -641,12 +643,22 @@ export default function ActivityPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12">
-                                <RotateCcw className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-                                <p className="text-slate-500 font-medium">Belum ada aktivitas</p>
-                            </div>
+                            <Empty className="h-full bg-muted/30">
+                                <EmptyHeader>
+                                    <EmptyMedia variant="icon">
+                                        <History />
+                                    </EmptyMedia>
+                                    <EmptyTitle>Belum Ada Aktivitas</EmptyTitle>
+                                    <EmptyDescription className="max-w-xs text-pretty">
+                                        Lakukan tindakan pada pengemudi untuk melihat log di sini.
+                                    </EmptyDescription>
+                                </EmptyHeader>
+                            </Empty>
                         )}
                     </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowLogsModal(false)}>Tutup</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
             {/* MODAL: Kirim Peringatan */}
@@ -955,58 +967,53 @@ export default function ActivityPage() {
 
             {/* MODAL: Log Audit */}
             <Dialog open={showLogsModal} onOpenChange={setShowLogsModal}>
-                <DialogContent className="max-w-2xl rounded-2xl overflow-hidden p-0 gap-0 border-none shadow-2xl">
-                    <DialogHeader className="p-8 bg-[#E04D04] text-white flex flex-row items-center justify-between space-y-0">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center border border-white/20">
-                                <History className="w-6 h-6 text-white" />
-                            </div>
-                            <div className="space-y-1">
-                                <DialogTitle className="text-xl font-bold leading-none text-white">Log Audit Aktivitas</DialogTitle>
-                                <DialogDescription className="text-sm text-white/70 mt-1">Jejak real-time intervensi operasional.</DialogDescription>
-                            </div>
-                        </div>
-                        {logs.length > 0 && (
-                            <span className="text-sm font-bold text-white/80 bg-white/10 px-3 py-1 rounded-full">
-                                {logs.length} Aksi
-                            </span>
-                        )}
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Log Audit Aktivitas</DialogTitle>
+                        <DialogDescription>
+                            Jejak real-time intervensi operasional.
+                        </DialogDescription>
                     </DialogHeader>
-                    <div className="p-0">
-                        <div className="max-h-[60vh] overflow-y-auto">
-                            {logs.length === 0 ? (
-                                <div className="p-20 text-center flex flex-col items-center gap-3">
-                                    <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center">
-                                        <History className="w-8 h-8 text-slate-200" />
-                                    </div>
-                                    <div className="text-sm font-bold text-slate-400 italic">Tidak ada aksi yang tercatat dalam sesi ini.</div>
-                                    <div className="text-xs text-slate-300">Lakukan tindakan pada pengemudi untuk melihat log di sini.</div>
-                                </div>
-                            ) : (
-                                <div className="divide-y divide-slate-100">
-                                    {logs.map((log, i) => (
-                                        <div key={log.id} className="p-4 px-8 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                                            <div className="flex items-center gap-4">
-                                                <div className="relative">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600 border border-slate-200">
-                                                        {log.admin[0]}
-                                                    </div>
-                                                    {i === 0 && (
-                                                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
-                                                    )}
+                    <div className="flex-1 overflow-y-auto custom-scrollbar -mx-6 px-6">
+                        {logs.length === 0 ? (
+                            <Empty className="h-full bg-muted/30">
+                                <EmptyHeader>
+                                    <EmptyMedia variant="icon">
+                                        <History />
+                                    </EmptyMedia>
+                                    <EmptyTitle>Tidak ada aksi yang tercatat</EmptyTitle>
+                                    <EmptyDescription className="max-w-xs text-pretty">
+                                        Lakukan tindakan pada pengemudi untuk melihat log di sini.
+                                    </EmptyDescription>
+                                </EmptyHeader>
+                            </Empty>
+                        ) : (
+                            <div className="divide-y divide-slate-100">
+                                {logs.map((log, i) => (
+                                    <div key={log.id} className="p-4 px-4 flex items-center justify-between hover:bg-slate-50 transition-colors rounded-lg">
+                                        <div className="flex items-center gap-4">
+                                            <div className="relative">
+                                                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600 border border-slate-200">
+                                                    {log.admin[0]}
                                                 </div>
-                                                <div>
-                                                    <div className="text-sm font-bold text-slate-900">{log.action}</div>
-                                                    <div className="text-[11px] text-slate-500 mt-0.5">{log.driver} • {log.admin}</div>
-                                                </div>
+                                                {i === 0 && (
+                                                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
+                                                )}
                                             </div>
-                                            <div className="text-[11px] font-mono text-slate-400 bg-slate-50 px-2 py-1 rounded-md">{log.timestamp}</div>
+                                            <div>
+                                                <div className="text-sm font-bold text-slate-900">{log.action}</div>
+                                                <div className="text-[11px] text-slate-500 mt-0.5">{log.driver} • {log.admin}</div>
+                                            </div>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                                        <div className="text-[11px] font-mono text-slate-400 bg-slate-50 px-2 py-1 rounded-md">{log.timestamp}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowLogsModal(false)}>Tutup</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </div>

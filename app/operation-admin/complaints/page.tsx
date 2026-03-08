@@ -31,6 +31,7 @@ import {
     Dialog,
     DialogContent,
     DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
@@ -93,6 +94,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { toast } from "sonner"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+    Empty,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+    EmptyDescription,
+} from "@/components/ui/empty"
 
 // ==================== TYPES ====================
 interface ContactInfo {
@@ -1734,22 +1742,17 @@ export default function ComplaintsPage() {
                 </DialogContent>
             </Dialog>
 
-            {/* Audit Log Modal - dengan grouping dan pemisah */}
+            {/* Audit Log Modal */}
             <Dialog open={isAuditLogOpen} onOpenChange={setIsAuditLogOpen}>
-                <DialogContent className="max-w-4xl p-0 overflow-hidden border border-slate-200 max-h-[90vh] flex flex-col">
-                    <div className="px-7 py-6 flex items-start justify-between bg-white shrink-0 border-b border-slate-100">
-                        <div className="space-y-1">
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Audit Log</h2>
-                            <p className="text-sm text-slate-500 font-medium">
-                                Semua aktivitas dan perubahan pada tiket keluhan
-                            </p>
-                        </div>
-                        <Button variant="ghost" onClick={() => setIsAuditLogOpen(false)} className="h-10 w-10 p-0 rounded-full hover:bg-slate-100">
-                            <span className="h-5 w-5 text-slate-400"><X /></span>
-                        </Button>
-                    </div>
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Audit Log</DialogTitle>
+                        <DialogDescription>
+                            Semua aktivitas dan perubahan pada tiket keluhan
+                        </DialogDescription>
+                    </DialogHeader>
 
-                    <div className="flex-1 overflow-y-auto p-6">
+                    <div className="flex-1 overflow-y-auto -mx-6 px-6">
                         {groupedAuditLogs.length > 0 ? (
                             <div className="space-y-6">
                                 {groupedAuditLogs.map((group, groupIndex) => (
@@ -1766,7 +1769,7 @@ export default function ComplaintsPage() {
 
                                         {/* Logs dalam group */}
                                         <div className="space-y-3 pl-2">
-                                            {group.logs.map((log, idx) => (
+                                            {group.logs.map((log) => (
                                                 <div key={log.id} className="bg-white border border-slate-100 rounded-2xl p-5 hover:bg-slate-50 transition-all relative overflow-hidden group">
                                                     <div className="flex gap-5">
                                                         <div className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0 bg-slate-50 text-slate-500 transition-all group-hover:scale-105">
@@ -1779,8 +1782,7 @@ export default function ComplaintsPage() {
                                                                     Tiket: <span className="text-slate-700 font-bold">{log.ticketId}</span>
                                                                 </p>
                                                             </div>
-
-                                                            <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50 group">
+                                                            <div className="mt-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100/50">
                                                                 <div className="flex gap-2">
                                                                     <span className="text-xs font-black text-slate-900 uppercase tracking-widest leading-relaxed">Detail:</span>
                                                                     <span className="text-xs text-slate-500 leading-relaxed font-semibold">
@@ -1788,7 +1790,6 @@ export default function ComplaintsPage() {
                                                                     </span>
                                                                 </div>
                                                             </div>
-
                                                             <div className="mt-4 flex items-center gap-2">
                                                                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Executor: {log.performedBy}</span>
                                                             </div>
@@ -1816,19 +1817,23 @@ export default function ComplaintsPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12">
-                                <History className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-                                <p className="text-slate-500 font-medium">Belum ada aktivitas</p>
-                                <p className="text-sm text-slate-400 mt-1">Log akan muncul saat ada interaksi dengan tiket</p>
-                            </div>
+                            <Empty className="h-full bg-muted/30">
+                                <EmptyHeader>
+                                    <EmptyMedia variant="icon">
+                                        <History />
+                                    </EmptyMedia>
+                                    <EmptyTitle>Belum Ada Aktivitas</EmptyTitle>
+                                    <EmptyDescription className="max-w-xs text-pretty">
+                                        Log akan muncul saat ada interaksi dengan tiket
+                                    </EmptyDescription>
+                                </EmptyHeader>
+                            </Empty>
                         )}
                     </div>
 
-                    <div className="border-t border-slate-200 p-4 flex justify-end bg-white flex-shrink-0">
-                        <Button variant="outline" onClick={() => setIsAuditLogOpen(false)}>
-                            Tutup
-                        </Button>
-                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsAuditLogOpen(false)}>Tutup</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </div >

@@ -12,7 +12,7 @@ import {
     ShieldAlert,
     ShieldCheck,
     History,
-    Calendar,
+    Calendar as CalendarIcon,
     User,
     Monitor,
     Database,
@@ -69,6 +69,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { format } from "date-fns"
+import { id as localeId } from "date-fns/locale"
+import { type DateRange } from "react-day-picker"
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
@@ -243,6 +248,9 @@ export default function AuditLog() {
     const [severityFilter, setSeverityFilter] = React.useState("all")
     const [moduleFilter, setModuleFilter] = React.useState("all")
 
+    // Date range picker state
+    const [auditDateRange, setAuditDateRange] = React.useState<DateRange | undefined>(undefined)
+
     const filteredLogs = AUDIT_LOGS.filter(log => {
         const matchesSearch =
             log.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -252,7 +260,21 @@ export default function AuditLog() {
         const matchesSeverity = severityFilter === "all" || log.severity === severityFilter
         const matchesModule = moduleFilter === "all" || log.module === moduleFilter
 
-        return matchesSearch && matchesSeverity && matchesModule
+        // Date range filter
+        let matchesDate = true
+        const logDate = new Date(log.timestamp.split(' ').slice(0, 2).join('T'))
+        if (auditDateRange?.from) {
+            const from = new Date(auditDateRange.from)
+            from.setHours(0, 0, 0, 0)
+            if (logDate < from) matchesDate = false
+        }
+        if (auditDateRange?.to) {
+            const to = new Date(auditDateRange.to)
+            to.setHours(23, 59, 59, 999)
+            if (logDate > to) matchesDate = false
+        }
+
+        return matchesSearch && matchesSeverity && matchesModule && matchesDate
     })
 
     return (
@@ -420,9 +442,38 @@ export default function AuditLog() {
                     </SelectContent>
                 </Select>
 
-                <Button variant="outline" size="sm" className="h-9 gap-2 text-[11px] bg-white border-slate-200 text-slate-600">
-                    <Calendar className="size-3.5" /> Rentang Tanggal
-                </Button>
+                {/* Date Range Picker */}
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button variant="outline" size="sm" className={`h-9 text-xs gap-1.5 justify-start font-normal bg-white border-slate-200 ${!auditDateRange ? 'text-muted-foreground' : 'text-slate-800'}`}>
+                            <CalendarIcon className="size-3.5" />
+                            {auditDateRange?.from ? (
+                                auditDateRange.to ? (
+                                    <>{format(auditDateRange.from, 'dd MMM yyyy', { locale: localeId })} - {format(auditDateRange.to, 'dd MMM yyyy', { locale: localeId })}</>
+                                ) : (
+                                    format(auditDateRange.from, 'dd MMM yyyy', { locale: localeId })
+                                )
+                            ) : (
+                                'Pilih rentang tanggal'
+                            )}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                            mode="range"
+                            defaultMonth={auditDateRange?.from}
+                            selected={auditDateRange}
+                            onSelect={setAuditDateRange}
+                            numberOfMonths={2}
+                            initialFocus
+                        />
+                    </PopoverContent>
+                </Popover>
+                {auditDateRange && (
+                    <Button variant="ghost" size="sm" className="h-9 text-xs text-muted-foreground" onClick={() => setAuditDateRange(undefined)}>
+                        <XCircle className="size-3.5 mr-1" /> Reset
+                    </Button>
+                )}
 
                 <div className="ml-auto flex items-center gap-2">
                     <Button className="bg-cakli-orange hover:bg-cakli-orange/90 text-white text-xs gap-2 h-9 px-4">
@@ -510,7 +561,7 @@ export default function AuditLog() {
                     </Button>
                     <div className="flex items-center gap-1">
                         {[1, 2, 3].map((p) => (
-                            <Button key={p} variant={p === 1 ? "secondary" : "ghost"} size="sm" className="h-8 w-8 p-0 text-[10px] font-bold">
+                            <Button key={p} variant={p === 1 ? "default" : "ghost"} size="sm" className={`h-8 w-8 p-0 text-[10px] font-bold ${p === 1 ? "bg-cakli-orange hover:bg-cakli-orange/90 text-white" : ""}`}>
                                 {p}
                             </Button>
                         ))}
