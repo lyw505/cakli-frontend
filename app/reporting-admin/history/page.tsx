@@ -97,7 +97,7 @@ function DatePickerWithRange({
                         id="date"
                         variant={"outline"}
                         className={cn(
-                            "w-[260px] justify-start text-left font-normal border-gray-200 focus-visible:ring-1 focus-visible:ring-[#E04D04] focus-visible:ring-offset-0",
+                            "w-[260px] justify-start text-left font-normal border-gray-200 focus-visible:ring-0 focus-visible:ring-offset-0 bg-white",
                             !date && "text-muted-foreground"
                         )}
                     >
@@ -157,11 +157,11 @@ export default function HistoryPage() {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Format</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
                                 <FileSpreadsheet className="mr-2 h-4 w-4" />
                                 Buku Besar Bulanan (.xlsx)
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
                                 <FileText className="mr-2 h-4 w-4" />
                                 Laporan Pencairan (.pdf)
                             </DropdownMenuItem>
@@ -170,23 +170,21 @@ export default function HistoryPage() {
                 </div>
             </div>
 
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="flex flex-1 items-center gap-4">
-                    <div className="relative w-full max-w-sm">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="search"
-                            placeholder="Search by ID or customer..."
-                            className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0"
-                        />
-                    </div>
-                    <div className="ml-2">
-                        <DatePickerWithRange />
-                    </div>
+            <div className="flex flex-col gap-4 md:flex-row md:items-center">
+                <div className="relative w-full max-w-sm">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        type="search"
+                        placeholder="Search by ID or customer..."
+                        className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0 bg-white"
+                    />
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="ml-2">
+                    <DatePickerWithRange />
+                </div>
+                <div className="flex items-center gap-4 ml-4">
                     <Select defaultValue="all">
-                        <SelectTrigger className="w-[140px] focus:ring-1 focus:ring-[#E04D04] focus:ring-offset-0">
+                        <SelectTrigger className="w-[140px] focus:ring-0 focus:ring-offset-0 border-gray-200 bg-white">
                             <SelectValue placeholder="Area" />
                         </SelectTrigger>
                         <SelectContent>
@@ -198,7 +196,7 @@ export default function HistoryPage() {
                         </SelectContent>
                     </Select>
                     <Select defaultValue="all">
-                        <SelectTrigger className="w-[140px] focus:ring-1 focus:ring-[#E04D04] focus:ring-offset-0">
+                        <SelectTrigger className="w-[140px] focus:ring-0 focus:ring-offset-0 border-gray-200 bg-white">
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
@@ -208,12 +206,6 @@ export default function HistoryPage() {
                             <SelectItem value="refunded">Refunded</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="outline" size="icon">
-                        <ArrowUpDown className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon">
-                        <Filter className="h-4 w-4" />
-                    </Button>
                 </div>
             </div>
 
@@ -252,19 +244,19 @@ export default function HistoryPage() {
                                                 </Button>
                                             </DialogTrigger>
                                             <DialogContent className="sm:max-w-[500px]">
-                                                <DialogHeader className="px-4">
+                                                <DialogHeader className="px-3 pt-4">
                                                     <DialogTitle>Order Details - {selectedOrder?.id}</DialogTitle>
                                                     <DialogDescription>
                                                         Full transactional audit for this order instance.
                                                     </DialogDescription>
                                                 </DialogHeader>
-                                                <div className="grid gap-4 py-4 px-4">
+                                                <div className="grid gap-4 py-4 px-3 pb-2">
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div className="space-y-1">
                                                             <p className="text-xs text-muted-foreground uppercase font-semibold">User Details</p>
                                                             <p className="text-sm">{selectedOrder?.customer}</p>
                                                         </div>
-                                                        <div className="space-y-1 text-right">
+                                                        <div className="space-y-1 text-right flex flex-col items-end">
                                                             <p className="text-xs text-muted-foreground uppercase font-semibold">Driver Details</p>
                                                             <p className="text-sm">{selectedOrder?.driver}</p>
                                                         </div>
@@ -272,14 +264,14 @@ export default function HistoryPage() {
                                                     <Separator />
                                                     <div className="space-y-2">
                                                         <div className="flex items-start gap-2">
-                                                            <div className="size-2 bg-primary rounded-full mt-1.5" />
+                                                            <div className="size-2 bg-[#E04D04] rounded-full mt-1.5" />
                                                             <div className="space-y-0.5">
                                                                 <p className="text-xs text-muted-foreground">Pickup Location</p>
                                                                 <p className="text-sm font-medium">{selectedOrder?.pickup}</p>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-start gap-2">
-                                                            <div className="size-2 bg-destructive rounded-full mt-1.5" />
+                                                            <div className="size-2 bg-red-600 rounded-full mt-1.5" />
                                                             <div className="space-y-0.5">
                                                                 <p className="text-xs text-muted-foreground">Drop-off Location</p>
                                                                 <p className="text-sm font-medium">{selectedOrder?.dropoff}</p>
@@ -290,16 +282,16 @@ export default function HistoryPage() {
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div className="space-y-1">
                                                             <p className="text-xs text-muted-foreground uppercase font-semibold">Total Fare</p>
-                                                            <p className="text-lg font-bold text-primary">{selectedOrder?.amount}</p>
+                                                            <p className="text-xl font-bold text-[#E04D04]">{selectedOrder?.amount}</p>
                                                         </div>
-                                                        <div className="space-y-1 text-right">
+                                                        <div className="space-y-1 text-right flex flex-col items-end">
                                                             <p className="text-xs text-muted-foreground uppercase font-semibold">Status</p>
-                                                            <Badge variant={selectedOrder?.status === "Completed" ? "default" : "destructive"}>
+                                                            <Badge className="px-4 py-1 rounded-full text-sm font-semibold border-0" variant={selectedOrder?.status === "Completed" ? "default" : "destructive"} style={selectedOrder?.status === "Completed" ? { backgroundColor: '#E04D04', color: 'white' } : {}}>
                                                                 {selectedOrder?.status}
                                                             </Badge>
                                                         </div>
                                                     </div>
-                                                    <div className="bg-muted p-3 rounded-lg text-xs space-y-1">
+                                                    <div className="bg-muted p-3 rounded-lg text-xs space-y-1 mt-2">
                                                         <p><span className="font-semibold">Distance:</span> {selectedOrder?.distance}</p>
                                                         <p><span className="font-semibold">Duration:</span> {selectedOrder?.duration}</p>
                                                         <p><span className="font-semibold">Payment:</span> CakliWallet</p>

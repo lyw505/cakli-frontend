@@ -88,7 +88,7 @@ function DatePickerWithRange({
                         id="date"
                         variant={"outline"}
                         className={cn(
-                            "w-[260px] justify-start text-left font-normal border-gray-200 focus-visible:ring-1 focus-visible:ring-[#E04D04] focus-visible:ring-offset-0",
+                            "w-[260px] justify-start text-left font-normal border-gray-200 focus-visible:ring-0 focus-visible:ring-offset-0 bg-white",
                             !date && "text-muted-foreground"
                         )}
                     >
@@ -146,11 +146,11 @@ export default function CancellationReportPage() {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Format</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
                                 <FileSpreadsheet className="mr-2 h-4 w-4" />
                                 Buku Besar Bulanan (.xlsx)
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
                                 <FileText className="mr-2 h-4 w-4" />
                                 Laporan Pencairan (.pdf)
                             </DropdownMenuItem>
@@ -167,7 +167,7 @@ export default function CancellationReportPage() {
                         <Input
                             type="search"
                             placeholder="Cari ID Pesanan..."
-                            className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0"
+                            className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0 bg-white"
                         />
                     </div>
                 </div>
@@ -176,7 +176,7 @@ export default function CancellationReportPage() {
                 </div>
                 <div className="flex items-center gap-2 ml-12">
                     <Select defaultValue="all">
-                        <SelectTrigger className="focus:ring-1 focus:ring-[#E04D04] focus:ring-offset-0">
+                        <SelectTrigger className="focus:ring-0 focus:ring-offset-0 border-gray-200 bg-white">
                             <SelectValue placeholder="Area" />
                         </SelectTrigger>
                         <SelectContent>
@@ -187,11 +187,6 @@ export default function CancellationReportPage() {
                             <SelectItem value="blimbing">Blimbing</SelectItem>
                         </SelectContent>
                     </Select>
-                </div>
-                <div className="flex items-center justify-end">
-                    <Button variant="outline" size="icon">
-                        <Filter className="h-4 w-4" />
-                    </Button>
                 </div>
             </div>
 

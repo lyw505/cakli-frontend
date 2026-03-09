@@ -144,7 +144,7 @@ export default function AnalyticsPage() {
                         </TabsList>
                     </Tabs>
                     <Select defaultValue="all">
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-[180px] focus:ring-0 focus:ring-offset-0 border-gray-200 bg-white">
                             <SelectValue placeholder="Filter Wilayah" />
                         </SelectTrigger>
                         <SelectContent>
@@ -163,11 +163,11 @@ export default function AnalyticsPage() {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Format</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
                                 <FileSpreadsheet className="mr-2 h-4 w-4" />
                                 Buku Besar Bulanan (.xlsx)
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
                                 <FileText className="mr-2 h-4 w-4" />
                                 Laporan Pencairan (.pdf)
                             </DropdownMenuItem>

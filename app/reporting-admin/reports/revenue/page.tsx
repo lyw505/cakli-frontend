@@ -239,7 +239,7 @@ function DatePickerWithRange({
                         id="date"
                         variant={"outline"}
                         className={cn(
-                            "w-[260px] justify-start text-left font-normal border-gray-200 focus-visible:ring-1 focus-visible:ring-[#E04D04] focus-visible:ring-offset-0",
+                            "w-[260px] justify-start text-left font-normal border-gray-200 focus-visible:ring-0 focus-visible:ring-offset-0 bg-white",
                             !date && "text-muted-foreground"
                         )}
                     >
@@ -327,11 +327,11 @@ export default function RevenueReportPage() {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Format</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
                                 <FileSpreadsheet className="mr-2 h-4 w-4" />
                                 Buku Besar Bulanan (.xlsx)
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
                                 <FileText className="mr-2 h-4 w-4" />
                                 Laporan Pencairan (.pdf)
                             </DropdownMenuItem>
@@ -493,7 +493,7 @@ export default function RevenueReportPage() {
                                 <Input
                                     type="search"
                                     placeholder="Cari wilayah..."
-                                    className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0"
+                                    className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0 bg-white"
                                 />
                             </div>
                             <DatePickerWithRange />
@@ -601,7 +601,7 @@ export default function RevenueReportPage() {
                                 <Input
                                     type="search"
                                     placeholder="Cari batch..."
-                                    className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0"
+                                    className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0 bg-white"
                                 />
                             </div>
                             <DatePickerWithRange />
@@ -685,11 +685,11 @@ export default function RevenueReportPage() {
                                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                     <Input
                                         placeholder="Cari ID Transaksi..."
-                                        className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0"
+                                        className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0 bg-white"
                                     />
                                 </div>
                                 <Select defaultValue="all">
-                                    <SelectTrigger className="w-[150px]">
+                                    <SelectTrigger className="w-[150px] focus:ring-0 focus:ring-offset-0 border-gray-200 bg-white">
                                         <SelectValue placeholder="Tipe" />
                                     </SelectTrigger>
                                     <SelectContent>
