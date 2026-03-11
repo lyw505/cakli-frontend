@@ -36,55 +36,75 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Orders</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">24</div>
-            <div className="flex items-center text-xs text-green-600">
-              <ArrowUpRight className="h-3 w-3 mr-1" />
-              +2 from last hour
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <Card className="overflow-hidden">
+          <div className="flex items-stretch h-full">
+            <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+            <div className="flex-1">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                <CardTitle className="text-xs font-medium">Active Orders</CardTitle>
+                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+              </CardHeader>
+              <CardContent className="px-3 pb-3">
+                <div className="text-xl font-bold">24</div>
+                <p className="text-[10px] text-cakli-green font-bold flex items-center">
+                  <ArrowUpRight className="size-2.5 mr-0.5" /> +2 <span className="text-muted-foreground font-normal ml-1">from last hour</span>
+                </p>
+              </CardContent>
             </div>
-          </CardContent>
+          </div>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Drivers Online</CardTitle>
-            <MapPin className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">18/25</div>
-            <p className="text-xs text-muted-foreground">72% fleet availability</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Complaints</CardTitle>
-            <AlertCircle className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-500">3</div>
-            <div className="flex items-center text-xs text-red-600">
-              <ArrowUpRight className="h-3 w-3 mr-1" />
-              +1 from yesterday
+
+        <Card className="overflow-hidden">
+          <div className="flex items-stretch h-full">
+            <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+            <div className="flex-1">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                <CardTitle className="text-xs font-medium">Drivers Online</CardTitle>
+                <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+              </CardHeader>
+              <CardContent className="px-3 pb-3">
+                <div className="text-xl font-bold">18/25</div>
+                <p className="text-[10px] text-muted-foreground">72% fleet availability</p>
+              </CardContent>
             </div>
-          </CardContent>
+          </div>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Daily Revenue</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Rp 2.4M</div>
-            <div className="flex items-center text-xs text-green-600">
-              <ArrowUpRight className="h-3 w-3 mr-1" />
-              +12% from yesterday
+
+        <Card className="overflow-hidden">
+          <div className="flex items-stretch h-full">
+            <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+            <div className="flex-1">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                <CardTitle className="text-xs font-medium">Active Complaints</CardTitle>
+                <AlertCircle className="h-3.5 w-3.5 text-red-500" />
+              </CardHeader>
+              <CardContent className="px-3 pb-3">
+                <div className="text-xl font-bold text-red-500">3</div>
+                <p className="text-[10px] text-red-600 font-bold flex items-center">
+                  <ArrowUpRight className="size-2.5 mr-0.5" /> +1 <span className="text-muted-foreground font-normal ml-1">from yesterday</span>
+                </p>
+              </CardContent>
             </div>
-          </CardContent>
+          </div>
+        </Card>
+
+        <Card className="overflow-hidden">
+          <div className="flex items-stretch h-full">
+            <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+            <div className="flex-1">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                <CardTitle className="text-xs font-medium">Daily Revenue</CardTitle>
+                <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+              </CardHeader>
+              <CardContent className="px-3 pb-3">
+                <div className="text-xl font-bold">Rp 2.4M</div>
+                <p className="text-[10px] text-cakli-green font-bold flex items-center">
+                  <ArrowUpRight className="size-2.5 mr-0.5" /> +12% <span className="text-muted-foreground font-normal ml-1">from yesterday</span>
+                </p>
+              </CardContent>
+            </div>
+          </div>
         </Card>
       </div>
 

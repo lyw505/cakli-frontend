@@ -57,35 +57,41 @@ export default function RealTimeMapPage() {
 
     return (
         <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-slate-50/50">
-            {/* Top Bar Metrics */}
-            <header className="grid grid-cols-2 md:grid-cols-4 gap-6 p-6 shrink-0 bg-white border-b">
-                <MetricCard
-                    icon={<Truck className="w-5 h-5" />}
-                    label="Active Drivers"
-                    value="42"
-                    sublabel="+5% from last hour"
-                    trendColor="text-emerald-600"
-                />
-                <MetricCard
-                    icon={<Activity className="w-5 h-5" />}
-                    label="Live Orders"
-                    value="128"
-                    sublabel="System status: Steady"
-                />
-                <MetricCard
-                    icon={<Clock className="w-5 h-5" />}
-                    label="Avg. ETA"
-                    value="8.4 min"
-                    sublabel="Reduced by 1.2m"
-                    trendColor="text-emerald-600"
-                />
-                <MetricCard
-                    icon={<TrendingUp className="w-5 h-5" />}
-                    label="High Demand Area"
-                    value="Malang Kota"
-                    sublabel="Demand: Very High"
-                    trendColor="text-rose-600"
-                />
+            {/* Header + KPI Cards */}
+            <header className="p-6 shrink-0 bg-white border-b space-y-4">
+                <div>
+                    <h1 className="text-2xl font-bold tracking-tight">Live Map</h1>
+                    <p className="text-sm text-muted-foreground">Pantau pergerakan driver dan pesanan secara real-time.</p>
+                </div>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <MetricCard
+                        icon={<Truck className="h-3.5 w-3.5" />}
+                        label="Active Drivers"
+                        value="42"
+                        sublabel="+5% from last hour"
+                        trendColor="text-cakli-green"
+                    />
+                    <MetricCard
+                        icon={<Activity className="h-3.5 w-3.5" />}
+                        label="Live Orders"
+                        value="128"
+                        sublabel="System status: Steady"
+                    />
+                    <MetricCard
+                        icon={<Clock className="h-3.5 w-3.5" />}
+                        label="Avg. ETA"
+                        value="8.4 min"
+                        sublabel="Reduced by 1.2m"
+                        trendColor="text-cakli-green"
+                    />
+                    <MetricCard
+                        icon={<TrendingUp className="h-3.5 w-3.5" />}
+                        label="High Demand Area"
+                        value="Malang Kota"
+                        sublabel="Demand: Very High"
+                        trendColor="text-rose-600"
+                    />
+                </div>
             </header>
 
             <div className="flex flex-1 relative overflow-hidden">
@@ -209,29 +215,23 @@ export default function RealTimeMapPage() {
     )
 }
 
-function MetricCard({ icon, label, value, sublabel, trendColor = "text-slate-400" }: { icon: React.ReactNode, label: string, value: string, sublabel?: string, trendColor?: string }) {
+function MetricCard({ icon, label, value, sublabel, trendColor = "text-muted-foreground" }: { icon: React.ReactNode, label: string, value: string, sublabel?: string, trendColor?: string }) {
     return (
-        <Card className="relative group bg-white p-5 rounded-2xl ring-1 ring-slate-200 flex flex-col justify-between h-36 border-none transition-all">
-            <div className="absolute left-4 top-5 bottom-5 w-[6px] bg-[#E04D04] rounded-full" />
-            <div className="absolute top-5 right-5 text-slate-300 group-hover:text-[#E04D04]/30 transition-colors">
-                {icon}
-            </div>
-            <div className="pl-6 flex flex-col h-full justify-between py-1">
-                <CardHeader className="p-0 border-none space-y-0 text-black">
-                    <CardTitle className="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-tight">
-                        {label}
-                    </CardTitle>
-                    <div className="text-3xl font-bold text-slate-900 mt-1.5 tracking-tight">
-                        {value}
-                    </div>
-                </CardHeader>
-                {sublabel && (
-                    <CardContent className="p-0 mt-auto">
-                        <div className={`text-[10px] font-bold tracking-wide uppercase ${trendColor}`}>
-                            {sublabel}
-                        </div>
+        <Card className="overflow-hidden">
+            <div className="flex items-stretch h-full">
+                <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+                <div className="flex-1">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                        <CardTitle className="text-xs font-medium">{label}</CardTitle>
+                        <span className="text-muted-foreground">{icon}</span>
+                    </CardHeader>
+                    <CardContent className="px-3 pb-3">
+                        <div className="text-xl font-bold">{value}</div>
+                        {sublabel && (
+                            <p className={`text-[10px] ${trendColor}`}>{sublabel}</p>
+                        )}
                     </CardContent>
-                )}
+                </div>
             </div>
         </Card>
     )

@@ -89,7 +89,7 @@ import {
 } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { toast } from "sonner"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -823,96 +823,108 @@ export default function ComplaintsPage() {
                 </div>
             </div>
 
-            {/* Statistik Cards - dengan icon pastel dan angka hitam */}
-            <div className="grid grid-cols-6 gap-4">
-                {/* Tiket Baru - Garis Orange */}
-                <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden pl-5">
-                    <div className="absolute left-3 top-3 bottom-3 pl-1 w-1 bg-orange-600 rounded-full"></div>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle className="text-sm font-medium text-slate-600">Tiket Baru</CardTitle>
-                        <div className="h-8 w-8 rounded-full flex items-center justify-center">
-                            <MessageCircle className="h-4 w-4 text-purple-600" />
+            {/* Statistik Cards - Master Admin Style */}
+            <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
+                {/* Tiket Baru */}
+                <Card className="overflow-hidden">
+                    <div className="flex items-stretch h-full">
+                        <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+                        <div className="flex-1">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                                <CardTitle className="text-xs font-medium">Tiket Baru</CardTitle>
+                                <MessageCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent className="px-3 pb-3">
+                                <div className="text-xl font-bold">{statistics.new}</div>
+                                <p className="text-[10px] text-muted-foreground">Menunggu diproses</p>
+                            </CardContent>
                         </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-slate-800">{statistics.new}</div>
-                        <p className="text-xs text-slate-400 mt-1">Menunggu diproses</p>
-                    </CardContent>
+                    </div>
                 </Card>
 
-                {/* Investigasi - Garis Orange */}
-                <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden pl-5">
-                    <div className="absolute left-3 top-3 bottom-3 pl-1 w-1 bg-orange-600 rounded-full"></div>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle className="text-sm font-medium text-slate-600">Investigasi</CardTitle>
-                        <div className="h-8 w-8 rounded-full flex items-center justify-center">
-                            <Search className="h-4 w-4 text-blue-600" />
+                {/* Investigasi */}
+                <Card className="overflow-hidden">
+                    <div className="flex items-stretch h-full">
+                        <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+                        <div className="flex-1">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                                <CardTitle className="text-xs font-medium">Investigasi</CardTitle>
+                                <Search className="h-3.5 w-3.5 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent className="px-3 pb-3">
+                                <div className="text-xl font-bold">{statistics.investigating}</div>
+                                <p className="text-[10px] text-muted-foreground">Sedang ditindaklanjuti</p>
+                            </CardContent>
                         </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-slate-800">{statistics.investigating}</div>
-                        <p className="text-xs text-slate-400 mt-1">Sedang ditindaklanjuti</p>
-                    </CardContent>
+                    </div>
                 </Card>
 
-                {/* Menunggu - Garis Orange */}
-                <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden pl-5">
-                    <div className="absolute left-3 top-3 bottom-3 pl-1 w-1 bg-orange-600 rounded-full"></div>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle className="text-sm font-medium text-slate-600">Menunggu</CardTitle>
-                        <div className="h-8 w-8 rounded-full flex items-center justify-center">
-                            <Clock3 className="h-4 w-4 text-yellow-600" />
+                {/* Menunggu */}
+                <Card className="overflow-hidden">
+                    <div className="flex items-stretch h-full">
+                        <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+                        <div className="flex-1">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                                <CardTitle className="text-xs font-medium">Menunggu</CardTitle>
+                                <Clock3 className="h-3.5 w-3.5 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent className="px-3 pb-3">
+                                <div className="text-xl font-bold">{statistics.waiting}</div>
+                                <p className="text-[10px] text-muted-foreground">Menunggu konfirmasi</p>
+                            </CardContent>
                         </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-slate-800">{statistics.waiting}</div>
-                        <p className="text-xs text-slate-400 mt-1">Menunggu konfirmasi</p>
-                    </CardContent>
+                    </div>
                 </Card>
 
-                {/* Dieskalasi - Garis Orange */}
-                <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden pl-5">
-                    <div className="absolute left-3 top-3 bottom-3 pl-1 w-1 bg-orange-600 rounded-full"></div>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle className="text-sm font-medium text-slate-600">Dieskalasi</CardTitle>
-                        <div className="h-8 w-8 rounded-full flex items-center justify-center">
-                            <ArrowRightCircle className="h-4 w-4 text-orange-600" />
+                {/* Dieskalasi */}
+                <Card className="overflow-hidden">
+                    <div className="flex items-stretch h-full">
+                        <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+                        <div className="flex-1">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                                <CardTitle className="text-xs font-medium">Dieskalasi</CardTitle>
+                                <ArrowRightCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent className="px-3 pb-3">
+                                <div className="text-xl font-bold">{statistics.escalated}</div>
+                                <p className="text-[10px] text-muted-foreground">Ditangani tim lain</p>
+                            </CardContent>
                         </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-slate-800">{statistics.escalated}</div>
-                        <p className="text-xs text-slate-400 mt-1">Ditangani tim lain</p>
-                    </CardContent>
+                    </div>
                 </Card>
 
-                {/* Selesai - Garis Orange */}
-                <Card className="border border-slate-200 transition-all relative overflow-hidden pl-5">
-                    <div className="absolute left-3 top-3 bottom-3 pl-1 w-1 bg-orange-600 rounded-full"></div>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle className="text-sm font-medium text-slate-600">Selesai</CardTitle>
-                        <div className="h-8 w-8 rounded-full flex items-center justify-center">
-                            <CheckCircle className="h-4 w-4 text-green-600" />
+                {/* Selesai */}
+                <Card className="overflow-hidden">
+                    <div className="flex items-stretch h-full">
+                        <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+                        <div className="flex-1">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                                <CardTitle className="text-xs font-medium">Selesai</CardTitle>
+                                <CheckCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent className="px-3 pb-3">
+                                <div className="text-xl font-bold">{statistics.resolved}</div>
+                                <p className="text-[10px] text-muted-foreground">Telah diselesaikan</p>
+                            </CardContent>
                         </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-slate-800">{statistics.resolved}</div>
-                        <p className="text-xs text-slate-400 mt-1">Telah diselesaikan</p>
-                    </CardContent>
+                    </div>
                 </Card>
 
-                {/* Prioritas Tinggi - Garis Orange */}
-                <Card className="border-slate-200 transition-all relative overflow-hidden pl-5">
-                    <div className="absolute left-3 top-3 bottom-3 pl-1 w-1 bg-orange-600 rounded-full"></div>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <CardTitle className="text-sm font-medium text-slate-600">Prioritas Tinggi</CardTitle>
-                        <div className="h-8 w-8 rounded-full flex items-center justify-center">
-                            <GaugeCircle className="h-4 w-4 text-red-600" />
+                {/* Prioritas Tinggi */}
+                <Card className="overflow-hidden">
+                    <div className="flex items-stretch h-full">
+                        <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+                        <div className="flex-1">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                                <CardTitle className="text-xs font-medium">Prioritas Tinggi</CardTitle>
+                                <GaugeCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent className="px-3 pb-3">
+                                <div className="text-xl font-bold">{statistics.highPriority}</div>
+                                <p className="text-[10px] text-muted-foreground">Perlu ditangani segera</p>
+                            </CardContent>
                         </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold text-slate-800">{statistics.highPriority}</div>
-                        <p className="text-xs text-slate-400 mt-1">Perlu ditangani segera</p>
-                    </CardContent>
+                    </div>
                 </Card>
             </div>
 
@@ -1168,38 +1180,32 @@ export default function ComplaintsPage() {
 
             {/* Detail Modal */}
             <Dialog open={isReviewOpen} onOpenChange={setIsReviewOpen}>
-                <DialogContent className="max-w-5xl p-0 overflow-hidden border border-slate-200 flex flex-col max-h-[90vh]">
+                <DialogContent className="max-w-5xl max-h-[85vh] flex flex-col">
                     {selectedComplaint && (
                         <>
-                            {/* Header - tidak ikut scroll */}
-                            <div className="border-b border-slate-200 p-6 bg-white flex-shrink-0">
-                                <div className="flex items-start justify-between">
-                                    <div className="space-y-3">
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-sm font-mono font-bold text-[#E65100] bg-orange-50 px-3 py-1 rounded-full">
-                                                {selectedComplaint.id}
-                                            </span>
-                                            <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${getPriorityColor(selectedComplaint.priority)}`}>
-                                                Prioritas {selectedComplaint.priority}
-                                            </span>
-                                            <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${getStatusColor(selectedComplaint.status)}`}>
-                                                {selectedComplaint.status}
-                                            </span>
-                                        </div>
-                                        <DialogTitle className="text-2xl font-semibold text-slate-900">
-                                            {selectedComplaint.subject}
-                                        </DialogTitle>
-                                        <DialogDescription className="flex items-center gap-2 text-slate-500">
-                                            <Clock className="h-4 w-4" />
-                                            Dikirim pada {selectedComplaint.date}
-                                        </DialogDescription>
-                                    </div>
+                            <DialogHeader>
+                                <div className="flex items-center gap-3 mb-1">
+                                    <span className="text-sm font-mono font-bold text-[#E65100] bg-orange-50 px-3 py-1 rounded-full">
+                                        {selectedComplaint.id}
+                                    </span>
+                                    <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${getPriorityColor(selectedComplaint.priority)}`}>
+                                        Prioritas {selectedComplaint.priority}
+                                    </span>
+                                    <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${getStatusColor(selectedComplaint.status)}`}>
+                                        {selectedComplaint.status}
+                                    </span>
                                 </div>
-                            </div>
-
+                                <DialogTitle>
+                                    {selectedComplaint.subject}
+                                </DialogTitle>
+                                <DialogDescription className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4" />
+                                    Dikirim pada {selectedComplaint.date}
+                                </DialogDescription>
+                            </DialogHeader>
 
                             {/* Content - bisa di-scroll */}
-                            <div className="flex-1 overflow-y-auto p-8 bg-slate-50/50">
+                            <div className="flex-1 overflow-y-auto -mx-6 px-6">
                                 <Tabs defaultValue="detail" className="w-full">
                                     <TabsList className="mb-8 p-6 bg-slate-100 rounded-xl w-full">
                                         <TabsTrigger value="detail" className="px-8 py-5 text-base font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#E65100]">
@@ -1449,25 +1455,24 @@ export default function ComplaintsPage() {
                                 </Tabs>
                             </div>
 
-                            {/* Footer - tidak ikut scroll */}
+                            {/* Footer */}
                             {selectedComplaint.status !== "Selesai" && !selectedComplaint.resolution && (
-                                <div className="border-t border-slate-200 p-5 flex justify-end gap-3 bg-white flex-shrink-0">
+                                <DialogFooter>
                                     <Button
                                         variant="outline"
-                                        className="border-slate-200 h-11 px-6"
                                         onClick={() => setIsReviewOpen(false)}
                                     >
                                         Batal
                                     </Button>
                                     <Button
-                                        className="bg-[#E65100] hover:bg-[#E65100]/90 text-white h-11 px-6 shadow-lg shadow-orange-200"
+                                        className="bg-[#E65100] hover:bg-[#E65100]/90 text-white"
                                         onClick={handleResolution}
                                         disabled={!resolutionAction}
                                     >
                                         <CheckCheck className="h-5 w-5 mr-2" />
                                         Kirim Resolusi
                                     </Button>
-                                </div>
+                                </DialogFooter>
                             )}
                         </>
                     )}
@@ -1476,24 +1481,17 @@ export default function ComplaintsPage() {
 
             {/* Contact Modal */}
             <Dialog open={isContactOpen} onOpenChange={setIsContactOpen}>
-                <DialogContent className="max-w-md p-0 overflow-hidden border-none shadow-2xl rounded-2xl">
-                    <DialogHeader className="p-6 pb-4 bg-white border-b border-slate-100">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-blue-100 flex items-center justify-center rounded-xl border border-blue-200 text-blue-600 shadow-sm">
-                                <Phone className="h-6 w-6" />
-                            </div>
-                            <div className="text-left">
-                                <DialogTitle className="text-xl font-bold text-slate-900">Informasi Kontak</DialogTitle>
-                                <DialogDescription className="text-sm text-slate-500 mt-1">
-                                    {selectedComplaint?.[contactTarget === "user" ? "from" : "to"]}
-                                </DialogDescription>
-                            </div>
-                        </div>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Informasi Kontak</DialogTitle>
+                        <DialogDescription>
+                            {selectedComplaint?.[contactTarget === "user" ? "from" : "to"]}
+                        </DialogDescription>
                     </DialogHeader>
 
                     {selectedComplaint && (
-                        <div className="p-6 space-y-5">
-                            <div className="space-y-4">
+                        <div className="space-y-4">
+                            <div className="space-y-3">
                                 <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200 group hover:border-blue-300 transition-colors">
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center border border-slate-200 shadow-sm">
@@ -1509,7 +1507,7 @@ export default function ComplaintsPage() {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-9 w-9 hover:bg-white hover:shadow-sm text-slate-400 hover:text-blue-600"
+                                        className="h-9 w-9 text-slate-400 hover:text-blue-600"
                                         onClick={() => {
                                             navigator.clipboard.writeText(selectedComplaint?.[contactTarget === "user" ? "fromContact" : "toContact"]?.phone);
                                             toast.success("Nomor telepon disalin");
@@ -1534,7 +1532,7 @@ export default function ComplaintsPage() {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-9 w-9 hover:bg-white hover:shadow-sm text-slate-400 hover:text-blue-600"
+                                        className="h-9 w-9 text-slate-400 hover:text-blue-600"
                                         onClick={() => {
                                             navigator.clipboard.writeText(selectedComplaint?.[contactTarget === "user" ? "fromContact" : "toContact"]?.email);
                                             toast.success("Email disalin");
@@ -1544,54 +1542,36 @@ export default function ComplaintsPage() {
                                     </Button>
                                 </div>
                             </div>
-
-                            <Separator />
-
-                            <div className="space-y-3">
-                                <Button
-                                    className="w-full h-12 font-semibold bg-[#E65100] hover:bg-[#E65100]/90 text-white shadow-md shadow-orange-200 rounded-xl"
-                                    onClick={markAsContacted}
-                                >
-                                    <UserCheck className="mr-2 h-5 w-5" />
-                                    Tandai Sudah Dihubungi
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    className="w-full h-12 font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl"
-                                    onClick={() => setIsContactOpen(false)}
-                                >
-                                    Tutup
-                                </Button>
-                            </div>
                         </div>
                     )}
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsContactOpen(false)}>Tutup</Button>
+                        <Button
+                            className="bg-[#E65100] hover:bg-[#E65100]/90 text-white"
+                            onClick={markAsContacted}
+                        >
+                            <UserCheck className="mr-2 h-5 w-5" />
+                            Tandai Sudah Dihubungi
+                        </Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 
             {/* Escalate Modal */}
             <Dialog open={isEscalateOpen} onOpenChange={setIsEscalateOpen}>
-                <DialogContent className="max-w-md p-0 overflow-hidden border-none shadow-2xl rounded-2xl flex flex-col max-h-[90vh]">
-                    <DialogHeader className="p-6 pb-4 bg-white border-b border-slate-100 flex-shrink-0">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-orange-100 flex items-center justify-center rounded-xl border border-orange-200 text-orange-600 shadow-sm">
-                                <ShieldAlert className="h-6 w-6" />
-                            </div>
-                            <div className="text-left">
-                                <DialogTitle className="text-xl font-bold text-slate-900">Eskalasi Tiket</DialogTitle>
-                                <DialogDescription className="text-sm text-slate-500 mt-1">
-                                    Transfer {selectedComplaint?.id} ke otoritas lebih tinggi
-                                </DialogDescription>
-                            </div>
-                        </div>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Eskalasi Tiket</DialogTitle>
+                        <DialogDescription>
+                            Transfer {selectedComplaint?.id} ke otoritas lebih tinggi
+                        </DialogDescription>
                     </DialogHeader>
 
                     {selectedComplaint && (
                         <>
-                            <div className="flex-1 overflow-y-auto p-6">
-                                <div className="space-y-5">
-                                    <div className="space-y-4">
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-medium text-slate-700">Target Eskalasi</Label>
+                            <div className="space-y-4">
+                                        <div className="space-y-1.5">
+                                            <Label className="text-sm font-medium">Target Eskalasi</Label>
                                             <Select value={escalateTarget} onValueChange={setEscalateTarget}>
                                                 <SelectTrigger className="h-12 border-slate-200 rounded-xl bg-white">
                                                     <SelectValue placeholder="Pilih otoritas..." />
@@ -1620,27 +1600,18 @@ export default function ComplaintsPage() {
                                                 <span className="font-bold">Perhatian:</span> Setelah dieskalasi, tiket akan ditangani oleh tim yang dipilih dan status akan berubah menjadi "Dieskalasi".
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
                             </div>
-
-                            <div className="border-t border-slate-200 p-6 pt-4 flex flex-col gap-3 bg-white flex-shrink-0">
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setIsEscalateOpen(false)}>Batal</Button>
                                 <Button
-                                    className="w-full h-12 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl shadow-lg shadow-orange-200 transition-all active:scale-[0.98]"
+                                    className="bg-orange-600 hover:bg-orange-700 text-white"
                                     onClick={handleEscalate}
                                     disabled={!escalateTarget}
                                 >
                                     <ArrowRightCircle className="mr-2 h-5 w-5" />
                                     Konfirmasi Eskalasi
                                 </Button>
-                                <Button
-                                    variant="ghost"
-                                    className="w-full h-12 font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl"
-                                    onClick={() => setIsEscalateOpen(false)}
-                                >
-                                    Batal
-                                </Button>
-                            </div>
+                            </DialogFooter>
                         </>
                     )}
                 </DialogContent>
@@ -1648,97 +1619,75 @@ export default function ComplaintsPage() {
 
             {/* Resolution Result Modal */}
             <Dialog open={showResult} onOpenChange={setShowResult}>
-                <DialogContent className="max-w-md p-0 overflow-hidden border-none shadow-2xl rounded-3xl flex flex-col max-h-[90vh]">
-                    {/* DialogTitle tersembunyi untuk aksesibilitas */}
-                    <DialogTitle className="sr-only">Hasil Resolusi Tiket</DialogTitle>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Resolusi Terkirim!</DialogTitle>
+                        <DialogDescription>Tiket {resultData?.id} telah berhasil diselesaikan.</DialogDescription>
+                    </DialogHeader>
 
-                    {/* Header - tidak ikut scroll */}
-                    <div className="bg-gradient-to-r from-[#E65100] to-orange-500 p-8 text-white text-center relative overflow-hidden flex-shrink-0">
-                        <div className="absolute top-0 right-0 p-4 opacity-10">
-                            <CheckCircle2 className="w-32 h-32" />
-                        </div>
-                        <div className="relative z-10 flex flex-col items-center">
-                            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-5 backdrop-blur-sm border-2 border-white/30">
-                                <CheckCircle2 className="h-10 w-10 text-white" />
-                            </div>
-                            <h2 className="text-2xl font-bold">Resolusi Terkirim!</h2>
-                            <p className="text-orange-100 mt-2">Tiket {resultData?.id} telah berhasil diselesaikan.</p>
-                        </div>
-                    </div>
-
-                    {/* Content - bisa di-scroll */}
-                    <div className="flex-1 overflow-y-auto p-6">
-                        <div className="space-y-6">
-                            {/* INFORMASI TIKET */}
-                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                <h3 className="text-sm font-semibold text-slate-700 mb-3">Informasi Tiket</h3>
-                                <div className="space-y-2">
-                                    <div className="flex justify-between">
-                                        <span className="text-xs text-slate-500">ID Tiket</span>
-                                        <span className="text-xs font-mono font-bold text-[#E65100]">{resultData?.id}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-xs text-slate-500">Status</span>
-                                        <Badge className="bg-green-100 text-green-700 border-green-200">
-                                            {resultData?.status}
-                                        </Badge>
-                                    </div>
+                    <div className="space-y-4">
+                        {/* INFORMASI TIKET */}
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h3 className="text-sm font-semibold text-slate-700 mb-3">Informasi Tiket</h3>
+                            <div className="space-y-2">
+                                <div className="flex justify-between">
+                                    <span className="text-xs text-slate-500">ID Tiket</span>
+                                    <span className="text-xs font-mono font-bold text-[#E65100]">{resultData?.id}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-xs text-slate-500">Status</span>
+                                    <Badge className="bg-green-100 text-green-700 border-green-200">
+                                        {resultData?.status}
+                                    </Badge>
                                 </div>
                             </div>
+                        </div>
 
-                            {/* PRIORITAS - Menampilkan prioritas baru yang sudah berubah */}
-                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                <span className="text-xs text-slate-400 block mb-1">Prioritas Tiket (Telah Diperbarui)</span>
-                                <span className={`text-lg font-bold ${getPriorityColor(resultData?.priority)}`}>
-                                    {resultData?.priority}
+                        {/* PRIORITAS */}
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <span className="text-xs text-slate-400 block mb-1">Prioritas Tiket (Telah Diperbarui)</span>
+                            <span className={`text-lg font-bold ${getPriorityColor(resultData?.priority)}`}>
+                                {resultData?.priority}
+                            </span>
+                        </div>
+
+                        {/* DETAIL RESOLUSI */}
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center py-3 border-b border-slate-100">
+                                <span className="text-sm text-slate-500">Tindakan Resolusi</span>
+                                <span className="text-sm font-bold text-slate-900 bg-slate-100 px-3 py-1 rounded-full">
+                                    {resultData?.action}
                                 </span>
                             </div>
 
-                            {/* DETAIL RESOLUSI */}
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center py-3 border-b border-slate-100">
-                                    <span className="text-sm text-slate-500">Tindakan Resolusi</span>
-                                    <span className="text-sm font-bold text-slate-900 bg-slate-100 px-3 py-1 rounded-full">
-                                        {resultData?.action}
-                                    </span>
-                                </div>
-
-                                <div className="flex justify-between items-center py-3 border-b border-slate-100">
-                                    <span className="text-sm text-slate-500">Waktu</span>
-                                    <span className="text-sm font-medium text-slate-700">{resultData?.timestamp}</span>
-                                </div>
-
-                                {resultData?.notes && (
-                                    <div className="space-y-2 pt-2">
-                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Catatan Resolusi</span>
-                                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-sm text-slate-700 italic leading-relaxed">
-                                            "{resultData.notes}"
-                                        </div>
-                                    </div>
-                                )}
+                            <div className="flex justify-between items-center py-3 border-b border-slate-100">
+                                <span className="text-sm text-slate-500">Waktu</span>
+                                <span className="text-sm font-medium text-slate-700">{resultData?.timestamp}</span>
                             </div>
 
-                            {/* NOTIFIKASI */}
-                            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 flex gap-3">
-                                <Info className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
-                                <div className="text-sm text-blue-700 leading-relaxed">
-                                    <span className="font-bold">Notifikasi telah dikirim</span>
-                                    <p className="mt-1">Kedua belah pihak telah diberitahu mengenai keputusan ini. Log audit telah diperbarui secara otomatis.</p>
+                            {resultData?.notes && (
+                                <div className="space-y-2 pt-2">
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Catatan Resolusi</span>
+                                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-sm text-slate-700 italic leading-relaxed">
+                                        "{resultData.notes}"
+                                    </div>
                                 </div>
+                            )}
+                        </div>
+
+                        {/* NOTIFIKASI */}
+                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3">
+                            <Info className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
+                            <div className="text-sm text-blue-700 leading-relaxed">
+                                <span className="font-bold">Notifikasi telah dikirim</span>
+                                <p className="mt-1">Kedua belah pihak telah diberitahu mengenai keputusan ini. Log audit telah diperbarui secara otomatis.</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Footer - tidak ikut scroll */}
-                    <div className="border-t border-slate-200 p-4 bg-white flex-shrink-0">
-                        <Button
-                            className="w-full h-12 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95"
-                            onClick={() => setShowResult(false)}
-                        >
-                            <CheckCheck className="mr-2 h-5 w-5" />
-                            Selesai & Tutup
-                        </Button>
-                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowResult(false)}>Tutup</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 

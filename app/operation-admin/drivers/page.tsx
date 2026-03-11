@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useState } from "react"
 import {
@@ -348,13 +348,13 @@ const INITIAL_DRIVERS: Driver[] = [
     }
 ]
 
-// Stat Card Component dengan desain persis seperti contoh
+// Stat Card Component - Master Admin Style
 const StatCard = ({
     title,
     value,
     subtitle,
     icon: Icon,
-    iconColor = "text-[#923403]",
+    iconColor = "text-muted-foreground",
     className
 }: {
     title: string;
@@ -364,55 +364,26 @@ const StatCard = ({
     iconColor?: string;
     className?: string;
 }) => (
-    <Card className={`border-slate-200 transition-all relative overflow-hidden ${className}`}>
-        <div className="absolute left-3 top-3 bottom-3 w-1 bg-orange-700 rounded-l-full"></div>
-        <CardHeader className="flex flex-row items-center justify-between pb-2 pl-8">
-            <CardTitle className="text-sm font-medium text-slate-600">{title}</CardTitle>
-            {Icon && (
-                <div className="h-8 w-8 rounded-full flex items-center justify-center bg-orange-50/50">
-                    <Icon className={`h-4 w-4 ${iconColor}`} />
-                </div>
-            )}
-        </CardHeader>
-        <CardContent className="pt-0 pl-8">
-            <div className="text-3xl font-bold text-slate-800">{value}</div>
-            <p className="text-xs text-slate-400 mt-1">{subtitle}</p>
-        </CardContent>
+    <Card className={`overflow-hidden ${className || ''}`}>
+        <div className="flex items-stretch h-full">
+            <div className="w-1.5 bg-cakli-orange rounded-full my-3 ml-3 shrink-0" />
+            <div className="flex-1">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3 px-3">
+                    <CardTitle className="text-xs font-medium">{title}</CardTitle>
+                    {Icon && (
+                        <Icon className={`h-3.5 w-3.5 ${iconColor}`} />
+                    )}
+                </CardHeader>
+                <CardContent className="px-3 pb-3">
+                    <div className="text-xl font-bold">{value}</div>
+                    <p className="text-[10px] text-muted-foreground">{subtitle}</p>
+                </CardContent>
+            </div>
+        </div>
     </Card>
 )
 
-// Modal Wrapper Component
-const Modal = ({
-    isOpen,
-    onClose,
-    title,
-    description,
-    children,
-    maxWidth = "max-w-md"
-}: {
-    isOpen: boolean;
-    onClose: () => void;
-    title?: string;
-    description?: string;
-    children: React.ReactNode;
-    maxWidth?: string;
-}) => (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className={cn(maxWidth, "p-0 overflow-hidden max-h-[90vh] flex flex-col")}>
-            {title ? (
-                <div className="px-6 pt-6 mb-4 flex-shrink-0">
-                    <DialogTitle className="text-xl font-bold">{title}</DialogTitle>
-                    {description && <DialogDescription className="mt-1.5 text-sm text-muted-foreground">{description}</DialogDescription>}
-                </div>
-            ) : (
-                <DialogTitle className="sr-only">Dialog</DialogTitle>
-            )}
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
-                {children}
-            </div>
-        </DialogContent>
-    </Dialog>
-)
+// Modal wrapper removed — using shadcn Dialog directly
 
 export default function DriversPage() {
     const [driverList, setDriverList] = useState<Driver[]>(INITIAL_DRIVERS)
@@ -599,8 +570,8 @@ export default function DriversPage() {
                     </div>
                 </div>
 
-                {/* Stats Cards - Desain persis seperti contoh dengan garis oranye vertikal */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+                {/* Stats Cards - Master Admin Style */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                     <StatCard
                         title="Total Driver"
                         value={driverList.length}
@@ -833,14 +804,13 @@ export default function DriversPage() {
             </div>
 
             {/* Modal Tambah Driver Baru */}
-            <Modal
-                isOpen={isAddDriverOpen}
-                onClose={() => setIsAddDriverOpen(false)}
-                maxWidth="max-w-4xl"
-                title="Tambah Driver Baru"
-                description="Isi lengkap data driver untuk mendaftarkan ke sistem"
-            >
-                <div className="p-6">
+            <Dialog open={isAddDriverOpen} onOpenChange={() => setIsAddDriverOpen(false)}>
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Tambah Driver Baru</DialogTitle>
+                        <DialogDescription>Isi lengkap data driver untuk mendaftarkan ke sistem</DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-1 overflow-y-auto custom-scrollbar -mx-6 px-6">
                     {/* Progress Steps */}
                     <div className="mb-12">
                         <div className="flex items-center justify-between relative px-2">
@@ -1059,7 +1029,8 @@ export default function DriversPage() {
                         )}
                     </div>
 
-                    <div className="flex justify-between items-center mt-12 pt-8 border-t border-gray-100">
+                    </div>
+                    <DialogFooter className="flex-row items-center justify-between">
                         <div>
                             {activeTab !== "personal" && (
                                 <Button
@@ -1069,14 +1040,13 @@ export default function DriversPage() {
                                         const currentIndex = tabs.indexOf(activeTab)
                                         setActiveTab(tabs[currentIndex - 1])
                                     }}
-                                    className="rounded-xl px-6"
                                 >
                                     Sebelumnya
                                 </Button>
                             )}
                         </div>
                         <div className="flex gap-3">
-                            <Button variant="outline" onClick={() => setIsAddDriverOpen(false)} className="rounded-xl px-6 transition-all hover:bg-gray-50">
+                            <Button variant="outline" onClick={() => setIsAddDriverOpen(false)}>
                                 Batal
                             </Button>
                             {activeTab !== "status" ? (
@@ -1086,7 +1056,6 @@ export default function DriversPage() {
                                         const currentIndex = tabs.indexOf(activeTab)
                                         setActiveTab(tabs[currentIndex + 1])
                                     }}
-                                    className="rounded-xl px-8 shadow-lg shadow-orange-100"
                                 >
                                     Selanjutnya
                                 </Button>
@@ -1097,15 +1066,14 @@ export default function DriversPage() {
                                         setIsAddDriverOpen(false)
                                         setActiveTab("personal")
                                     }}
-                                    className="rounded-xl px-10 shadow-lg shadow-orange-200"
                                 >
                                     Simpan Driver
                                 </Button>
                             )}
                         </div>
-                    </div>
-                </div>
-            </Modal>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* Modal Audit Log */}
             <Dialog open={isAuditLogOpen} onOpenChange={(open) => setIsAuditLogOpen(open)}>
@@ -1189,74 +1157,62 @@ export default function DriversPage() {
             </Dialog>
 
             {/* Modal Konfirmasi Tindakan */}
-            <Modal
-                isOpen={isConfirmDialogOpen}
-                onClose={() => {
-                    setIsConfirmDialogOpen(false)
-                    setActionReason("")
-                }}
-                maxWidth="max-w-md"
-            >
-                <div className="p-6 text-center">
-                    <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 ${actionType === "suspend" ? "bg-red-100" :
-                        actionType === "reinstate" ? "bg-emerald-100" : "bg-orange-100"
-                        }`}>
-                        {actionType === "suspend" && <UserX className="h-8 w-8 text-red-600" />}
-                        {actionType === "reinstate" && <RotateCcw className="h-8 w-8 text-emerald-600" />}
-                        {actionType === "verify" && <Shield className="h-8 w-8 text-[#E04D04]" />}
+            <Dialog open={isConfirmDialogOpen} onOpenChange={() => {
+                setIsConfirmDialogOpen(false)
+                setActionReason("")
+            }}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>
+                            {actionType === "suspend" && "Suspend Driver"}
+                            {actionType === "reinstate" && "Aktifkan Kembali"}
+                            {actionType === "verify" && "Verifikasi Driver"}
+                        </DialogTitle>
+                        <DialogDescription>
+                            {actionType === "suspend" && "Apakah Anda yakin ingin menonaktifkan driver ini?"}
+                            {actionType === "reinstate" && "Apakah Anda yakin ingin mengaktifkan kembali driver ini?"}
+                            {actionType === "verify" && "Apakah Anda yakin ingin memverifikasi driver ini?"}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="reason" className="text-sm font-medium">Alasan <span className="text-red-500">*</span></Label>
+                            <Textarea
+                                id="reason"
+                                placeholder="Jelaskan alasan tindakan ini"
+                                value={actionReason}
+                                onChange={(e) => setActionReason(e.target.value)}
+                                className="text-sm"
+                                rows={3}
+                            />
+                        </div>
                     </div>
-
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        {actionType === "suspend" && "Suspend Driver"}
-                        {actionType === "reinstate" && "Aktifkan Kembali"}
-                        {actionType === "verify" && "Verifikasi Driver"}
-                    </h3>
-                    <p className="text-sm text-gray-500 mb-6">
-                        {actionType === "suspend" && "Apakah Anda yakin ingin menonaktifkan driver ini?"}
-                        {actionType === "reinstate" && "Apakah Anda yakin ingin mengaktifkan kembali driver ini?"}
-                        {actionType === "verify" && "Apakah Anda yakin ingin memverifikasi driver ini?"}
-                    </p>
-
-                    <div className="text-left mb-6">
-                        <Label htmlFor="reason" className="text-xs">Alasan <span className="text-red-500">*</span></Label>
-                        <Textarea
-                            id="reason"
-                            placeholder="Jelaskan alasan tindakan ini"
-                            value={actionReason}
-                            onChange={(e) => setActionReason(e.target.value)}
-                            className="mt-2 text-sm"
-                            rows={3}
-                        />
-                    </div>
-
-                    <div className="flex justify-center gap-2">
+                    <DialogFooter>
                         <Button variant="outline" onClick={() => {
                             setIsConfirmDialogOpen(false)
                             setActionReason("")
-                        }} size="sm">
+                        }}>
                             Batal
                         </Button>
                         <Button
                             variant={actionType === "suspend" ? "destructive" : "default"}
                             onClick={confirmAction}
                             disabled={!actionReason.trim()}
-                            size="sm"
                         >
                             Konfirmasi
                         </Button>
-                    </div>
-                </div>
-            </Modal>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* Modal Detail Driver */}
-            <Modal
-                isOpen={isDetailOpen}
-                onClose={() => setIsDetailOpen(false)}
-                maxWidth="max-w-4xl"
-                title={`Detail Driver: ${selectedDriver?.name}`}
-                description="Informasi lengkap, statistik performa, dan riwayat driver"
-            >
-                <div className="px-8 pb-8 pt-0 text-sm">
+            <Dialog open={isDetailOpen} onOpenChange={() => setIsDetailOpen(false)}>
+                <DialogContent className="max-w-4xl max-h-[85vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Detail Driver: {selectedDriver?.name}</DialogTitle>
+                        <DialogDescription>Informasi lengkap, statistik performa, dan riwayat driver</DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-1 overflow-y-auto custom-scrollbar -mx-6 px-6 text-sm">
                     {/* Tabs */}
                     <div className="flex gap-1 p-3 bg-gray-50 rounded-xl mb-8 border border-gray-100 sticky top-0 z-10 bg-white/80 backdrop-blur-md mt-4">
                         {[
@@ -1620,15 +1576,15 @@ export default function DriversPage() {
                             </div>
                         )}
                     </div>
-                </div>
-
-                <div className="p-6 border-t border-gray-100 flex justify-end gap-3 flex-shrink-0 bg-gray-50/50">
-                    <Button variant="outline" onClick={() => setIsDetailOpen(false)}>
-                        Tutup
-                    </Button>
-                    <Button onClick={() => alert("Fitur edit driver akan segera hadir!")}>Edit Driver</Button>
-                </div>
-            </Modal>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsDetailOpen(false)}>
+                            Tutup
+                        </Button>
+                        <Button onClick={() => alert("Fitur edit driver akan segera hadir!")}>Edit Driver</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }
