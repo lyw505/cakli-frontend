@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { toast } from "sonner"
 import {
     Save,
     History,
@@ -224,7 +225,7 @@ export default function TariffManagement() {
                                             <Button
                                                 className="bg-orange-600 hover:bg-orange-700"
                                                 disabled={reviewReason.trim().length < 5}
-                                                onClick={() => { setReviewOpen(false); resetReview() }}
+                                                onClick={() => { setReviewOpen(false); resetReview(); toast.success("Perubahan tarif berhasil diterapkan") }}
                                             >
                                                 <CheckCircle2 className="mr-1.5 size-3.5" /> Terapkan Perubahan
                                             </Button>
@@ -682,7 +683,7 @@ export default function TariffManagement() {
                                                                     <DialogClose asChild>
                                                                         <Button variant="outline" size="sm" className="text-xs">Batal</Button>
                                                                     </DialogClose>
-                                                                    <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-xs gap-1" onClick={() => setRollbackTarget(null)}>
+                                                                    <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-xs gap-1" onClick={() => { setRollbackTarget(null); toast.success(`Tarif berhasil di-rollback ke ${row.v}`) }}>
                                                                         <RotateCcw className="size-3" /> Konfirmasi Rollback
                                                                     </Button>
                                                                 </DialogFooter>

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { toast } from "sonner"
 import {
     Map as MapIcon,
     Navigation,
@@ -185,8 +186,8 @@ export default function AreasPage() {
                                     </div>
                                 </div>
                                 <DialogFooter>
-                                    <Button variant="outline">Simpan sebagai Draf</Button>
-                                    <Button className="bg-cakli-orange">Mulai Ekspansi</Button>
+                                    <Button variant="outline" onClick={() => toast.info("Zona berhasil disimpan sebagai draf")}>Simpan sebagai Draf</Button>
+                                    <Button className="bg-cakli-orange" onClick={() => toast.success("Ekspansi zona baru berhasil dimulai")}>Mulai Ekspansi</Button>
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
@@ -595,7 +596,7 @@ export default function AreasPage() {
                         </div>
                         <DialogFooter className="gap-2 sm:gap-0">
                             <Button variant="outline" onClick={() => setRiskModalOpen(false)}>Kembali</Button>
-                            <Button variant="destructive">Konfirmasi & Terapkan</Button>
+                            <Button variant="destructive" onClick={() => { setRiskModalOpen(false); toast.success("Perubahan zona berhasil diterapkan") }}>Konfirmasi & Terapkan</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>

@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useMemo } from "react"
+import { toast } from "sonner"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
@@ -743,6 +744,7 @@ export default function OrdersPage() {
         }))
         setGlobalLogs(prev => [newLog, ...prev])
         setCancelTarget(null); setCancelReason("")
+        toast.success(`Order ${cancelTarget.id} berhasil dibatalkan`)
     }
 
     const applyIssue = () => {
@@ -764,6 +766,7 @@ export default function OrdersPage() {
         }))
         setGlobalLogs(prev => [newLog, ...prev])
         setIssueTarget(null); setIssueNote("")
+        toast.success(`Order ${issueTarget.id} ditandai bermasalah`)
     }
 
     const applyReassign = () => {
@@ -794,6 +797,7 @@ export default function OrdersPage() {
         setGlobalLogs(prev => [newLog, ...prev])
         setReassignTarget(null); setReassignDriver(""); setReassignReason("")
         setDetailOrder(null)
+        toast.success(`Driver berhasil diganti untuk order ${reassignTarget.id}`)
     }
 
     const applyDeactivateDriver = () => {
@@ -829,6 +833,7 @@ export default function OrdersPage() {
         }))
         setGlobalLogs(prev => [newLog, ...prev])
         setDeactivateTarget(null); setDeactivateReason("")
+        toast.success(`Driver ${deactivateTarget.driver} berhasil dinonaktifkan`)
     }
 
     const canAct = (o: Order) => o.status !== "selesai" && o.status !== "batal"

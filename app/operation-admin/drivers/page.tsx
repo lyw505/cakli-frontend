@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { toast } from "sonner"
 import {
     Search,
     MoreVertical,
@@ -521,6 +522,12 @@ export default function DriversPage() {
         setIsConfirmDialogOpen(false)
         setActionType(null)
         setActionReason("")
+
+        toast.success(
+            actionType === "suspend" ? `Driver ${selectedDriver.name} berhasil di-suspend` :
+            actionType === "reinstate" ? `Driver ${selectedDriver.name} berhasil diaktifkan kembali` :
+            `Driver ${selectedDriver.name} berhasil diverifikasi`
+        )
     }
 
     // Data untuk select options
@@ -1065,6 +1072,7 @@ export default function DriversPage() {
                                         console.log("Menyimpan data driver...")
                                         setIsAddDriverOpen(false)
                                         setActiveTab("personal")
+                                        toast.success("Driver baru berhasil disimpan")
                                     }}
                                 >
                                     Simpan Driver

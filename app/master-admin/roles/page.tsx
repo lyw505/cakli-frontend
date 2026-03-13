@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { toast } from "sonner"
 import {
     ShieldCheck,
     ShieldAlert,
@@ -385,11 +386,12 @@ export default function RoleManagement() {
                             <UserPlus className="size-3.5" /> Akses Admin Baru
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-lg">
+                    <DialogContent className="max-w-lg max-h-[85vh] flex flex-col">
                         <DialogHeader>
                             <DialogTitle>Tambah Akses Admin Baru</DialogTitle>
                             <DialogDescription>Buat akun admin baru dengan peran dan cakupan akses yang sesuai.</DialogDescription>
                         </DialogHeader>
+                        <div className="flex-1 overflow-y-auto -mx-6 px-6">
                         <div className="space-y-4">
                             {/* Name & Email */}
                             <div className="grid grid-cols-2 gap-3">
@@ -512,11 +514,12 @@ export default function RoleManagement() {
                                 </p>
                             </div>
                         </div>
+                        </div>
                         <DialogFooter>
                             <DialogClose asChild>
                                 <Button variant="outline">Batal</Button>
                             </DialogClose>
-                            <Button className="bg-cakli-orange hover:bg-orange-700 gap-1.5">
+                            <Button className="bg-cakli-orange hover:bg-orange-700 gap-1.5" onClick={() => { setNewAdminOpen(false); resetNewAdmin(); toast.success("Admin baru berhasil dibuat") }}>
                                 <UserPlus className="size-3.5" /> Buat Admin Baru
                             </Button>
                         </DialogFooter>

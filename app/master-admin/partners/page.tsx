@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { toast } from "sonner"
 import {
     Save,
     Percent,
@@ -77,11 +78,12 @@ export default function PartnerPolicyManagement() {
                             <Save className="mr-2 h-4 w-4" /> Publikasi Kebijakan Baru
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-lg">
+                    <DialogContent className="max-w-lg max-h-[85vh] flex flex-col">
                         <DialogHeader>
                             <DialogTitle>Publikasi Kebijakan Baru</DialogTitle>
                             <DialogDescription>Buat dan publikasikan kebijakan baru yang berlaku untuk seluruh mitra pengemudi.</DialogDescription>
                         </DialogHeader>
+                        <div className="flex-1 overflow-y-auto -mx-6 px-6">
                         <div className="space-y-4">
                             {/* Title */}
                             <div className="grid gap-1.5">
@@ -166,11 +168,12 @@ export default function PartnerPolicyManagement() {
                                 </div>
                             )}
                         </div>
+                        </div>
                         <DialogFooter>
                             <DialogClose asChild>
                                 <Button variant="outline">Batal</Button>
                             </DialogClose>
-                            <Button className="bg-cakli-orange hover:bg-orange-700 gap-1.5">
+                            <Button className="bg-cakli-orange hover:bg-orange-700 gap-1.5" onClick={() => { setPolicyOpen(false); resetPolicy(); toast.success("Kebijakan baru berhasil dipublikasikan") }}>
                                 <FileText className="size-3.5" /> Publikasikan Kebijakan
                             </Button>
                         </DialogFooter>

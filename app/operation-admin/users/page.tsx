@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useMemo, useEffect, useRef } from "react"
+import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
@@ -553,6 +554,7 @@ export default function UserManagementPage() {
         setSuspendTarget(null)
         setSuspendReason("")
         setDetailUser(null)
+        toast.success(`Akun ${suspendTarget.name} berhasil di-suspend`)
     }
 
     const handleReactivate = (user: UserData) => {
@@ -581,6 +583,7 @@ export default function UserManagementPage() {
                 ...u.auditLog
             ]
         } : u))
+        toast.success(`Akun ${user.name} berhasil diaktifkan kembali`)
     }
 
     const statusOptions = [
