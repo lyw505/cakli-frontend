@@ -592,7 +592,7 @@ export default function ActivityPage() {
                             <Eye className="w-3.5 h-3.5 mr-1.5" />
                             Terus Pantau
                         </Button>
-                        <Button className="bg-[#E04D04] hover:bg-[#E04D04]/90 text-white" onClick={handleContactDriver}>
+                        <Button className="bg-orange-600 hover:bg-orange-700 text-white" onClick={handleContactDriver}>
                             <PhoneCall className="w-3.5 h-3.5 mr-1.5" />
                             Hubungi
                         </Button>
@@ -732,7 +732,7 @@ export default function ActivityPage() {
                     <DialogFooter>
                         <Button variant="outline" onClick={closeModal}>Batal</Button>
                         <Button
-                            className="bg-[#E04D04] hover:bg-[#E04D04]/90 text-white"
+                            className="bg-orange-600 hover:bg-orange-700 text-white"
                             onClick={handleSendWarning}
                             disabled={!message.trim()}
                         >
@@ -881,6 +881,9 @@ export default function ActivityPage() {
                             </div>
                         </div>
                     </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={closeModal}>Tutup</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 

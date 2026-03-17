@@ -852,7 +852,7 @@ export default function UserManagementPage() {
                         <Button
                             onClick={handleSuspend}
                             disabled={!suspendReason}
-                            className="bg-[#E04D04] hover:bg-[#c94504] text-white"
+                            className="bg-red-600 hover:bg-red-700 text-white"
                         >
                             Suspend Account
                         </Button>
@@ -1031,6 +1031,17 @@ export default function UserManagementPage() {
                             </div>
                         )}
                     </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setDetailUser(null)}>Close</Button>
+                        {detailUser && (detailUser.status === "Active" || detailUser.status === "Under Review") && (
+                            <Button
+                                className="bg-red-600 hover:bg-red-700 text-white"
+                                onClick={() => { setDetailUser(null); setSuspendTarget(detailUser) }}
+                            >
+                                Suspend Account
+                            </Button>
+                        )}
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 
@@ -1113,7 +1124,7 @@ export default function UserManagementPage() {
                     </div>
 
                     {/* Pagination Footer */}
-                    <DialogFooter className="flex-row items-center justify-between">
+                    <DialogFooter className="sm:justify-between">
                         <div className="flex items-center gap-2">
                             <div className="h-2 w-2 rounded-full bg-emerald-500"></div>
                             <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">

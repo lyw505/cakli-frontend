@@ -1146,6 +1146,9 @@ export default function OrdersPage() {
                     <div className="flex-1 overflow-y-auto custom-scrollbar -mx-6 px-6">
                         {liveDetail && <DetailDialog order={liveDetail} onReassign={() => { setReassignTarget(liveDetail); setReassignDriver(""); setDetailOrder(null) }} />}
                     </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setDetailOrder(null)}>Tutup</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 
@@ -1195,7 +1198,7 @@ export default function OrdersPage() {
                         <Button
                             disabled={!reassignDriver}
                             onClick={applyReassign}
-                            className="bg-[#E04D04] hover:bg-[#c94504] text-white"
+                            className="bg-orange-600 hover:bg-orange-700 text-white"
                         >
                             Konfirmasi Ganti Driver
                         </Button>

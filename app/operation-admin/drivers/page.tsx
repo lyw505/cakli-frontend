@@ -1037,7 +1037,7 @@ export default function DriversPage() {
                     </div>
 
                     </div>
-                    <DialogFooter className="flex-row items-center justify-between">
+                    <DialogFooter className="sm:justify-between">
                         <div>
                             {activeTab !== "personal" && (
                                 <Button
@@ -1203,7 +1203,7 @@ export default function DriversPage() {
                             Batal
                         </Button>
                         <Button
-                            variant={actionType === "suspend" ? "destructive" : "default"}
+                            className={actionType === "suspend" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-orange-600 hover:bg-orange-700 text-white"}
                             onClick={confirmAction}
                             disabled={!actionReason.trim()}
                         >
@@ -1530,7 +1530,7 @@ export default function DriversPage() {
                                         } else if (log.action.includes('Verifikasi')) {
                                             icon = <Shield className="h-5 w-5" />
                                             bgColor = "bg-orange-50"
-                                            iconColor = "text-[#E04D04]"
+                                            iconColor = "text-orange-600"
                                         } else if (log.action.includes('Aktivasi')) {
                                             icon = <RotateCcw className="h-5 w-5" />
                                             bgColor = "bg-emerald-50"
@@ -1589,7 +1589,7 @@ export default function DriversPage() {
                         <Button variant="outline" onClick={() => setIsDetailOpen(false)}>
                             Tutup
                         </Button>
-                        <Button onClick={() => alert("Fitur edit driver akan segera hadir!")}>Edit Driver</Button>
+                        <Button className="bg-orange-600 hover:bg-orange-700 text-white" onClick={() => alert("Fitur edit driver akan segera hadir!")}>Edit Driver</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
