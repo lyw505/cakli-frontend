@@ -370,7 +370,7 @@ export default function TariffManagement() {
                             <Card className="border-red-200 dark:border-red-900">
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-sm flex items-center gap-1.5">
-                                        <ShieldAlert className="size-3.5 text-red-500" /> Pengaman / Peringatan Batas
+                                        Pengaman / Peringatan Batas
                                     </CardTitle>
                                     <CardDescription className="text-xs">Peringatan otomatis jika perubahan melebihi ambang batas aman.</CardDescription>
                                 </CardHeader>

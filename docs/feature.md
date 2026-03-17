@@ -103,10 +103,10 @@ Master Admin memiliki kontrol sistem global, berfokus pada konfigurasi, manajeme
 *   **Estimasi BEP:** Estimasi waktu Break-Even Point.
 *   **Tombol Aksi:** "Simpan sebagai Draf" (outline) dan "Mulai Ekspansi" (primer).
 
-#### Dialog Sistem Kontrol Risiko
+#### Dialog Hentikan Zona
 *   **Analisis Dampak Potensial:** Estimasi kehilangan pendapatan harian, jumlah driver terdampak, pesanan terdampak per jam, badge tingkat risiko (KRITIS/TINGGI/SEDANG/RENDAH).
 *   **Notifikasi Otomatis:** "Notifikasi push dikirimkan ke seluruh driver di zona terkait dalam 2 menit setelah konfirmasi."
-*   **Aksi:** Tombol "Kembali" (outline) dan "Konfirmasi & Terapkan" (destructive merah).
+*   **Aksi:** Tombol "Kembali" (outline) dan "Konfirmasi & Terapkan" (destructive merah) untuk menghentikan zona.
 
 ### 💰 Manajemen Tarif ([master-admin/tariffs/page.tsx](file:///d:/aul-pkl/rafa/cakli-frontend/app/master-admin/tariffs/page.tsx))
 

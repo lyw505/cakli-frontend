@@ -560,7 +560,7 @@ export default function AreasPage() {
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle className="flex items-center gap-2">
-                                <AlertTriangle className="size-5 text-red-500" /> Sistem Kontrol Risiko
+                                <AlertTriangle className="size-5 text-red-500" /> Hentikan Zona
                             </DialogTitle>
                             <DialogDescription>
                                 Anda akan memodifikasi parameter zona kritis. Harap tinjau estimasi kerugian & risiko sebelum melanjutkan.
