@@ -1,0 +1,15 @@
+{
+  "2299028": [
+    "2299028 resolve conflict pull",
+    "app/master-admin/layout.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/switch.tsx"
+  ],
+  "13cf4f7": [
+    "13cf4f7 v1.3 fitur analytics reporting-admin",
+    "app/reporting-admin/analytics/page.tsx",
+    "app/reporting-admin/history/page.tsx",
+    "app/reporting-admin/page.tsx",
+    "components/app-sidebar.tsx"
+  ]
+}

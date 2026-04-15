@@ -6,13 +6,13 @@ import {
     Filter,
     Eye,
     ArrowUpDown,
-    Calendar as CalendarIcon,
     Download,
     FileSpreadsheet,
-    FileJson,
-    ChevronLeft,
-    ChevronRight,
+    FileText,
 } from "lucide-react"
+import { addDays, format } from "date-fns"
+import { DateRange } from "react-day-picker"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -56,7 +56,22 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
 
 const historyData = [
     { id: "ORD-8921", customer: "Budi Pratama", driver: "Agus Santoso", date: "2024-02-09 08:30", amount: "Rp 24.000", status: "Completed", pickup: "Jl. Merdeka No. 10", dropoff: "Malang City Point", area: "Malang Kota", distance: "4.2 km", duration: "18 mins" },
@@ -66,11 +81,66 @@ const historyData = [
     { id: "ORD-8917", customer: "Fahmi R.", driver: "Hendra P.", date: "2024-02-08 22:30", amount: "Rp 45.000", status: "Completed", pickup: "Batu Night Spectacular", dropoff: "Hotel Santika", area: "Batu", distance: "8.5 km", duration: "25 mins" },
 ]
 
+function DatePickerWithRange({
+    className,
+}: React.HTMLAttributes<HTMLDivElement>) {
+    const [date, setDate] = React.useState<DateRange | undefined>({
+        from: new Date(2024, 1, 1),
+        to: addDays(new Date(2024, 1, 1), 7),
+    })
+
+    return (
+        <div className={cn("grid gap-2", className)}>
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Button
+                        id="date"
+                        variant={"outline"}
+                        className={cn(
+                            "w-[260px] justify-start text-left font-normal border-gray-200 focus-visible:ring-0 focus-visible:ring-offset-0 bg-white",
+                            !date && "text-muted-foreground"
+                        )}
+                    >
+                        <Search className="mr-2 h-4 w-4" />
+                        {date?.from ? (
+                            date.to ? (
+                                <>
+                                    {format(date.from, "dd MMM yyyy")} - {format(date.to, "dd MMM yyyy")}
+                                </>
+                            ) : (
+                                format(date.from, "dd MMM yyyy")
+                            )
+                        ) : (
+                            <span>Pilih Rentang Tanggal</span>
+                        )}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                        initialFocus
+                        mode="range"
+                        defaultMonth={date?.from}
+                        selected={date}
+                        onSelect={setDate}
+                        numberOfMonths={2}
+                    />
+                </PopoverContent>
+            </Popover>
+        </div>
+    )
+}
+
 export default function HistoryPage() {
     const [selectedOrder, setSelectedOrder] = React.useState<typeof historyData[0] | null>(null)
 
+    React.useEffect(() => {
+        toast.message("Data Berhasil Dimuat", {
+            description: "Riwayat pesanan terbaru telah siap ditampilkan.",
+        })
+    }, [])
+
     return (
-        <div className="flex flex-col gap-6 p-6">
+        <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Order History & Reports</h1>
@@ -79,42 +149,42 @@ export default function HistoryPage() {
                 <div className="flex items-center gap-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button>
-                                <Download className="mr-2 h-4 w-4" />
-                                Export History
+                            <Button className="bg-[#E04D04] hover:bg-[#c94504] text-white">
+                                <Download className="mr-2 h-4 w-4 text-white" />
+                                Ekspor Data
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Format</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
                                 <FileSpreadsheet className="mr-2 h-4 w-4" />
-                                Excel (.xlsx)
+                                Buku Besar Bulanan (.xlsx)
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <FileJson className="mr-2 h-4 w-4" />
-                                PDF (.pdf)
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
+                                <FileText className="mr-2 h-4 w-4" />
+                                Laporan Pencairan (.pdf)
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             </div>
 
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="flex flex-1 items-center gap-2">
-                    <div className="relative w-full max-w-sm">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="search"
-                            placeholder="Search by ID or customer..."
-                            className="pl-8"
-                        />
-                    </div>
-                    <Input type="date" className="w-[150px] md:w-[180px]" />
+            <div className="flex flex-col gap-4 md:flex-row md:items-center">
+                <div className="relative w-full max-w-sm">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        type="search"
+                        placeholder="Search by ID or customer..."
+                        className="pl-8 border-gray-200 focus-visible:border-[#E04D04] focus-visible:ring-0 bg-white"
+                    />
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="ml-2">
+                    <DatePickerWithRange />
+                </div>
+                <div className="flex items-center gap-4 ml-4">
                     <Select defaultValue="all">
-                        <SelectTrigger className="w-[140px]">
+                        <SelectTrigger className="w-[140px] focus:ring-0 focus:ring-offset-0 border-gray-200 bg-white">
                             <SelectValue placeholder="Area" />
                         </SelectTrigger>
                         <SelectContent>
@@ -126,7 +196,7 @@ export default function HistoryPage() {
                         </SelectContent>
                     </Select>
                     <Select defaultValue="all">
-                        <SelectTrigger className="w-[140px]">
+                        <SelectTrigger className="w-[140px] focus:ring-0 focus:ring-offset-0 border-gray-200 bg-white">
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
@@ -136,12 +206,6 @@ export default function HistoryPage() {
                             <SelectItem value="refunded">Refunded</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="outline" size="icon">
-                        <ArrowUpDown className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon">
-                        <Filter className="h-4 w-4" />
-                    </Button>
                 </div>
             </div>
 
@@ -168,7 +232,7 @@ export default function HistoryPage() {
                                     <TableCell>{order.driver}</TableCell>
                                     <TableCell className="font-semibold">{order.amount}</TableCell>
                                     <TableCell>
-                                        <Badge variant={order.status === "Completed" ? "default" : "destructive"}>
+                                        <Badge className={order.status === "Completed" ? "bg-[#E04D04] text-white hover:bg-[#E04D04]" : ""} variant={order.status === "Completed" ? undefined : "destructive"}>
                                             {order.status}
                                         </Badge>
                                     </TableCell>
@@ -180,19 +244,19 @@ export default function HistoryPage() {
                                                 </Button>
                                             </DialogTrigger>
                                             <DialogContent className="sm:max-w-[500px]">
-                                                <DialogHeader>
+                                                <DialogHeader className="px-3 pt-4">
                                                     <DialogTitle>Order Details - {selectedOrder?.id}</DialogTitle>
                                                     <DialogDescription>
                                                         Full transactional audit for this order instance.
                                                     </DialogDescription>
                                                 </DialogHeader>
-                                                <div className="grid gap-4 py-4">
+                                                <div className="grid gap-4 py-4 px-3 pb-2">
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div className="space-y-1">
                                                             <p className="text-xs text-muted-foreground uppercase font-semibold">User Details</p>
                                                             <p className="text-sm">{selectedOrder?.customer}</p>
                                                         </div>
-                                                        <div className="space-y-1">
+                                                        <div className="space-y-1 text-right flex flex-col items-end">
                                                             <p className="text-xs text-muted-foreground uppercase font-semibold">Driver Details</p>
                                                             <p className="text-sm">{selectedOrder?.driver}</p>
                                                         </div>
@@ -200,14 +264,14 @@ export default function HistoryPage() {
                                                     <Separator />
                                                     <div className="space-y-2">
                                                         <div className="flex items-start gap-2">
-                                                            <div className="size-2 bg-primary rounded-full mt-1.5" />
+                                                            <div className="size-2 bg-[#E04D04] rounded-full mt-1.5" />
                                                             <div className="space-y-0.5">
                                                                 <p className="text-xs text-muted-foreground">Pickup Location</p>
                                                                 <p className="text-sm font-medium">{selectedOrder?.pickup}</p>
                                                             </div>
                                                         </div>
                                                         <div className="flex items-start gap-2">
-                                                            <div className="size-2 bg-destructive rounded-full mt-1.5" />
+                                                            <div className="size-2 bg-red-600 rounded-full mt-1.5" />
                                                             <div className="space-y-0.5">
                                                                 <p className="text-xs text-muted-foreground">Drop-off Location</p>
                                                                 <p className="text-sm font-medium">{selectedOrder?.dropoff}</p>
@@ -218,16 +282,16 @@ export default function HistoryPage() {
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div className="space-y-1">
                                                             <p className="text-xs text-muted-foreground uppercase font-semibold">Total Fare</p>
-                                                            <p className="text-lg font-bold text-primary">{selectedOrder?.amount}</p>
+                                                            <p className="text-xl font-bold text-[#E04D04]">{selectedOrder?.amount}</p>
                                                         </div>
-                                                        <div className="space-y-1 text-right">
+                                                        <div className="space-y-1 text-right flex flex-col items-end">
                                                             <p className="text-xs text-muted-foreground uppercase font-semibold">Status</p>
-                                                            <Badge variant={selectedOrder?.status === "Completed" ? "default" : "destructive"}>
+                                                            <Badge className="px-4 py-1 rounded-full text-sm font-semibold border-0" variant={selectedOrder?.status === "Completed" ? "default" : "destructive"} style={selectedOrder?.status === "Completed" ? { backgroundColor: '#E04D04', color: 'white' } : {}}>
                                                                 {selectedOrder?.status}
                                                             </Badge>
                                                         </div>
                                                     </div>
-                                                    <div className="bg-muted p-3 rounded-lg text-xs space-y-1">
+                                                    <div className="bg-muted p-3 rounded-lg text-xs space-y-1 mt-2">
                                                         <p><span className="font-semibold">Distance:</span> {selectedOrder?.distance}</p>
                                                         <p><span className="font-semibold">Duration:</span> {selectedOrder?.duration}</p>
                                                         <p><span className="font-semibold">Payment:</span> CakliWallet</p>
@@ -243,30 +307,43 @@ export default function HistoryPage() {
                 </CardContent>
             </Card>
 
-            <div className="flex items-center justify-center gap-2 mt-4">
-                <Button variant="outline" size="sm" className="h-8 w-auto px-4" disabled>
-                    <ChevronLeft className="mr-2 h-4 w-4" />
-                    Back
-                </Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                    1
-                </Button>
-                <Button variant="default" size="sm" className="h-8 w-8 p-0 bg-[#E04D04] hover:bg-[#c94504]">
-                    2
-                </Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                    3
-                </Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                    4
-                </Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                    5
-                </Button>
-                <Button variant="outline" size="sm" className="h-8 w-auto px-4">
-                    Next
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="text-xs text-muted-foreground font-medium">
+                    Menampilkan <span className="font-bold text-foreground">1–{historyData.length}</span> dari <span className="font-bold text-foreground">{historyData.length}</span> pesanan
+                </div>
+                <Pagination className="justify-center w-auto mx-0">
+                    <PaginationContent className="gap-1">
+                        <PaginationItem>
+                            <PaginationPrevious href="#" className="h-8 w-8 p-0 text-gray-500 hover:text-gray-900 border border-gray-200 bg-white rounded-md shadow-none transition-all" text="" />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" isActive className="h-8 w-8 bg-[#E04D04] border-0 text-white hover:bg-[#E04D04] hover:text-white rounded-md shadow-none">
+                                1
+                            </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" className="h-8 w-8 border-0 bg-transparent text-gray-700 hover:text-foreground hover:bg-transparent rounded-md shadow-none">
+                                2
+                            </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" className="h-8 w-8 border-0 bg-transparent text-gray-700 hover:text-foreground hover:bg-transparent rounded-md shadow-none">
+                                3
+                            </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationEllipsis className="h-8 w-8 flex items-center justify-center text-gray-400" />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" className="h-8 w-8 border-0 bg-transparent text-gray-700 hover:text-foreground hover:bg-transparent rounded-md shadow-none">
+                                12
+                            </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationNext href="#" className="h-8 w-8 p-0 text-gray-500 hover:text-gray-900 border border-gray-200 bg-white rounded-md shadow-none transition-all" text="" />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
             </div>
         </div>
     )

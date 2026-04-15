@@ -22,6 +22,8 @@ import {
     AlertCircle,
     Download,
     Filter,
+    FileSpreadsheet,
+    FileText,
 } from "lucide-react"
 
 import {
@@ -45,33 +47,95 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-const comparisonData = [
-    { city: "Malang", orders: 15230, revenue: 18500, cancelRate: 4.2 },
-    { city: "Surabaya", orders: 42100, revenue: 84200, cancelRate: 6.8 },
-    { city: "Batu", orders: 4500, revenue: 9100, cancelRate: 2.1 },
-    { city: "Sidoarjo", orders: 9200, revenue: 12300, cancelRate: 5.5 },
-]
+import { toast } from "sonner"
 
-const growthTrend = [
-    { month: "Jan", malang: 10, surabaya: 15, batu: 5 },
-    { month: "Feb", malang: 12, surabaya: 18, batu: 4 },
-    { month: "Mar", malang: 11, surabaya: 22, batu: 6 },
-    { month: "Apr", malang: 14, surabaya: 25, batu: 8 },
-    { month: "May", malang: 16, surabaya: 28, batu: 10 },
-]
+const analyticsData = {
+    harian: {
+        highlights: [
+            { title: "Kota Pendapatan Tertinggi", value: "Sidoarjo", detail: "Menyumbang 72% dari total pendapatan kotor harian" },
+            { title: "Tingkat Pembatalan Terendah", value: "Batu", detail: "1.2% - Performa operasional luar biasa hari ini" },
+            { title: "Pertumbuhan Tercepat", value: "Malang Kota", detail: "+12.5% Pesanan dari kemarin" }
+        ],
+        comparison: [
+            { name: "Malang Kota", revenue: 1200000, orders: 45, cancellation: 2.1 },
+            { name: "Sidoarjo", revenue: 2100000, orders: 82, cancellation: 1.5 },
+            { name: "Batu", revenue: 850000, orders: 32, cancellation: 0.8 },
+            { name: "Lowokwaru", revenue: 1560000, orders: 58, cancellation: 3.2 },
+            { name: "Blimbing", revenue: 1100000, orders: 42, cancellation: 2.8 },
+        ]
+    },
+    mingguan: {
+        highlights: [
+            { title: "Kota Pendapatan Tertinggi", value: "Sidoarjo", detail: "Menyumbang 65% dari total pendapatan kotor mingguan" },
+            { title: "Tingkat Pembatalan Terendah", value: "Malang Kota", detail: "1.8% - Skor kepuasan pelanggan tertinggi (4.9/5)" },
+            { title: "Pertumbuhan Tercepat", value: "Sukun", detail: "+8.2% WoW Akuisisi Pengguna Baru" }
+        ],
+        comparison: [
+            { name: "Malang Kota", revenue: 8400000, orders: 310, cancellation: 1.8 },
+            { name: "Sidoarjo", revenue: 12500000, orders: 480, cancellation: 2.5 },
+            { name: "Batu", revenue: 5200000, orders: 190, cancellation: 1.2 },
+            { name: "Lowokwaru", revenue: 9800000, orders: 360, cancellation: 3.8 },
+            { name: "Blimbing", revenue: 7600000, orders: 280, cancellation: 3.1 },
+        ]
+    },
+    bulanan: {
+        highlights: [
+            { title: "Kota Pendapatan Tertinggi", value: "Surabaya", detail: "Menyumbang 68% dari total pendapatan kotor" },
+            { title: "Tingkat Pembatalan Terendah", value: "Batu", detail: "2.1% - Skor kepuasan pelanggan tertinggi (4.9/5)" },
+            { title: "Pertumbuhan Tercepat", value: "Sidoarjo", detail: "+5.8% MoM Akuisisi Pengguna Baru" }
+        ],
+        comparison: [
+            { name: "Malang Kota", revenue: 32000000, orders: 1200, cancellation: 4.2 },
+            { name: "Sidoarjo", revenue: 45000000, orders: 1850, cancellation: 3.5 },
+            { name: "Batu", revenue: 18000000, orders: 750, cancellation: 2.1 },
+            { name: "Lowokwaru", revenue: 38000000, orders: 1420, cancellation: 5.8 },
+            { name: "Blimbing", revenue: 26000000, orders: 980, cancellation: 4.9 },
+        ]
+    },
+    tahunan: {
+        highlights: [
+            { title: "Kota Pendapatan Tertinggi", value: "Surabaya", detail: "Menyumbang 62% dari total pendapatan tahun ini" },
+            { title: "Tingkat Pembatalan Terendah", value: "Sidoarjo", detail: "3.2% - Konsistensi performa terbaik sepanjang tahun" },
+            { title: "Pertumbuhan Tercepat", value: "Malang Kota", detail: "+24% YoY Ekspansi Layanan" }
+        ],
+        comparison: [
+            { name: "Malang Kota", revenue: 384000000, orders: 14500, cancellation: 3.8 },
+            { name: "Sidoarjo", revenue: 520000000, orders: 21000, cancellation: 3.2 },
+            { name: "Batu", revenue: 210000000, orders: 8800, cancellation: 4.1 },
+            { name: "Lowokwaru", revenue: 440000000, orders: 16200, cancellation: 6.2 },
+            { name: "Blimbing", revenue: 310000000, orders: 11500, cancellation: 5.5 },
+        ]
+    }
+}
 
-export default function CrossAreaAnalytics() {
+export default function AnalyticsPage() {
+    const [period, setPeriod] = React.useState<keyof typeof analyticsData>("harian")
+    const currentData = analyticsData[period];
+
+    React.useEffect(() => {
+        toast.message("Analitik Berhasil Dimuat", {
+            description: "Wawasan lintas area terbaru telah siap dianalisis.",
+        })
+    }, [])
 
     return (
-        <div className="flex flex-col gap-6 p-6">
+        <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Analitik Lintas Area</h1>
                     <p className="text-muted-foreground">Metrik performa komparatif di seluruh wilayah operasional.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Tabs defaultValue="harian">
+                    <Tabs value={period} onValueChange={(v: any) => setPeriod(v)}>
                         <TabsList>
                             <TabsTrigger value="harian">Harian</TabsTrigger>
                             <TabsTrigger value="mingguan">Mingguan</TabsTrigger>
@@ -80,7 +144,7 @@ export default function CrossAreaAnalytics() {
                         </TabsList>
                     </Tabs>
                     <Select defaultValue="all">
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-[180px] focus:ring-0 focus:ring-offset-0 border-gray-200 bg-white">
                             <SelectValue placeholder="Filter Wilayah" />
                         </SelectTrigger>
                         <SelectContent>
@@ -89,45 +153,74 @@ export default function CrossAreaAnalytics() {
                             <SelectItem value="growth">Pertumbuhan Tinggi</SelectItem>
                         </SelectContent>
                     </Select>
-                    <Button variant="outline">
-                        <Download className="mr-2 h-4 w-4" /> Ekspor Laporan
-                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button className="bg-[#E04D04] hover:bg-[#c94504] text-white">
+                                <Download className="mr-2 h-4 w-4 text-white" />
+                                Ekspor Data
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Format</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
+                                <FileSpreadsheet className="mr-2 h-4 w-4" />
+                                Buku Besar Bulanan (.xlsx)
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => toast.success("Data berhasil di export", { position: "bottom-right", style: { background: "#E6F4EA", color: "#137333", border: "1px solid #CEEAD6" } })}>
+                                <FileText className="mr-2 h-4 w-4" />
+                                Laporan Pencairan (.pdf)
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
 
             {/* Key Comparison Metrics */}
             <div className="grid gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Kota Pendapatan Tertinggi</CardTitle>
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="pb-2 pl-10">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center justify-between">
+                            Kota Pendapatan Tertinggi
+                            <ArrowUpRight className="h-4 w-4 text-slate-400" />
+                        </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold flex items-center gap-2">
-                            Surabaya <ArrowUpRight className="text-green-500 size-5" />
+                            {currentData.highlights[0].value}
                         </div>
-                        <p className="text-xs text-muted-foreground">Menyumbang 68% dari total pendapatan kotor</p>
+                        <p className="text-xs text-muted-foreground">{currentData.highlights[0].detail}</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Tingkat Pembatalan Terendah</CardTitle>
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="pb-2 pl-10">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center justify-between">
+                            Tingkat Pembatalan Terendah
+                            <TrendingDown className="h-4 w-4 text-slate-400" />
+                        </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold flex items-center gap-2">
-                            Batu <Badge variant="secondary" className="ml-2 text-green-600 bg-green-50">2.1%</Badge>
+                            {currentData.highlights[1].value}
                         </div>
-                        <p className="text-xs text-muted-foreground">Skor kepuasan pelanggan tertinggi (4.9/5)</p>
+                        <p className="text-xs text-muted-foreground">{currentData.highlights[1].detail}</p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Pertumbuhan Tercepat</CardTitle>
+                <Card className="relative overflow-hidden">
+                    <div className="absolute left-4 top-4 bottom-4 w-1 bg-[#E04D04] rounded-full" />
+                    <CardHeader className="pb-2 pl-10">
+                        <CardTitle className="text-sm font-medium text-muted-foreground flex items-center justify-between">
+                            Pertumbuhan Tercepat
+                            <TrendingUp className="h-4 w-4 text-slate-400" />
+                        </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="pl-10">
                         <div className="text-2xl font-bold flex items-center gap-2">
-                            Sidoarjo <TrendingUp className="text-blue-500 size-5" />
+                            {currentData.highlights[2].value}
                         </div>
-                        <p className="text-xs text-muted-foreground">+5.8% MoM Akuisisi Pengguna Baru</p>
+                        <p className="text-xs text-muted-foreground">{currentData.highlights[2].detail}</p>
                     </CardContent>
                 </Card>
             </div>
@@ -142,14 +235,14 @@ export default function CrossAreaAnalytics() {
                     <CardContent>
                         <div className="h-[300px]">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={comparisonData}>
+                                <BarChart data={currentData.comparison}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                    <XAxis dataKey="city" fontSize={12} tickLine={false} axisLine={false} />
+                                    <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
                                     <YAxis yAxisId="left" orientation="left" stroke="#8884d8" fontSize={12} tickLine={false} axisLine={false} />
                                     <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" fontSize={12} tickLine={false} axisLine={false} />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar yAxisId="left" dataKey="revenue" name="Pendapatan (juta)" fill="#8884d8" radius={[4, 4, 0, 0]} />
+                                    <Bar yAxisId="left" dataKey="revenue" name="Pendapatan" fill="#8884d8" radius={[4, 4, 0, 0]} />
                                     <Bar yAxisId="right" dataKey="orders" name="Pesanan" fill="#82ca9d" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
@@ -166,13 +259,13 @@ export default function CrossAreaAnalytics() {
                     <CardContent>
                         <div className="h-[300px]">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={comparisonData} layout="vertical">
+                                <BarChart data={currentData.comparison} layout="vertical">
                                     <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                                     <XAxis type="number" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis dataKey="city" type="category" fontSize={12} tickLine={false} axisLine={false} width={80} />
+                                    <YAxis dataKey="name" type="category" fontSize={12} tickLine={false} axisLine={false} width={80} />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="cancelRate" name="Tingkat Pembatalan %" fill="#ef4444" radius={[0, 4, 4, 0]} barSize={30} />
+                                    <Bar dataKey="cancellation" name="Tingkat Pembatalan %" fill="#ef4444" radius={[0, 4, 4, 0]} barSize={30} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>

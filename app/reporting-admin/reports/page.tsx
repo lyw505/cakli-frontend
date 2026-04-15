@@ -53,7 +53,15 @@ const reportData = [
 
 
 
+import { toast } from "sonner"
+
 export default function ReportsPage() {
+    React.useEffect(() => {
+        toast.message("Dashboard Laporan Dimuat", {
+            description: "Silakan pilih kategori laporan yang ingin Anda tinjau.",
+        })
+    }, [])
+
     return (
         <div className="flex flex-col gap-6 p-6">
             <div>

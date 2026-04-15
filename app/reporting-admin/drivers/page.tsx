@@ -207,8 +207,10 @@ export default function DriverPerformancePage() {
                                         {driver.cancelRate}
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant={
-                                            driver.status === "Top Performer" ? "default" :
+                                        <Badge className={
+                                            driver.status === "Top Performer" ? "bg-[#E04D04] text-white hover:bg-[#E04D04]" : ""
+                                        } variant={
+                                            driver.status === "Top Performer" ? undefined :
                                                 driver.status === "Stable" ? "secondary" :
                                                     driver.status === "Warning" ? "destructive" : "outline"
                                         }>
